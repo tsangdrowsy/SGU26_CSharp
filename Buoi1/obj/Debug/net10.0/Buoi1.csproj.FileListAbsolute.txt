@@ -1,0 +1,14 @@
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\bin\Debug\net10.0\Buoi1.exe
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\bin\Debug\net10.0\Buoi1.deps.json
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\bin\Debug\net10.0\Buoi1.runtimeconfig.json
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\bin\Debug\net10.0\Buoi1.dll
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\bin\Debug\net10.0\Buoi1.pdb
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.AssemblyInfoInputs.cache
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.AssemblyInfo.cs
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.dll
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\refint\Buoi1.dll
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.pdb
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\Buoi1.genruntimeconfig.cache
+C:\Users\ASUS\source\repos\SGU26_CSharp\Buoi1\obj\Debug\net10.0\ref\Buoi1.dll
