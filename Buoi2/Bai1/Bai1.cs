@@ -18,7 +18,7 @@ namespace Buoi2.Bai1
                 temp = temp+tempa;
                 tempa++;
             }
-
+            //initial solution to the problem
             Console.WriteLine("Tong cac so trong doan [{0},{1}] la: {2}", a,b,temp);
 
             //alternative way
