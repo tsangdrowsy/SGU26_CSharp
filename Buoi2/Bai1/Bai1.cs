@@ -21,31 +21,31 @@ namespace Buoi2.Bai1
 
             Console.WriteLine("Tong cac so trong doan [{0},{1}] la: {2}", a,b,temp);
 
-            // //alternative way
-            // int tempbb=1;
-            // int tempaa=1;
+            //alternative way
+            int tempbb=1;
+            int tempaa=1;
 
-            // int temppa=0;
-            // int temppb=0;
-            // while (tempaa<a)
-            // {
-            //     temppa=temppa+tempaa;
-            //     tempaa++;
-            // }
+            int temppa=0;
+            int temppb=0;
+            while (tempaa<a)
+            {
+                temppa=temppa+tempaa;
+                tempaa++;
+            }
 
-            // while(tempbb<b)
-            // {
-            //     temppb=temppa+tempbb;
-            //     tempbb++;
-            // }
-            // int tempp = temppb-temppa;
+            while(tempbb<=b)
+            {
+                temppb=temppb+tempbb;
+                tempbb++;
+            }
+            int tempp = temppb-temppa;
 
 
 
 
            
 
-            // Console.WriteLine("Alternative answer testing: {0}",tempp);
+            Console.WriteLine("Alternative answer testing: {0}",tempp);
             Console.Read();
 
         }
