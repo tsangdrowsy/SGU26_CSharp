@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; //THƯ VIỆN CHO LIST CAUSE WHY THE FUCK DIDN'T I HAVE THIS
-namespace Buoi6.Bai2
+namespace Buoi6.Bai4
 {
     class XuLyChuSo1
     {
