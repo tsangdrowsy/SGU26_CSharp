@@ -41,6 +41,15 @@ namespace Buoi10.Bai1
             }
             ans = tempp;
 
+            Console.WriteLine("Day so co {0} phan tu: ",n);
+
+            for (int i=0;i<e.Length;i++)
+            {
+                int xd=0;
+                xd=e[i];
+                Console.Write("{0} ",xd);
+            }
+
             Console.Write("Tong cac phan tu cuc tri trong day so la: {0}", ans); //ra là 1 wth gang, cực trị thì là 5 và 2 là đúng, but -6 also cực trị so đề ra 7 là bịp istg, nếu chí cực trị dương thì sẽ đúng but đề doesn't say so, idc
 
 
