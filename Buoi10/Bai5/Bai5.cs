@@ -44,7 +44,7 @@ namespace Buoi10.Bai1
 
                     demm++;
 
-                    if (demm > max)
+                    if (demm > max) //my idea but horrendously executed so ... tldr you make sure the current value is >0 then check if it's larger than the current max, if it is update the max streak, begin / end of the array section, then resize the result printing array and throw it in
                     {
                         max = demm;
                         end = i;
