@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Bai1;
+namespace Buoi3.Bai1;
 class MaxMin5So
 {
     static void Main(String[] args)

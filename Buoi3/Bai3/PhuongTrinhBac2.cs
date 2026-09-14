@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Bai3;
+namespace Buoi3.Bai3;
 class PhuongTrinhBac2
 {
     static void Main(String[] args)

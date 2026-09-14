@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Bai4
+namespace Buoi3.Bai4;
 {
     class ThangTiengAnh
     {
