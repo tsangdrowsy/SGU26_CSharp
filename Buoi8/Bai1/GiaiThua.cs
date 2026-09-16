@@ -4,14 +4,14 @@ namespace Buoi8.Bai1
 {
     class GiaiThua
     {
-     static long HamGiaiThua(int x)
+     static long HamGiaiThua(int x)   // Hàm tính giai thừa của số nguyên x
         {
             long gt = 1;
-            for (int i = 2; i <= x; i++)
+            for (int i = 2; i <= x; i++)    // Tính giai thừa bằng cách nhân dồn các số từ 2 đến x
             {
                 gt *= i;
             }
-            return gt;
+            return gt; // Trả về giá trị giai thừa của x
         }
          static void Main()
         {

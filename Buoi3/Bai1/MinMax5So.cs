@@ -18,7 +18,7 @@ class MaxMin5So
 
         max=a;
         min=a;
-        while(temp<=4)
+        while(temp<=4) // Duyệt qua các số còn lại để tìm giá trị lớn nhất và nhỏ nhất
         {
             int x=0;
 

@@ -12,16 +12,16 @@ class PhuongTrinhBac2
         Console.WriteLine("moi ban nhap he so c:");
         c=double.Parse(Console.ReadLine());
         double S= b*b-4*a*c;
-         if (S < 0)
+         if (S < 0) // Nếu S nhỏ hơn 0, phương trình vô nghiệm
             {
                 Console.WriteLine("vo nghiem");
             }
-            else if (S== 0)
+            else if (S== 0) // Nếu S bằng 0, phương trình có nghiệm kép
             {
                 double x = -b / (2 * a);
                 Console.WriteLine("1 nghiem kep, x1 = x2 = {0:F2}", x);
             }
-            else
+            else // Nếu S lớn hơn 0, phương trình có hai nghiệm phân biệt
             {
                 double x1 = (-b + Math.Sqrt(S)) / (2 * a);
                 double x2 = (-b - Math.Sqrt(S)) / (2 * a);

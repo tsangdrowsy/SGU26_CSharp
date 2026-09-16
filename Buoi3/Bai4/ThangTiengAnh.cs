@@ -10,7 +10,7 @@ namespace Buoi3.Bai4;
 
             string tenThang;
 
-            switch (x)
+            switch (x) // Sử dụng switch-case để xác định tên tháng tương ứng với số tháng nhập vào
             {
                 case 1:  tenThang = "January";   break;
                 case 2:  tenThang = "February";  break;

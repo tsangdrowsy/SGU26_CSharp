@@ -16,8 +16,8 @@ namespace Buoi8.Bai4
             int temp = n;
             do
             {
-                int chuSo = temp % 10;
-                temp /= 10;
+                int chuSo = temp % 10;  // Lấy chữ số cuối cùng
+                temp /= 10;         // Loại bỏ chữ số cuối cùng khỏi temp
 
                 switch (chuSo)
                 {
