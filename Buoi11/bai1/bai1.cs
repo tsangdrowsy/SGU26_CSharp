@@ -1,6 +1,6 @@
 using System;
 
-namespace Buoi5.Bai1
+namespace Buoi11.Bai1
 {
     class SapChanLe
     {

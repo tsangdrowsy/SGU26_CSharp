@@ -1,6 +1,6 @@
 using System;
 
-namespace Buoi5.Bai3
+namespace Buoi11.Bai3
 {
     class ThemChanLe
     {

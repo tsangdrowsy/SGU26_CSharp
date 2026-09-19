@@ -3,7 +3,7 @@ using System.Data;
 using System.Reflection.Metadata;
 
 
-namespace Buoi10.Bai1
+namespace Buoi10.Bai5
 {
     class DayDanDau
     {

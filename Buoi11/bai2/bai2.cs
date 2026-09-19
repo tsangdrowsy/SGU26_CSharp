@@ -1,6 +1,6 @@
 using System;
 
-namespace Buoi5.Bai2
+namespace Buoi11.Bai2
 {
     class XoaChan
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Buoi5.Bai4
+namespace Buoi11.Bai4
 {
     class DaoDay
     {
