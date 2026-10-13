@@ -1,0 +1,23 @@
+﻿<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="typeof(Layout.MainLayout)">
+            <div class="text-center py-24 bg-neutral-50 min-h-[50vh] flex flex-col items-center justify-center">
+                <svg class="w-24 h-24 text-neutral-300 mb-6" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                <p class="text-2xl font-semibold text-neutral-800 mb-2">Không tìm thấy trang</p>
+                <p class="text-neutral-500 mb-6">Xin lỗi, trang bạn yêu cầu không tồn tại hoặc đã bị xóa.</p>
+                <a href="/" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Quay về trang chủ
+                </a>
+            </div>
+        </LayoutView>
+    </NotFound>
+</Router>
