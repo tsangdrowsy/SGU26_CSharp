@@ -1,0 +1,364 @@
+/* CSS từ file PHP cũ */
+#searchInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
+#searchInput::-webkit-search-decoration {
+    display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.category-toggle.active {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.category-submenu {
+    transition: all 0.3s ease;
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+#searchHeader {
+    display: none;
+}
+
+body.search-active #defaultHeader {
+    display: none;
+}
+
+body.search-active #searchHeader {
+    display: flex;
+}
+
+#searchOverlay {
+    transition: opacity 0.3s ease;
+    z-index: 30;
+}
+
+body.search-active #searchOverlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#searchSuggestions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+    z-index: 50;
+    display: none;
+    animation: slideDown 0.2s ease;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+    #searchSuggestions.active {
+        display: block;
+    }
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background: #f9fafb;
+    }
+
+    .suggestion-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #f3f4f6;
+        flex-shrink: 0;
+    }
+
+.suggestion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+    .suggestion-info h4 {
+        font-size: 14px;
+        font-weight: 500;
+        color: #1f2937;
+        margin: 0 0 6px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+
+.price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+    .price-wrapper .price {
+        font-size: 15px;
+        font-weight: 600;
+        color: #dc2626;
+    }
+
+    .price-wrapper .old-price {
+        font-size: 13px;
+        color: #9ca3af;
+        text-decoration: line-through;
+    }
+
+    .price-wrapper .discount-badge {
+        font-size: 11px;
+        font-weight: 600;
+        color: #dc2626;
+        background: #fef2f2;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+.meta-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+    .meta-info .brand {
+        color: #9ca3af;
+    }
+
+.stock-status {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .stock-status.in-stock {
+        color: #10b981;
+    }
+
+    .stock-status.out-of-stock {
+        color: #ef4444;
+    }
+
+.view-all-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: #f9fafb;
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-top: 1px solid #f3f4f6;
+    transition: background 0.2s;
+}
+
+    .view-all-link:hover {
+        background: #f3f4f6;
+    }
+
+.no-results {
+    padding: 32px 24px;
+    text-align: center;
+}
+
+    .no-results p {
+        margin: 0;
+    }
+
+.user-dropdown {
+    position: relative;
+}
+
+.user-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    min-width: 220px;
+    z-index: 50;
+    animation: slideDown 0.2s ease;
+}
+
+    .user-menu.active {
+        display: block;
+    }
+
+.user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: #374151;
+    text-decoration: none;
+    transition: background 0.2s;
+    font-size: 14px;
+}
+
+    .user-menu-item:hover {
+        background: #f9fafb;
+    }
+
+    .user-menu-item i {
+        width: 18px;
+        color: #6b7280;
+    }
+
+.user-menu-divider {
+    border-top: 1px solid #f3f4f6;
+    margin: 4px 0;
+}
+
+.user-menu-item.logout {
+    color: #dc2626;
+}
+
+    .user-menu-item.logout i {
+        color: #dc2626;
+    }
+
+#searchInput {
+    background-color: #EEEEEE;
+    transition: all 0.2s ease;
+}
+
+    #searchInput:focus {
+        background-color: #EEEEEE;
+        border-color: #ffffff;
+        box-shadow: 0 0 0 3px rgb(255, 255, 255);
+    }
+
+    #searchInput::placeholder {
+        color: #1a1919;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+.search-action-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+    .search-action-btn:hover {
+        background-color: #ffffff;
+    }
+
+.close-btn {
+    color: #ffffff;
+}
+
+    .close-btn:hover {
+        background-color: #ffffff;
+        color: white;
+    }
+
+.guest-user-menu {
+    min-width: 100px;
+}
+
+    .guest-user-menu .user-menu-item {
+        justify-content: left;
+        font-weight: 500;
+    }
+
+        .guest-user-menu .user-menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+@media (max-width: 768px) {
+    .suggestion-item img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .suggestion-info h4 {
+        font-size: 14px;
+    }
+
+    .suggestion-info .price {
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <title>@ViewData["Title"] - NVBPlay</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" href="~/img/icons/favicon.png" sizes="32x32">
+</head>
+
+<body class="font-sans antialiased bg-gray-50">
+    <!-- Popup Overlay -->
+    <div id="popup_overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50"></div>
+
+    <!-- Main Wrapper -->
+    <div id="wrapper" class="min-h-screen flex flex-col">
+        
+        <!-- ================= HEADER ================= -->
+        <header id="header" class="sticky top-0 z-40 bg-white shadow-sm">
+            <div class="header-wrapper">
+                <!-- Wide Nav -->
+                <div id="wide-nav" class="bg-gray-900 text-white py-2">
+                    <div class="container mx-auto px-4 text-center">
+                        <div class="top-hot">
+                            <a asp-page="/View/Product" asp-route-id="4" class="text-white hover:text-yellow-300 transition text-sm md:text-base">
+                                ⚡ VỢT YONEX NANOFLARE 1000 GAME - RESTOCKED ⚡
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Header -->
+                <div id="masthead" class="py-2 md:py-3 border-b">
+                    <div class="container mx-auto px-4">
+                        <!-- DEFAULT HEADER -->
+                        <div id="defaultHeader" class="grid grid-cols-[1fr,auto,1fr] items-center gap-0 relative">
+                            
+                            <!-- Cột trái -->
+                            <div class="flex items-center justify-start">
+                                <div class="md:hidden">
+                                    <button class="menu-toggle p-2 focus:outline-none">
+                                        <img src="~/img/icons/menu.svg" class="w-6 h-6" alt="menu">
+                                    </button>
+                                </div>
+
+                                <div class="hidden md:flex items-center ml-0 lg:ml-2">
+                                    <ul class="flex items-center space-x-4">
+                                        <!-- Mega Menu Trigger -->
+                                        <div class="hidden md:flex items-center ml-0 lg:ml-2">
+                                            <ul class="flex items-center space-x-4">
+                                                <li class="relative" id="mega-menu-container">
+                                                    <button id="mega-menu-trigger" class="button-menu flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition">
+                                                        <img src="~/img/icons/menu.svg" class="w-5 h-5 mr-2" alt="menu">
+                                                        <span>Danh mục</span>
+                                                    </button>
+
+                                                    <!-- Mega Menu Dropdown -->
+                                                    <div id="mega-menu-dropdown" class="absolute left-0 top-full mt-2 w-[900px] bg-white rounded-lg shadow-xl hidden z-50">
+                                                        <div class="flex p-4">
+                                                            <!-- Left Sidebar -->
+                                                            <div class="w-64 border-r border-gray-200 pr-4">
+                                                                <div class="icon-box-menu active bg-red-50 rounded-lg p-3 mb-1 cursor-pointer hover:bg-red-50 transition flex items-start" data-menu="badminton">
+                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
+                                                                        <img src="~/img/icons/logo-caulong.png" alt="Cầu Lông" class="w-full h-full">
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="font-bold text-red-600">Cầu Lông</p>
+                                                                        <p class="text-xs text-gray-500">Trang bị cầu lông chuyên nghiệp</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="icon-box-menu p-3 mb-1 cursor-pointer hover:bg-gray-50 transition flex items-start" data-menu="pickleball">
+                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
+                                                                        <img src="~/img/icons/logo-pickleball.png" alt="Pickleball" class="w-full h-full">
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="font-bold">Pickleball</p>
+                                                                        <p class="text-xs text-gray-500">Trang bị pickleball hàng đầu</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="icon-box-menu p-3 mb-1 cursor-pointer hover:bg-gray-50 transition flex items-start" data-menu="giay">
+                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
+                                                                        <img src="~/img/icons/logo-giay.png" alt="Giày" class="w-full h-full">
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="font-bold">Giày</p>
+                                                                        <p class="text-xs text-gray-500">Giày thể thao tối ưu hoá vận động</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Right Content -->
+                                                            <div class="flex-1 pl-4">
+                                                                <!-- Content Badminton -->
+                                                                <div id="content-badminton" class="menu-content">
+                                                                    <div class="mb-4">
+                                                                        <div class="flex items-center justify-between mb-2">
+                                                                            <h3 class="font-bold">Thương hiệu nổi bật</h3>
+                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                                                                        </div>
+                                                                        <div class="grid grid-cols-4 gap-2">
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-yonex.webp" alt="Yonex" class="w-full h-full object-contain"></div><span class="text-sm font-medium">YONEX</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-adidas.webp" alt="Adidas" class="w-full h-full object-contain"></div><span class="text-sm font-medium">ADIDAS</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-li-ning.png" alt="Li-Ning" class="w-full h-full object-contain"></div><span class="text-sm font-medium">LI-NING</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-victor.png" alt="Victor" class="w-full h-full object-contain"></div><span class="text-sm font-medium">VICTOR</span></a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="border-t border-gray-200 my-3"></div>
+                                                                    <div>
+                                                                        <div class="flex items-center justify-between mb-2">
+                                                                            <h3 class="font-bold">Theo sản phẩm</h3>
+                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                                                                        </div>
+                                                                        <div class="grid grid-cols-3 gap-4">
+                                                                            <div>
+                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Vợt cầu lông</a>
+                                                                                <ul class="mt-2 space-y-1">
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Vợt cầu lông Yonex</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Vợt cầu lông Li-Ning</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                            <div>
+                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Balo cầu lông</a>
+                                                                                <ul class="mt-2 space-y-1">
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Balo Yonex</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Balo Victor</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                            <div>
+                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Phụ kiện</a>
+                                                                                <ul class="mt-2 space-y-1">
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Quả cầu lông</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Cước đan vợt</a></li>
+                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Content Pickleball -->
+                                                                <div id="content-pickleball" class="menu-content hidden">
+                                                                    <div class="mb-4">
+                                                                        <div class="flex items-center justify-between mb-2">
+                                                                            <h3 class="font-bold">Thương hiệu nổi bật</h3>
+                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                                                                        </div>
+                                                                        <div class="grid grid-cols-4 gap-2">
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-joola.png" alt="JOOLA" class="w-full h-full object-contain"></div><span class="text-sm font-medium">JOOLA</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-selkirk.webp" alt="SELKIRK" class="w-full h-full object-contain"></div><span class="text-sm font-medium">SELKIRK</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-kamito.png" alt="KAMITO" class="w-full h-full object-contain"></div><span class="text-sm font-medium">KAMITO</span></a>
+                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-wika.png" alt="WIKA" class="w-full h-full object-contain"></div><span class="text-sm font-medium">WIKA</span></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Content Giày -->
+                                                                <div id="content-giay" class="menu-content hidden">
+                                                                    <div class="text-center py-16">
+                                                                        <div class="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"><i class="fas fa-shoe-prints text-3xl text-gray-400"></i></div>
+                                                                        <h3 class="text-lg font-bold text-gray-700 mb-2">Sản Phẩm Sớm Ra Mắt</h3>
+                                                                        <p class="text-gray-500 text-sm">Chúng tôi đang chuẩn bị những mẫu giày thể thao chất lượng nhất. Hãy quay lại sau nhé!</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <li><a asp-page="/View/Shop" class="flex items-center text-gray-700 hover:text-red-600 font-medium"><img src="~/img/icons/store.svg" class="w-5 h-5 flex-shrink-0 mr-2"><span>CỬA HÀNG</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Cột giữa: LOGO -->
+                            <div id="logo" class="flex justify-center items-center">
+                                <a asp-page="/Index" title="NVBPlay" rel="home">
+                                    <img width="100" height="40" src="~/img/icons/logonvb.png" alt="NVBPlay" class="h-12 md:h-14 w-auto transform scale-75">
+                                </a>
+                            </div>
+
+                            <!-- Cột phải -->
+                            <div class="flex items-center justify-end">
+                                <div class="hidden md:flex items-center space-x-4">
+                                    <div class="address-book">
+                                        <a asp-page="/View/AddressBook" class="flex items-center text-gray-700 hover:text-red-600">
+                                            <i class="fas fa-map-marker-alt mr-1"></i>
+                                            <span class="shipping-address text-sm"><span class="text">Chọn địa chỉ</span></span>
+                                        </a>
+                                    </div>
+                                    <div class="h-5 w-px bg-gray-300"></div>
+
+                                    <button id="searchToggle" class="search-toggle p-2 text-gray-700 hover:text-red-600">
+                                        <i class="fas fa-search text-xl"></i>
+                                    </button>
+
+                                    <!-- Khối mới dùng Tailwind (Không cần JS) -->
+                                    <div class="relative group">
+                                        <button class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition" type="button">
+                                            <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
+                                            <span class="text-sm font-medium text-gray-700 hidden sm:inline">Tài khoản</span>
+                                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                                        </button>
+    
+                                        <!-- Menu xổ xuống -->
+                                        <div class="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] hidden group-hover:block z-50">
+                                            <a asp-page="/View/Login" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
+                                                <i class="fas fa-sign-in-alt text-gray-500"></i>
+                                                <span>Đăng nhập</span>
+                                            </a>
+                                            <div class="border-t border-gray-100 my-1"></div>
+                                            <a asp-page="/View/Register" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
+                                                <i class="fas fa-user-plus text-gray-500"></i>
+                                                <span>Đăng ký</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cart -->
+                                    <a asp-page="/View/Cart" class="relative p-2">
+                                        <i class="fas fa-shopping-basket text-gray-700 hover:text-red-600 text-xl"></i>
+                                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center transition-transform hover:scale-110">0</span>
+                                    </a>
+                                </div>
+
+                                <!-- Mobile Right Elements -->
+                                <div class="md:hidden flex items-center space-x-3">
+                                    <button id="searchToggleMobile" class="search-toggle p-1">
+                                        <i class="fas fa-search text-xl text-gray-700"></i>
+                                    </button>
+                                    <a asp-page="/View/Login" class="p-1">
+                                        <i class="far fa-user text-xl text-gray-700"></i>
+                                    </a>
+                                    <a asp-page="/View/Cart" class="relative p-1">
+                                        <i class="fas fa-shopping-basket text-xl"></i>
+                                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEARCH HEADER -->
+                        <div id="searchHeader" class="hidden items-center justify-center py-2">
+                            <div class="w-full max-w-[800px] relative">
+                                <input type="text" id="searchInput" class="w-full px-5 pr-14 py-3 text-base border-2 border-gray-200 rounded-full focus:border-red-600 focus:outline-none transition-all bg-gray-50 focus:bg-white" placeholder="Tên sản phẩm, hãng..." autocomplete="off">
+                                <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-all rounded-full">
+                                    <i class="fas fa-search text-lg"></i>
+                                </button>
+                                <button id="closeSearchBtn" type="button" class="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center bg-gray-200 justify-center text-gray-500 hover:text-black transition-all rounded-full">
+                                    <i class="fas fa-times text-lg"></i>
+                                </button>
+                                <div id="searchSuggestions" class="absolute top-full left-0 right-0 z-50">
+                                    <div id="suggestionsList" class="max-h-96 overflow-y-auto custom-scrollbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Overlay -->
+        <div id="searchOverlay" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 z-30"></div>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main id="main" class="flex-grow">
+            @RenderBody()
+        </main>
+
+        <!-- ================= FOOTER ================= -->
+        <footer id="footer" class="bg-black text-white mt-auto">
+            <div class="container mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="pl-5">
+                        <h3 class="text-4xl font-bold mb-4">Boost<br>your power</h3>
+                        <div class="flex space-x-3 mb-4">
+                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fas fa-shopping-bag"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Thông tin khác</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH BẢO MẬT</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH THANH TOÁN</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH BẢO HÀNH ĐỔI TRẢ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH VẬN CHUYỂN</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">THOẢ THUẬN SỬ DỤNG</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Về chúng tôi</h3>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="flex"><span class="font-medium w-20">Địa chỉ:</span><span class="text-gray-400">62 Lê Bình, Tân An, Cần Thơ</span></a></li>
+                            <li><div class="flex"><span class="font-medium w-20">Giờ làm việc:</span><span class="text-gray-400">08:00 - 21:00</span></div></li>
+                            <li><a href="tel:0987.879.243" class="flex"><span class="font-medium w-20">Hotline:</span><span class="text-gray-400">0987.879.243</span></a></li>
+                            <li><a href="mailto:info@nvbplay.vn" class="flex"><span class="font-medium w-20">Email:</span><span class="text-gray-400">info@nvbplay.vn</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 my-6"></div>
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-500 text-sm mb-4 md:mb-0">
+                        <p>©2025 CÔNG TY CỔ PHẦN NVB PLAY</p>
+                        <p>GPĐKKD số 1801779686 do Sở KHĐT TP. Cần Thơ cấp ngày 22 tháng 01 năm 2025</p>
+                    </div>
+                    <a href="#" target="_blank"><img src="~/img/icons/logoBCT.png" alt="Bộ Công Thương" class="h-12 w-auto"></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================= MOBILE MENU (OFF-CANVAS) ================= -->
+    <div id="main-menu" class="fixed inset-0 bg-white z-50 transform -translate-x-full transition duration-300 md:hidden overflow-y-auto">
+        <div class="p-4">
+            <div class="flex justify-between items-center mb-6">
+                <img src="~/img/icons/logonvb.png" height="30" width="50" class="relative-top-left transform scale-75">
+                <button class="close-menu p-2 hover:bg-gray-100 rounded-full transition"><i class="fas fa-times text-2xl text-gray-600"></i></button>
+            </div>
+            
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                <a asp-page="/View/Login" class="flex items-center text-gray-700">
+                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3"><i class="far fa-user text-xl text-gray-600"></i></div>
+                    <div>
+                        <div class="font-medium">Tài khoản</div><span class="text-sm text-gray-500">Đăng nhập / Đăng ký</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Items -->
+            <div class="mb-4">
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Danh mục</h3>
+                
+                <!-- Cầu Lông -->
+                <div class="mb-2">
+                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="badminton">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-caulong.png" alt="Cầu Lông" class="w-full h-full"></div>
+                            <span class="font-medium">Cầu Lông</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-badminton">
+                        <div>
+                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Vợt cầu lông</a>
+                            <div class="pl-4 mt-1 space-y-1">
+                                <a asp-page="/View/Shop" class="block py-1 text-sm text-gray-600">Vợt Yonex</a>
+                                <a asp-page="/View/Shop" class="block py-1 text-sm text-gray-600">Vợt Li-Ning</a>
+                                <a asp-page="/View/Shop" class="block py-1 text-sm text-red-600">Xem thêm</a>
+                            </div>
+                        </div>
+                        <div>
+                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Phụ kiện</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pickleball -->
+                <div class="mb-2">
+                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="pickleball">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-pickleball.png" alt="Pickleball" class="w-full h-full"></div>
+                            <span class="font-medium">Pickleball</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-pickleball">
+                        <div>
+                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Vợt Pickleball</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giày -->
+                <div class="mb-2">
+                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="giay">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-giay.png" alt="Giày" class="w-full h-full"></div>
+                            <span class="font-medium">Giày</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-giay">
+                        <p class="text-sm text-gray-500">Sớm ra mắt!!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

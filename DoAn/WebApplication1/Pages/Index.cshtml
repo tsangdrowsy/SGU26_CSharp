@@ -1,0 +1,112 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Trang Chủ";
+}
+
+<div class="container mx-auto px-4 py-6 md:py-8">
+    <!-- Banner Hero -->
+    <section class="banner-hero mb-6 md:mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2 rounded-lg overflow-hidden shadow-lg h-full">
+                <a href="#" class="block h-full">
+                    <img src="~/img/icons/banner-1.png" alt="Banner" class="w-full h-full object-cover">
+                </a>
+            </div>
+            <div class="flex flex-col space-y-4 h-full">
+                <div class="rounded-lg overflow-hidden shadow-lg flex-1">
+                    <a href="#" class="block h-full">
+                        <img src="~/img/icons/banner-4.jpg" alt="Banner" class="w-full h-full object-cover">
+                    </a>
+                </div>
+                <div class="rounded-lg overflow-hidden shadow-lg flex-1">
+                    <a href="#" class="block h-full">
+                        <img src="~/img/icons/banner-5.png" alt="Banner" class="w-full h-full object-cover">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Danh mục (Dữ liệu tĩnh) -->
+    <section class="home-product mb-8">
+        <div class="mb-4">
+            <h2 class="text-xl md:text-2xl font-bold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-red-600 pb-2">Danh mục</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Danh mục 1 -->
+            <div class="flex-shrink-0">
+                <a href="#" class="block group">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                        <div class="aspect-square overflow-hidden p-4 bg-gray-50">
+                            <img src="~/img/sanpham/placeholder.png" alt="Vợt Cầu Lông" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-semibold text-base text-gray-800 group-hover:text-red-600 transition">Vợt Cầu Lông</h3>
+                            <p class="text-sm text-gray-500 mt-1">15 sản phẩm</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Danh mục 2 -->
+            <div class="flex-shrink-0">
+                <a href="#" class="block group">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                        <div class="aspect-square overflow-hidden p-4 bg-gray-50">
+                            <img src="~/img/sanpham/placeholder.png" alt="Phụ Kiện" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-semibold text-base text-gray-800 group-hover:text-red-600 transition">Phụ Kiện</h3>
+                            <p class="text-sm text-gray-500 mt-1">20 sản phẩm</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sản phẩm nổi bật (Dữ liệu tĩnh) -->
+    <section class="home-product mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl md:text-2xl font-bold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-red-600 pb-2">VỢT CẦU LÔNG NỔI BẬT</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Sản phẩm 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition duration-300">
+                <div class="relative">
+                    <div class="absolute top-2 left-2 z-10">
+                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded-full">-15%</span>
+                    </div>
+                    <a href="#" class="block aspect-square overflow-hidden">
+                        <img src="~/img/sanpham/placeholder.png" alt="Vợt Yonex" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </a>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 hover:text-red-600">
+                        <a href="#">Vợt Cầu Lông Yonex Astrox 100ZZ</a>
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-red-600 font-bold">3.500.000₫</span>
+                        <span class="text-gray-400 text-sm line-through">4.000.000₫</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Sản phẩm 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition duration-300">
+                <div class="relative">
+                    <a href="#" class="block aspect-square overflow-hidden">
+                        <img src="~/img/sanpham/placeholder.png" alt="Vợt Lining" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </a>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 hover:text-red-600">
+                        <a href="#">Vợt Cầu Lông Li-Ning Halbertec 8000</a>
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-red-600 font-bold">3.200.000₫</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
