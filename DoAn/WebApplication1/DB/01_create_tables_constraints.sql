@@ -74,6 +74,7 @@ CREATE TABLE dbo.Categories
 (
     CategoryId   INT IDENTITY(1,1) NOT NULL,
     Name         NVARCHAR(100)     NOT NULL,
+    Description  NVARCHAR(100)     NULL,
    
     IsActive     BIT               NOT NULL CONSTRAINT DF_Categories_IsActive DEFAULT (1),
 
@@ -127,6 +128,9 @@ CREATE TABLE dbo.Products
     StockQuantity  INT               NOT NULL CONSTRAINT DF_Products_Stock      DEFAULT (0),
     IsVisible      BIT               NOT NULL CONSTRAINT DF_Products_IsVisible  DEFAULT (1),
     CreatedAt      DATETIME2(0)      NOT NULL CONSTRAINT DF_Products_CreatedAt  DEFAULT (SYSDATETIME()),
+
+    WeightGram     INT               NULL,
+    RoastLevel     VARCHAR(20)       NULL,
 
     CONSTRAINT PK_Products            PRIMARY KEY (ProductId),
     CONSTRAINT UQ_Products_Code       UNIQUE (Code),
