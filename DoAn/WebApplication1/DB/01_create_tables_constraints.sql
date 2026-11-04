@@ -128,6 +128,9 @@ CREATE TABLE dbo.Products
     IsVisible      BIT               NOT NULL CONSTRAINT DF_Products_IsVisible  DEFAULT (1),
     CreatedAt      DATETIME2(0)      NOT NULL CONSTRAINT DF_Products_CreatedAt  DEFAULT (SYSDATETIME()),
 
+    WeightGram     INT               NULL,
+    RoastLevel     VARCHAR(20)       NULL,
+
     CONSTRAINT PK_Products            PRIMARY KEY (ProductId),
     CONSTRAINT UQ_Products_Code       UNIQUE (Code),
     CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryId) REFERENCES dbo.Categories (CategoryId),
@@ -342,7 +345,7 @@ GO
    Mật khẩu admin mẫu phải được WS băm lại khi triển khai thật.
    --------------------------------------------------------------------- */
 INSERT INTO dbo.Users (Username, PasswordHash, FullName, Email, Role)
-VALUES ('admin', 'CHANGE_ME_BCRYPT_HASH', N'Quản trị viên', 'admin@coffeeshop.local', 'Admin');
+VALUES ('admin', '$2a$11$QrHImgHb/SF2pGPMj8JIPe8i/lkRh1R7qeBjYGPZWAledzOcn4HQu', N'Quản trị viên', 'admin@coffeeshop.local', 'Admin');
 
 INSERT INTO dbo.Categories (Name, Description) VALUES
  (N'Arabica',        N'Cà phê Arabica: chua thanh, hương thơm, ít đắng'),
@@ -351,6 +354,27 @@ INSERT INTO dbo.Categories (Name, Description) VALUES
  (N'Blend - Phối trộn', N'Phối trộn Arabica và Robusta theo tỉ lệ');
 GO
 
+
+
+INSERT INTO dbo.Users 
+(
+    Username, PasswordHash, FullName, Email, Phone, 
+    Address, Ward, District, City, Role, IsLocked
+)
+VALUES 
+(
+    'khachhang1', 
+    '$2a$11$aLSKTyjQYupOxB/op5bl2eQ9PnabsWHTGmLENB1jU.pAzZeYFOZfq', -- Mã hash của '123456'
+    N'Nguyễn Văn Khách', 
+    'khachhang1@gmail.com', 
+    '0901234567', 
+    N'123 Đường Lê Lợi', 
+    N'Phường Bến Nghé', 
+    N'Quận 1', 
+    N'TP. Hồ Chí Minh', 
+    'Customer', 
+    0
+);
 /* =====================================================================
    NHỮNG QUY TẮC FILE NÀY KHÔNG TỰ ĐẢM BẢO ĐƯỢC
    (WS phải làm trong 1 transaction, HOẶC chạy thêm 02_triggers.sql):

@@ -1,27 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore; // Cần thiết để dùng FirstOrDefaultAsync
+using WebApplication1.Models;        // Nhớ đổi thành tên dự án của bạn
 
-namespace WebApplication1.Pages.View // Đổi WebApplication1 thành tên dự án của bạn
+namespace WebApplication1.Pages.View
 {
     public class LoginModel : PageModel
     {
+        private readonly CoffeeShopContext _context;
+
+        // Tiêm Database Context vào trang thông qua Constructor
+        public LoginModel(CoffeeShopContext context)
+        {
+            _context = context;
+        }
+
         // Ràng buộc dữ liệu từ Form gửi lên
         [BindProperty]
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [BindProperty]
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [BindProperty]
         public bool RememberMe { get; set; }
 
         // Biến hiển thị thông báo
-        public string ErrorMessage { get; set; }
-        public string SuccessMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public void OnGet()
         {
@@ -33,48 +42,66 @@ namespace WebApplication1.Pages.View // Đổi WebApplication1 thành tên dự 
             }
         }
 
-        public IActionResult OnPost()
+        // Chuyển OnPost thành OnPostAsync vì phải chờ truy vấn Database
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // =========================================================
-            // TODO: KẾT NỐI DATABASE (BACKEND) SẼ ĐƯỢC VIẾT Ở ĐÂY
-            // =========================================================
-            /*
-            Ví dụ code Backend sau này:
-            var user = _context.Users.FirstOrDefault(u => u.Username == Username);
-            
-            if (user != null && user.Password == Password) // Nên dùng hàm băm mật khẩu
+            // 1. Tìm user trong Database theo Username
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == Username);
+
+            if (user == null)
             {
-                if (user.Role == 1) {
-                    ErrorMessage = "Tài khoản Admin không được đăng nhập ở đây.";
-                    return Page();
-                }
-                
-                // Lưu Session
-                HttpContext.Session.SetInt32("user_id", user.UserId);
-                HttpContext.Session.SetString("username", user.Username);
-                
-                // Xử lý Remember Me
-                if (RememberMe) {
-                    Response.Cookies.Append("remember_user", Username, new CookieOptions { Expires = DateTime.Now.AddDays(30) });
-                }
-                
-                return RedirectToPage("/Index"); // Chuyển về trang chủ
+                ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
+                return Page();
+            }
+
+            // 2. Kiểm tra mật khẩu (Dùng BCrypt để so sánh mật khẩu nhập vào với Hash trong DB)
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(Password, user.PasswordHash);
+
+            if (!isPasswordValid)
+            {
+                ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
+                return Page();
+            }
+
+            // 3. Kiểm tra tài khoản có bị khóa không
+            if (user.IsLocked)
+            {
+                ErrorMessage = "Tài khoản của bạn đã bị khóa.";
+                return Page();
+            }
+
+            // 4. Chặn Admin đăng nhập vào khu vực khách hàng
+            // Theo database của bạn, Role là string ('Admin' hoặc 'Customer')
+            if (user.Role == "Admin")
+            {
+                ErrorMessage = "Tài khoản Admin không được đăng nhập vào trang khách hàng.";
+                return Page();
+            }
+
+            // 5. Đăng nhập thành công -> Lưu Session
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("Role", user.Role);
+
+            // Xử lý Remember Me (Lưu Cookie 30 ngày)
+            if (RememberMe)
+            {
+                var cookieOptions = new CookieOptions { Expires = DateTime.Now.AddDays(30) };
+                Response.Cookies.Append("remember_user", Username, cookieOptions);
             }
             else
             {
-                ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
+                // Nếu không chọn ghi nhớ thì xóa cookie cũ
+                Response.Cookies.Delete("remember_user");
             }
-            */
 
-            // TẠM THỜI: Giả lập đăng nhập thành công để test giao diện
-            SuccessMessage = "Đăng nhập thành công! (Chưa kết nối DB)";
-
-            return Page();
+            // 6. Chuyển hướng về trang chủ
+            return RedirectToPage("/Index");
         }
     }
 }
