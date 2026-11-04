@@ -17,6 +17,7 @@
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="icon" type="image/png" href="~/img/icons/favicon.png" sizes="32x32">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body class="font-sans antialiased bg-gray-50">

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
 using WebApplication1.Models; // Đổi WebApplication1 thành tên dự án của bạn nếu khác
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // =========================================================
 // 1. CẤU HÌNH KẾT NỐI DATABASE
 // =========================================================
+// Thêm dòng này vào trước dòng builder.Build()
 builder.Services.AddDbContext<CoffeeShopContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // =========================================================
 // 2. BẬT TÍNH NĂNG SESSION (Dùng để lưu trạng thái đăng nhập)

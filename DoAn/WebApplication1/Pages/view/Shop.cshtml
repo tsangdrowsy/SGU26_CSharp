@@ -1,0 +1,243 @@
+﻿@page
+@model WebApplication1.Pages.View.ShopModel
+@{
+    ViewData["Title"] = "Cửa hàng - NVBPlay";
+}
+
+@section Styles {
+    <style>
+        /* Toàn bộ CSS của trang shop */
+        .filter-btn input[type="checkbox"]:checked + .btn-content {
+            background: #fef2f2;
+            border-color: #dc2626;
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+            .filter-btn input[type="checkbox"]:checked + .btn-content .btn-count {
+                background: #fecaca;
+                color: #dc2626;
+            }
+
+            .filter-btn input[type="checkbox"]:checked + .btn-content .check-icon {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        .filter-btn .check-icon {
+            opacity: 0;
+            color: #dc2626;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn .btn-content {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover .btn-content {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+}
+
+<!-- Main Content -->
+<main>
+    <div class="container mx-auto px-4 py-6 md:py-8">
+
+        <!-- Hiển thị các Tag bộ lọc đang áp dụng (Nếu có) -->
+        @if (!string.IsNullOrEmpty(Model.Search) || (Model.CategoryIds != null && Model.CategoryIds.Length > 0) || (Model.SupplierIds != null && Model.SupplierIds.Length > 0))
+        {
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-600">Bộ lọc đang áp dụng:</span>
+                    <a asp-page="/View/Shop" class="text-sm text-red-600 font-medium"><i class="fas fa-times-circle mr-1"></i>Xóa tất cả</a>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    @if (!string.IsNullOrEmpty(Model.Search))
+                    {
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium">
+                            <span><i class="fas fa-search mr-1"></i>Tìm: "@Model.Search"</span>
+                            <a asp-page="/View/Shop" asp-route-CategoryIds="@Model.CategoryIds" asp-route-SupplierIds="@Model.SupplierIds" class="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fas fa-times text-xs"></i></a>
+                        </div>
+                    }
+                    <!-- Bạn có thể tự làm thêm các tag cho Category và Supplier tương tự như trên -->
+                </div>
+            </div>
+        }
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- SIDEBAR FILTER (Desktop) -->
+            <div class="hidden lg:block lg:w-80 flex-shrink-0">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-24">
+                    <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="font-bold text-lg flex items-center"><i class="fas fa-filter mr-2 text-red-600"></i>Bộ lọc</h3>
+                        <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 font-medium transition"><i class="fas fa-undo mr-1"></i>Reset</a>
+                    </div>
+
+                    <!-- FORM GỬI BỘ LỌC BẰNG PHƯƠNG THỨC GET -->
+                    <form method="get" class="p-5 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                        <!-- Giữ lại từ khóa nếu có -->
+                        <input type="hidden" name="Search" value="@Model.Search" />
+
+                        <!-- Danh mục -->
+                        <div class="border-b border-gray-100 pb-4">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-folder text-red-600 mr-2"></i>Danh mục</h4>
+                            <div class="flex flex-col gap-2">
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <label class="filter-btn cursor-pointer">
+                                        <input type="checkbox" name="CategoryIds" value="@cat.CategoryId" @(Model.CategoryIds != null && Model.CategoryIds.Contains(cat.CategoryId) ? "checked" : "") />
+                                        <div class="btn-content flex items-center justify-between p-2 rounded text-sm text-gray-700 bg-gray-50">
+                                            <div class="flex items-center gap-2"><i class="fas fa-circle text-[6px]"></i><span>@cat.Name</span></div>
+                                            <i class="fas fa-check-circle check-icon"></i>
+                                        </div>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Nhà cung cấp (Thương hiệu) -->
+                        <div class="border-b border-gray-100 pb-4">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-tag text-red-600 mr-2"></i>Thương hiệu</h4>
+                            <div class="flex flex-col gap-2">
+                                @foreach (var sup in Model.Suppliers)
+                                {
+                                    <label class="filter-btn cursor-pointer">
+                                        <input type="checkbox" name="SupplierIds" value="@sup.SupplierId" @(Model.SupplierIds != null && Model.SupplierIds.Contains(sup.SupplierId) ? "checked" : "") />
+                                        <div class="btn-content flex items-center justify-between p-2 rounded text-sm text-gray-700 bg-gray-50">
+                                            <div class="flex items-center gap-2"><i class="fas fa-circle text-[6px]"></i><span>@sup.Name</span></div>
+                                            <i class="fas fa-check-circle check-icon"></i>
+                                        </div>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Khoảng giá -->
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-money-bill-wave text-red-600 mr-2"></i>Khoảng giá</h4>
+                            <div class="flex items-center gap-2 mb-4">
+                                <input type="number" name="MinPrice" value="@Model.MinPrice" placeholder="Từ" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
+                                <span>-</span>
+                                <input type="number" name="MaxPrice" value="@Model.MaxPrice" placeholder="Đến" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
+                            </div>
+
+                            <!-- Giữ lại kiểu sắp xếp khi bấm lọc -->
+                            <input type="hidden" name="Sort" value="@Model.Sort" />
+
+                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg text-sm font-semibold transition"><i class="fas fa-filter mr-2"></i>Áp dụng bộ lọc</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PRODUCT GRID -->
+            <div class="flex-1">
+                <!-- Header with sort and count -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4 flex justify-between items-center">
+                    <div class="text-sm text-gray-600">
+                        Hiển thị <span class="font-bold">@Model.Products.Count</span> trong <span class="font-bold">@Model.TotalProducts</span> sản phẩm
+                    </div>
+
+                    <!-- Form Sắp xếp (Tự động submit khi thay đổi) -->
+                    <form method="get" id="sortForm">
+                        <input type="hidden" name="Search" value="@Model.Search" />
+                        @if (Model.CategoryIds != null)
+                        {
+                            foreach (var id in Model.CategoryIds)
+                            {
+                                <input type="hidden" name="CategoryIds" value="@id" />
+                            }
+                        }
+                        @if (Model.SupplierIds != null)
+                        {
+                            foreach (var id in Model.SupplierIds)
+                            {
+                                <input type="hidden" name="SupplierIds" value="@id" />
+                            }
+                        }
+                        <input type="hidden" name="MinPrice" value="@Model.MinPrice" />
+                        <input type="hidden" name="MaxPrice" value="@Model.MaxPrice" />
+
+                        <select name="Sort" onchange="document.getElementById('sortForm').submit()" class="border p-2 rounded text-sm outline-none">
+                            <option value="newest" selected="@(Model.Sort == "newest")">Mới nhất</option>
+                            <option value="price_asc" selected="@(Model.Sort == "price_asc")">Giá thấp nhất</option>
+                            <option value="price_desc" selected="@(Model.Sort == "price_desc")">Giá cao nhất</option>
+                            <option value="name_asc" selected="@(Model.Sort == "name_asc")">Tên A-Z</option>
+                        </select>
+                    </form>
+                </div>
+
+                <!-- Grid Sản phẩm -->
+                @if (Model.Products.Count > 0)
+                {
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        @foreach (var product in Model.Products)
+                        {
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden group hover:shadow-lg transition duration-300">
+                                <a asp-page="/View/Product" asp-route-id="@product.ProductId">
+                                    <div class="relative aspect-square bg-gray-100 p-4">
+                                        @if (product.StockQuantity <= 0)
+                                        {
+                                            <div class="absolute top-2 left-2 z-10"><span class="bg-gray-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Hết hàng</span></div>
+                                        }
+                                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/img/sanpham/placeholder.png" : product.ImageUrl)"
+                                             alt="@product.Name"
+                                             class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
+                                             onerror="this.src='/img/sanpham/placeholder.png'" />
+                                    </div>
+                                    <div class="p-3">
+                                        <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 group-hover:text-red-600 transition">@product.Name</h3>
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="text-red-600 font-bold">@product.SalePrice.ToString("N0")₫</span>
+                                        </div>
+                                        @if (product.StockQuantity < 10 && product.StockQuantity > 0)
+                                        {
+                                            <div class="text-xs text-orange-500 mt-1 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Chỉ còn @product.StockQuantity sản phẩm</div>
+                                        }
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Phân trang -->
+                    @if (Model.TotalPages > 1)
+                    {
+                        <div class="flex justify-center mt-8 gap-2">
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <a asp-page="/View/Shop"
+                                   asp-route-PageNumber="@i"
+                                   asp-route-Search="@Model.Search"
+                                   asp-route-Sort="@Model.Sort"
+                                   class="w-10 h-10 flex items-center justify-center rounded-lg border-2 @(i == Model.PageNumber ? "bg-red-600 text-white border-red-600" : "bg-white text-gray-700 hover:border-red-300")">
+                                    @i
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="bg-white rounded-xl shadow-sm p-8 text-center mt-4">
+                        <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Không tìm thấy sản phẩm</h3>
+                        <p class="text-gray-500 mb-4">Không có sản phẩm nào phù hợp với bộ lọc của bạn.</p>
+                        <a asp-page="/View/Shop" class="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Xóa bộ lọc</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</main>

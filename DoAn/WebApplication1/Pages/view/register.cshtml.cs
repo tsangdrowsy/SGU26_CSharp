@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using WebApplication1.Models; // Nhớ đổi thành namespace dự án của bạn
+using WebApplication1.Models;
+using WebApplication1.Data;// Nhớ đổi thành namespace dự án của bạn
 
 namespace WebApplication1.Pages.View
 {
