@@ -13,8 +13,12 @@ builder.Services.AddSession();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+//Add services for controllers
+builder.Services.AddControllers();
 
 var app = builder.Build();
+// Configure the HTTP request pipeline.
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
