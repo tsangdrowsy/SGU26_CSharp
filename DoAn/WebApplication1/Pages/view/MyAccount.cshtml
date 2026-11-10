@@ -1,0 +1,260 @@
+﻿@page
+@model WebApplication1.Pages.View.MyAccountModel
+@{
+    ViewData["Title"] = "Tài khoản của tôi - NVBPlay";
+    // Format ngày tháng
+    var createdDate = Model.CurrentUser.CreatedAt.ToString("dd/MM/yyyy");
+}
+
+<main class="flex-1 bg-gray-50 py-8">
+    <!-- Mobile Account Header (visible on mobile only) -->
+    <div class="lg:hidden bg-white border-b border-gray-200 mb-4 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="text-lg font-semibold">Tài khoản của tôi</h1>
+                </div>
+                <button class="show-menu p-2" onclick="toggleMobileAccountMenu()">
+                    <i class="fas fa-ellipsis-v text-xl text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-4 md:gap-8">
+            
+            <!-- Sidebar -->
+            <div class="lg:w-1/4">
+                <!-- User Info Card -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <!-- Avatar -->
+                        <img src="~/img/icons/account.svg" alt="User avatar" class="w-16 h-16 rounded-full border-2 border-gray-200">
+                        <!-- User Info -->
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <h3 class="font-semibold text-gray-900">@Model.CurrentUser.FullName</h3>
+                                </div>
+                                <!-- Rank Icon -->
+                                <div class="rank">
+                                    <img src="~/img/icons/subscription.svg" class="w-10 h-10" alt="Rank" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Thành viên từ @createdDate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="bg-white rounded-lg shadow-sm overflow-hidden hidden lg:block">
+                    <ul class="divide-y divide-gray-200">
+                        <li>
+                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium border-l-4 border-[#FF3F1A]">
+                                <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                                <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
+                                Quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                                <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
+                                Sổ địa chỉ
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="lg:w-3/4">
+                <!-- Edit Account Form -->
+                <div class="bg-white rounded-lg shadow-sm p-6 md:p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Thông tin cá nhân</h3>
+
+                    <!-- Thông báo -->
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="bg-red-50 border border-red-200 text-red-600 p-3 rounded mb-4 text-sm">
+                            <i class="fas fa-exclamation-circle mr-2"></i> @Model.ErrorMessage
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="bg-green-50 border border-green-200 text-green-600 p-3 rounded mb-4 text-sm">
+                            <i class="fas fa-check-circle mr-2"></i> @Model.SuccessMessage
+                        </div>
+                    }
+
+                    <form class="space-y-6" method="post">
+                        <!-- Họ và tên -->
+                        <div>
+                            <label asp-for="FullName" class="block text-sm font-medium text-gray-700 mb-1">
+                                Họ và tên <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" asp-for="FullName" maxlength="50"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                            <span asp-validation-for="FullName" class="text-red-500 text-xs mt-1 block"></span>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div>
+                            <label asp-for="Phone" class="block text-sm font-medium text-gray-700 mb-1">
+                                Số điện thoại <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" asp-for="Phone" maxlength="10"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                            <span asp-validation-for="Phone" class="text-red-500 text-xs mt-1 block"></span>
+                        </div>
+
+                        <!-- Email (READONLY) -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Địa chỉ email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" value="@Model.CurrentUser.Email" readonly
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed">
+                            <p class="text-xs text-gray-400 mt-1">Email không thể thay đổi. Liên hệ hỗ trợ nếu cần.</p>
+                        </div>
+
+                        <!-- Tên đăng nhập (READONLY) -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Tên đăng nhập
+                            </label>
+                            <input type="text" value="@Model.CurrentUser.Username" readonly
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-4 flex justify-end">
+                            <button type="submit"
+                                    class="px-6 py-3 bg-[#FF3F1A] text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition whitespace-nowrap">
+                                Cập nhật thông tin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Account Stats Section -->
+                <div class="bg-white rounded-lg shadow-sm p-6 md:p-8 mt-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Thống kê tài khoản</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600">0</div>
+                            <div class="text-sm text-gray-600">Đơn hàng</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600">0</div>
+                            <div class="text-sm text-gray-600">Đã giao</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600">0</div>
+                            <div class="text-sm text-gray-600">Đang xử lý</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600">0₫</div>
+                            <div class="text-sm text-gray-600">Tổng chi tiêu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Mobile Account Menu Overlay -->
+<div id="mobile-account-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="toggleMobileAccountMenu()"></div>
+
+<!-- Mobile Account Slide Menu -->
+<div id="mobile-account-menu" class="fixed top-0 left-0 h-full w-80 bg-white z-50 transform -translate-x-full transition-transform duration-300 lg:hidden">
+    <div class="p-4">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <img src="~/img/icons/account.svg" alt="User avatar" class="w-12 h-12 rounded-full border-2 border-gray-200">
+                <div>
+                    <h3 class="font-semibold text-gray-900">@Model.CurrentUser.FullName</h3>
+                    <p class="text-xs text-gray-500">@Model.CurrentUser.Email</p>
+                </div>
+            </div>
+            <button onclick="toggleMobileAccountMenu()" class="p-2">
+                <i class="fas fa-times text-xl text-gray-600"></i>
+            </button>
+        </div>
+        <nav>
+            <ul class="space-y-2">
+                <li>
+                    <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium rounded-lg">
+                        <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
+                        <span>Thông tin tài khoản</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
+                        <span>Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
+                        <span>Sổ địa chỉ</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === MOBILE ACCOUNT MENU TOGGLE ===
+            window.toggleMobileAccountMenu = function() {
+                const mobileMenu = document.getElementById('mobile-account-menu');
+                const overlay = document.getElementById('mobile-account-overlay');
+                const body = document.body;
+                
+                if (mobileMenu.classList.contains('-translate-x-full')) {
+                    mobileMenu.classList.remove('-translate-x-full');
+                    overlay.classList.remove('hidden');
+                    body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                    body.style.overflow = '';
+                }
+            };
+
+            // Phone Input Validation (Chỉ nhập số)
+            const sdtInput = document.getElementById('Phone');
+            if (sdtInput) {
+                sdtInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value.length > 0 && this.value.charAt(0) !== '0') {
+                        this.value = '0' + this.value;
+                    }
+                    if (this.value.length > 10) {
+                        this.value = this.value.substring(0, 10);
+                    }
+                });
+            }
+
+            // Name Input Validation (Không nhập số)
+            const hoTenInput = document.getElementById('FullName');
+            if (hoTenInput) {
+                hoTenInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[0-9]/g, '');
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model WebApplication1.Pages.View.ShopModel
+
+<!-- Grid Sản phẩm -->
+@if (Model.Products.Count > 0)
+{
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="product-grid">
+        @foreach (var product in Model.Products)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden group hover:shadow-lg transition duration-300">
+                <a asp-page="/View/Product" asp-route-id="@product.ProductId">
+                    <div class="relative aspect-square bg-gray-100 p-4">
+                        @if (product.StockQuantity <= 0)
+                        {
+                            <div class="absolute top-2 left-2 z-10"><span class="bg-gray-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Hết hàng</span></div>
+                        }
+                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/img/sanpham/placeholder.png" : product.ImageUrl)"
+                             alt="@product.Name"
+                             class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
+                             onerror="this.src='/img/sanpham/placeholder.png'" />
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 group-hover:text-red-600 transition">@product.Name</h3>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-red-600 font-bold">@product.SalePrice.ToString("N0")₫</span>
+                        </div>
+                        @if (product.StockQuantity < 10 && product.StockQuantity > 0)
+                        {
+                            <div class="text-xs text-orange-500 mt-1 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Chỉ còn @product.StockQuantity sản phẩm</div>
+                        }
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Phân trang (Đã đổi thành thẻ button để chặn load lại trang) -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="flex justify-center mt-8 gap-2">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                var pageNumber = i;
+                <button type="button" onclick="fetchProducts(@pageNumber)"
+                        class="w-10 h-10 flex items-center justify-center rounded-lg border-2 @(i == Model.PageNumber ? "bg-red-600 text-white border-red-600" : "bg-white text-gray-700 hover:border-red-300")">
+                    @i
+                </button>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="bg-white rounded-xl shadow-sm p-8 text-center mt-4">
+        <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Không tìm thấy sản phẩm</h3>
+        <p class="text-gray-500 mb-4">Không có sản phẩm nào phù hợp với bộ lọc của bạn.</p>
+        <button type="button" onclick="resetFilters()" class="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Xóa bộ lọc</button>
+    </div>
+}

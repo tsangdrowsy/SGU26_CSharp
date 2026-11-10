@@ -6,40 +6,49 @@
 
 @section Styles {
     <style>
-        /* Toàn bộ CSS của trang shop */
-        .filter-btn input[type="checkbox"]:checked + .btn-content {
-            background: #fef2f2;
-            border-color: #dc2626;
-            color: #dc2626;
-            font-weight: 500;
+        /* Ẩn checkbox mặc định */
+        .filter-btn {
+            position: relative;
+            display: block;
+            width: 100%;
         }
 
-            .filter-btn input[type="checkbox"]:checked + .btn-content .btn-count {
-                background: #fecaca;
+            .filter-btn input[type="checkbox"] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+                /* Style cho nút khi được chọn */
+                .filter-btn input[type="checkbox"]:checked + .btn-content {
+                    background: #fef2f2;
+                    border-color: #dc2626;
+                    color: #dc2626;
+                    font-weight: 500;
+                }
+
+                    .filter-btn input[type="checkbox"]:checked + .btn-content .check-icon {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+
+            .filter-btn .check-icon {
+                opacity: 0;
                 color: #dc2626;
+                transition: all 0.2s ease;
             }
 
-            .filter-btn input[type="checkbox"]:checked + .btn-content .check-icon {
-                opacity: 1;
-                transform: scale(1);
+            .filter-btn .btn-content {
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                transition: all 0.2s ease;
             }
 
-        .filter-btn .check-icon {
-            opacity: 0;
-            color: #dc2626;
-            transition: all 0.2s ease;
-        }
-
-        .filter-btn .btn-content {
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .filter-btn:hover .btn-content {
-            border-color: #dc2626;
-            background: #fef2f2;
-        }
+            .filter-btn:hover .btn-content {
+                border-color: #dc2626;
+                background: #fef2f2;
+            }
 
         .line-clamp-2 {
             display: -webkit-box;
@@ -60,17 +69,15 @@
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-600">Bộ lọc đang áp dụng:</span>
-                    <a asp-page="/View/Shop" class="text-sm text-red-600 font-medium"><i class="fas fa-times-circle mr-1"></i>Xóa tất cả</a>
+                    <button onclick="resetFilters()" class="text-sm text-red-600 font-medium"><i class="fas fa-times-circle mr-1"></i>Xóa tất cả</button>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     @if (!string.IsNullOrEmpty(Model.Search))
                     {
                         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium">
                             <span><i class="fas fa-search mr-1"></i>Tìm: "@Model.Search"</span>
-                            <a asp-page="/View/Shop" asp-route-CategoryIds="@Model.CategoryIds" asp-route-SupplierIds="@Model.SupplierIds" class="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition"><i class="fas fa-times text-xs"></i></a>
                         </div>
                     }
-                    <!-- Bạn có thể tự làm thêm các tag cho Category và Supplier tương tự như trên -->
                 </div>
             </div>
         }
@@ -81,15 +88,14 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-24">
                     <div class="p-5 border-b border-gray-200 flex items-center justify-between">
                         <h3 class="font-bold text-lg flex items-center"><i class="fas fa-filter mr-2 text-red-600"></i>Bộ lọc</h3>
-                        <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 font-medium transition"><i class="fas fa-undo mr-1"></i>Reset</a>
+                        <button type="button" onclick="resetFilters()" class="text-sm text-red-600 hover:text-red-700 font-medium transition"><i class="fas fa-undo mr-1"></i>Reset</button>
                     </div>
 
-                    <!-- FORM GỬI BỘ LỌC BẰNG PHƯƠNG THỨC GET -->
-                    <form method="get" class="p-5 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
-                        <!-- Giữ lại từ khóa nếu có -->
-                        <input type="hidden" name="Search" value="@Model.Search" />
+                    <!-- FORM LỌC -->
+                    <form id="filterForm" method="get" onsubmit="event.preventDefault();" class="p-5 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+                        <input type="hidden" name="Search" value="@Model.Search" id="search-hidden" />
 
-                        <!-- Danh mục -->
+                        <!-- Danh mục (Đã khôi phục vòng lặp) -->
                         <div class="border-b border-gray-100 pb-4">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-folder text-red-600 mr-2"></i>Danh mục</h4>
                             <div class="flex flex-col gap-2">
@@ -106,7 +112,7 @@
                             </div>
                         </div>
 
-                        <!-- Nhà cung cấp (Thương hiệu) -->
+                        <!-- Thương hiệu (Đã khôi phục vòng lặp) -->
                         <div class="border-b border-gray-100 pb-4">
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-tag text-red-600 mr-2"></i>Thương hiệu</h4>
                             <div class="flex flex-col gap-2">
@@ -127,15 +133,13 @@
                         <div>
                             <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-money-bill-wave text-red-600 mr-2"></i>Khoảng giá</h4>
                             <div class="flex items-center gap-2 mb-4">
-                                <input type="number" name="MinPrice" value="@Model.MinPrice" placeholder="Từ" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
+                                <input type="number" id="input-minPrice" name="MinPrice" value="@Model.MinPrice" placeholder="Từ" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
                                 <span>-</span>
-                                <input type="number" name="MaxPrice" value="@Model.MaxPrice" placeholder="Đến" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
+                                <input type="number" id="input-maxPrice" name="MaxPrice" value="@Model.MaxPrice" placeholder="Đến" class="w-full px-2 py-1.5 border rounded text-sm focus:border-red-500 focus:outline-none" />
                             </div>
 
-                            <!-- Giữ lại kiểu sắp xếp khi bấm lọc -->
-                            <input type="hidden" name="Sort" value="@Model.Sort" />
-
-                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg text-sm font-semibold transition"><i class="fas fa-filter mr-2"></i>Áp dụng bộ lọc</button>
+                            <input type="hidden" name="Sort" value="@Model.Sort" id="sort-hidden" />
+                          
                         </div>
                     </form>
                 </div>
@@ -149,95 +153,93 @@
                         Hiển thị <span class="font-bold">@Model.Products.Count</span> trong <span class="font-bold">@Model.TotalProducts</span> sản phẩm
                     </div>
 
-                    <!-- Form Sắp xếp (Tự động submit khi thay đổi) -->
-                    <form method="get" id="sortForm">
-                        <input type="hidden" name="Search" value="@Model.Search" />
-                        @if (Model.CategoryIds != null)
-                        {
-                            foreach (var id in Model.CategoryIds)
-                            {
-                                <input type="hidden" name="CategoryIds" value="@id" />
-                            }
-                        }
-                        @if (Model.SupplierIds != null)
-                        {
-                            foreach (var id in Model.SupplierIds)
-                            {
-                                <input type="hidden" name="SupplierIds" value="@id" />
-                            }
-                        }
-                        <input type="hidden" name="MinPrice" value="@Model.MinPrice" />
-                        <input type="hidden" name="MaxPrice" value="@Model.MaxPrice" />
-
-                        <select name="Sort" onchange="document.getElementById('sortForm').submit()" class="border p-2 rounded text-sm outline-none">
+                    <!-- Form Sắp xếp (ĐÃ XÓA SUBMIT ĐỂ DÙNG AJAX) -->
+                    <div>
+                        <select id="sort-select" class="border p-2 rounded text-sm outline-none">
                             <option value="newest" selected="@(Model.Sort == "newest")">Mới nhất</option>
                             <option value="price_asc" selected="@(Model.Sort == "price_asc")">Giá thấp nhất</option>
                             <option value="price_desc" selected="@(Model.Sort == "price_desc")">Giá cao nhất</option>
                             <option value="name_asc" selected="@(Model.Sort == "name_asc")">Tên A-Z</option>
                         </select>
-                    </form>
+                    </div>
                 </div>
 
-                <!-- Grid Sản phẩm -->
-                @if (Model.Products.Count > 0)
-                {
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        @foreach (var product in Model.Products)
-                        {
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden group hover:shadow-lg transition duration-300">
-                                <a asp-page="/View/Product" asp-route-id="@product.ProductId">
-                                    <div class="relative aspect-square bg-gray-100 p-4">
-                                        @if (product.StockQuantity <= 0)
-                                        {
-                                            <div class="absolute top-2 left-2 z-10"><span class="bg-gray-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Hết hàng</span></div>
-                                        }
-                                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/img/sanpham/placeholder.png" : product.ImageUrl)"
-                                             alt="@product.Name"
-                                             class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
-                                             onerror="this.src='/img/sanpham/placeholder.png'" />
-                                    </div>
-                                    <div class="p-3">
-                                        <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 group-hover:text-red-600 transition">@product.Name</h3>
-                                        <div class="flex items-center gap-2 flex-wrap">
-                                            <span class="text-red-600 font-bold">@product.SalePrice.ToString("N0")₫</span>
-                                        </div>
-                                        @if (product.StockQuantity < 10 && product.StockQuantity > 0)
-                                        {
-                                            <div class="text-xs text-orange-500 mt-1 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>Chỉ còn @product.StockQuantity sản phẩm</div>
-                                        }
-                                    </div>
-                                </a>
-                            </div>
-                        }
-                    </div>
+                <!-- Grid Sản phẩm (Chỉ gọi Partial View, ĐÃ XÓA đoạn code phân trang cũ bị lặp) -->
+                <div id="product-container">
+                    <partial name="_ProductGrid" model="Model" />
+                </div>
 
-                    <!-- Phân trang -->
-                    @if (Model.TotalPages > 1)
-                    {
-                        <div class="flex justify-center mt-8 gap-2">
-                            @for (int i = 1; i <= Model.TotalPages; i++)
-                            {
-                                <a asp-page="/View/Shop"
-                                   asp-route-PageNumber="@i"
-                                   asp-route-Search="@Model.Search"
-                                   asp-route-Sort="@Model.Sort"
-                                   class="w-10 h-10 flex items-center justify-center rounded-lg border-2 @(i == Model.PageNumber ? "bg-red-600 text-white border-red-600" : "bg-white text-gray-700 hover:border-red-300")">
-                                    @i
-                                </a>
-                            }
-                        </div>
-                    }
-                }
-                else
-                {
-                    <div class="bg-white rounded-xl shadow-sm p-8 text-center mt-4">
-                        <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Không tìm thấy sản phẩm</h3>
-                        <p class="text-gray-500 mb-4">Không có sản phẩm nào phù hợp với bộ lọc của bạn.</p>
-                        <a asp-page="/View/Shop" class="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Xóa bộ lọc</a>
-                    </div>
-                }
             </div>
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <script>
+        // Hàm Debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // Hàm gọi AJAX
+        async function fetchProducts(pageNumber = 1) {
+            const form = document.getElementById('filterForm');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            // Đồng bộ Sort từ dropdown bên ngoài vào form ẩn
+            const sortValue = document.getElementById('sort-select').value;
+            params.set('Sort', sortValue);
+
+            params.set('PageNumber', pageNumber);
+
+            const url = `/View/Shop?handler=ProductGrid&${params.toString()}`;
+            const container = document.getElementById('product-container');
+
+            container.style.opacity = '0.5';
+
+            try {
+                const response = await fetch(url);
+                const html = await response.text();
+                container.innerHTML = html;
+
+                // Cập nhật URL
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.pushState({}, '', newUrl);
+
+            } catch (error) {
+                console.error('Lỗi khi tải sản phẩm:', error);
+            } finally {
+                container.style.opacity = '1';
+            }
+        }
+
+        // Bắt sự kiện Checkbox
+        document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => fetchProducts(1));
+        });
+
+        // Bắt sự kiện Sắp xếp (Dùng ID mới, không submit form nữa)
+        const sortSelect = document.getElementById('sort-select');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => fetchProducts(1));
+        }
+
+        // Bắt sự kiện Giá
+        const debouncedPrice = debounce(() => fetchProducts(1), 1000);
+        document.getElementById('input-minPrice').addEventListener('input', debouncedPrice);
+        document.getElementById('input-maxPrice').addEventListener('input', debouncedPrice);
+
+        // Hàm Reset bộ lọc
+        function resetFilters() {
+            document.getElementById('filterForm').reset();
+            document.getElementById('search-hidden').value = '';
+            document.getElementById('sort-select').value = 'newest';
+            fetchProducts(1);
+        }
+    </script>
+}

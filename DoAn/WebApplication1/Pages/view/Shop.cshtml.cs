@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
-using WebApplication1.Data; // Thêm dòng này để nhận diện CoffeeShopContext
+using WebApplication1.Data;
 
-namespace WebApplication1.Pages.View // Tên namespace phải khớp với thư mục
+namespace WebApplication1.Pages.View
 {
-    // Tên class BẮT BUỘC phải là ShopModel (khớp với @model trong file cshtml)
     public class ShopModel : PageModel
     {
         private readonly CoffeeShopContext _context;
@@ -32,7 +31,22 @@ namespace WebApplication1.Pages.View // Tên namespace phải khớp với thư 
         public int TotalProducts { get; set; }
         public int PageSize { get; set; } = 12;
 
+        // Lần đầu vào trang
         public async Task OnGetAsync()
+        {
+            await LoadDataAsync();
+        }
+
+        // Hàm xử lý AJAX (gọi từ JS)
+        public async Task<IActionResult> OnGetProductGridAsync()
+        {
+            await LoadDataAsync();
+            // Trả về duy nhất phần giao diện sản phẩm
+            return Partial("_ProductGrid", this);
+        }
+
+        // Tách logic ra hàm riêng
+        private async Task LoadDataAsync()
         {
             Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             Suppliers = await _context.Suppliers.ToListAsync();

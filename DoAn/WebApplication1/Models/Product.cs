@@ -18,6 +18,9 @@ namespace WebApplication1.Models
         public string? Origin { get; set; }
         public string? ImageUrl { get; set; }
 
+        public int? WeightGram { get; set; }
+        public string? RoastLevel { get; set; }
+
         public decimal CostPrice { get; set; }
         public decimal ProfitRate { get; set; }
 

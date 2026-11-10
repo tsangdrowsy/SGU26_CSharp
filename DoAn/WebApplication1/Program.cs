@@ -1,26 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
-using WebApplication1.Models; // Đổi WebApplication1 thành tên dự án của bạn nếu khác
+using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =========================================================
 // 1. CẤU HÌNH KẾT NỐI DATABASE
-// =========================================================
-// Thêm dòng này vào trước dòng builder.Build()
 builder.Services.AddDbContext<CoffeeShopContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-// =========================================================
-// 2. BẬT TÍNH NĂNG SESSION (Dùng để lưu trạng thái đăng nhập)
-// =========================================================
+// 2. BẬT TÍNH NĂNG SESSION
 builder.Services.AddSession();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+//Add services for controllers
+builder.Services.AddControllers();
 
 var app = builder.Build();
+// Configure the HTTP request pipeline.
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -30,17 +28,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapStaticAssets();
 
-// =========================================================dotnet add package BCrypt.Net-Next
-// 3. KÍCH HOẠT SESSION (Phải đặt trước UseRouting)
 // =========================================================
-app.UseSession();
+// 3. THỨ TỰ MIDDLEWARE CHUẨN (Rất quan trọng)
+// =========================================================
+app.UseRouting();       // 1. Định tuyến (Phải đứng trước Session)
+app.UseSession();       // 2. Kích hoạt Session
+app.UseAuthorization(); // 3. Phân quyền
 
-app.UseRouting();
-
-app.UseAuthorization();
-
+// 4. Map các Endpoint (Đặt ở cuối cùng)
+app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 

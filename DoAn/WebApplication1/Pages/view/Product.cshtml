@@ -1,0 +1,253 @@
+﻿@page
+@model WebApplication1.Pages.View.ProductModel
+@{
+    ViewData["Title"] = Model.CurrentProduct.Name + " - CoffeeShop";
+    var isInStock = Model.CurrentProduct.StockQuantity > 0;
+    var maxQty = isInStock ? Model.CurrentProduct.StockQuantity : 0;
+    var disabledAttr = isInStock ? "" : "disabled";
+    var btnClass = isInStock ? "bg-red-600 hover:bg-red-700 cursor-pointer" : "bg-gray-400 cursor-not-allowed";
+    // Tính phần trăm giảm giá (dựa trên CostPrice và SalePrice)
+    decimal discount = 0;
+    if (Model.CurrentProduct.CostPrice > Model.CurrentProduct.SalePrice && Model.CurrentProduct.CostPrice > 0)
+    {
+        discount = Math.Round((Model.CurrentProduct.CostPrice - Model.CurrentProduct.SalePrice) / Model.CurrentProduct.CostPrice * 100);
+    }
+}
+
+<main class="flex-grow bg-gray-50 py-8 md:p-[30px]">
+    <div class="container mx-auto px-4">
+        <!-- Thông báo -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <i class="fas fa-check-circle mr-2"></i> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <i class="fas fa-exclamation-circle mr-2"></i> @TempData["Error"]
+            </div>
+        }
+
+        <div class="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Left: Product Image -->
+                <div class="space-y-4">
+                    <div class="relative group overflow-hidden rounded-lg bg-gray-100 aspect-square">
+                        <img src="~/@(Model.CurrentProduct.ImageUrl ?? "img/sanpham/placeholder.png")"
+                             alt="@Model.CurrentProduct.Name"
+                             class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                </div>
+
+                <!-- Right: Product Info -->
+                <div class="flex flex-col">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mt-4 mb-4">
+                        @Model.CurrentProduct.Name
+                    </h1>
+
+                    <!-- Meta Info -->
+                    <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
+                        @if (!string.IsNullOrEmpty(Model.CurrentProduct.Origin))
+                        {
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
+                                <span>Xuất xứ: <strong>@Model.CurrentProduct.Origin</strong></span>
+                            </div>
+                        }
+                        @if (Model.CurrentProduct.Supplier != null)
+                        {
+                            <div class="flex items-center">
+                                <i class="fas fa-truck mr-2 text-red-600"></i>
+                                <span>NCC: @Model.CurrentProduct.Supplier.Name</span>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Thông số Cà phê (Weight & Roast) -->
+                    <div class="flex gap-4 mb-6">
+                        @if (Model.CurrentProduct.WeightGram.HasValue)
+                        {
+                            <div class="bg-orange-50 px-3 py-1 rounded text-sm text-orange-700">
+                                <i class="fas fa-weight-hanging mr-1"></i> Khối lượng: @Model.CurrentProduct.WeightGram g
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.CurrentProduct.RoastLevel))
+                        {
+                            <div class="bg-amber-50 px-3 py-1 rounded text-sm text-amber-700">
+                                <i class="fas fa-fire mr-1"></i> Mức độ rang: @Model.CurrentProduct.RoastLevel
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Description -->
+                    @if (!string.IsNullOrEmpty(Model.CurrentProduct.Description))
+                    {
+                        <div class="text-gray-600 mb-6 mt-6 rounded-lg">
+                            <h4 class="font-bold text-gray-900 mb-2">Mô tả sản phẩm:</h4>
+                            <div class="text-sm leading-relaxed prose prose-sm max-w-none">
+                                @Model.CurrentProduct.Description
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Chính sách (Sửa cho phù hợp cà phê) -->
+                    <div class="text-gray-600 mb-6 mt-6 space-y-4">
+                        <h4 class="font-bold text-gray-900">Chính sách bảo quản:</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-sm">
+                            <li>Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp.</li>
+                            <li>Sử dụng trong vòng 6 tháng kể từ ngày rang (có in trên bao bì).</li>
+                            <li>Không đổi trả nếu đã bóc tem niêm phong.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-end gap-3 mb-2">
+                            <span class="text-3xl font-bold text-red-600">@Model.CurrentProduct.SalePrice.ToString("N0")₫</span>
+                            @if (discount > 0)
+                            {
+                                <span class="text-lg text-gray-400 line-through mb-1">@Model.CurrentProduct.CostPrice.ToString("N0")₫</span>
+                                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">-@discount%</span>
+                            }
+                        </div>
+                        
+                        @if (isInStock)
+                        {
+                            <div class="text-sm text-green-600 mt-2 flex items-center">
+                                <i class="fas fa-check-circle mr-1"></i> Còn hàng (@Model.CurrentProduct.StockQuantity sản phẩm)
+                            </div>
+                            @if (Model.CurrentProduct.StockQuantity < 10)
+                            {
+                                <div class="text-xs text-orange-500 mt-1">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>Chỉ còn @Model.CurrentProduct.StockQuantity sản phẩm
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-sm text-red-600 mt-2 flex items-center">
+                                <i class="fas fa-times-circle mr-1"></i> Hết hàng
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Form Add to Cart -->
+                    <form method="post" class="mt-auto space-y-4">
+                        <input type="hidden" asp-for="Id" value="@Model.CurrentProduct.ProductId" />
+                        
+                        <!-- Quantity -->
+                        <div class="flex items-center gap-4">
+                            <span class="font-medium text-gray-700">Số lượng:</span>
+                            <div class="flex items-center border border-gray-300 rounded @(!isInStock ? "bg-gray-100" : "")">
+                                <button type="button" onclick="decreaseQty()" class="px-3 py-2 hover:bg-gray-100 text-gray-600 @(!isInStock ? "opacity-50 cursor-not-allowed" : "")" disabled="@(!isInStock)">-</button>
+                                <input type="number" asp-for="Quantity" id="quantity" value="1" min="1" max="@maxQty"
+                                       class="w-16 text-center border-none focus:ring-0 p-0 @(!isInStock ? "bg-gray-100 text-gray-500" : "")" readonly />
+                                <button type="button" onclick="increaseQty()" class="px-3 py-2 hover:bg-gray-100 text-gray-600 @(!isInStock ? "opacity-50 cursor-not-allowed" : "")" disabled="@(!isInStock)">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Buttons: Tách riêng trường hợp để tránh lỗi RZ1031 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            @if (isInStock)
+                            {
+                                <button type="submit" asp-page-handler="AddToCart" class="w-full text-white py-3 rounded-lg font-semibold transition flex items-center justify-center bg-red-600 hover:bg-red-700 cursor-pointer">
+                                    <i class="fas fa-shopping-cart mr-2"></i>Thêm vào giỏ
+                                </button>
+                                <button type="submit" asp-page-handler="BuyNow" class="w-full text-white font-bold py-3 rounded-xl transition shadow-lg bg-red-600 hover:bg-red-700 shadow-red-200">
+                                    Mua ngay
+                                </button>
+                            }
+                            else
+                            {
+                                <!-- Nếu hết hàng, hiển thị nút bị vô hiệu hóa (không dùng Tag Helper asp-page-handler để tránh lỗi) -->
+                                <button type="button" class="w-full text-white py-3 rounded-lg font-semibold transition flex items-center justify-center bg-gray-400 cursor-not-allowed" disabled>
+                                    <i class="fas fa-shopping-cart mr-2"></i>Thêm vào giỏ
+                                </button>
+                                <button type="button" class="w-full text-white font-bold py-3 rounded-xl transition shadow-lg bg-gray-400 cursor-not-allowed shadow-gray-200" disabled>
+                                    Mua ngay
+                                </button>
+                            }
+                        </div>
+
+                        @if (!isInStock)
+                        {
+                            <p class="text-center text-sm text-red-600 font-medium">
+                                <i class="fas fa-info-circle mr-1"></i>Sản phẩm tạm thời hết hàng.
+                            </p>
+                        }
+                    </form>
+
+                    <!-- Additional Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Mã sản phẩm:</span>
+                                <span class="ml-2 font-medium">@Model.CurrentProduct.Code</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Danh mục:</span>
+                                <span class="ml-2 font-medium">@Model.CurrentProduct.Category?.Name</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        @if (Model.RelatedProducts.Any())
+        {
+            <div class="mb-12">
+                <h3 class="text-xl font-bold text-gray-900 mb-6 uppercase">Sản phẩm tương tự</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    @foreach (var related in Model.RelatedProducts)
+                    {
+                        <div class="group">
+                            <div class="bg-white rounded-lg overflow-hidden shadow-sm mb-2 relative aspect-square">
+                                <a asp-page="/View/Product" asp-route-id="@related.ProductId" class="hover:text-red-600">
+                                    <img src="~/@(related.ImageUrl ?? "img/sanpham/placeholder.png")" alt="@related.Name" class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" />
+                                </a>
+                            </div>
+                            <h4 class="text-sm font-medium text-gray-900 line-clamp-2 h-10 mb-1">
+                                <a asp-page="/View/Product" asp-route-id="@related.ProductId" class="hover:text-red-600">
+                                    @related.Name
+                                </a>
+                            </h4>
+                            <div class="flex items-center gap-2">
+                                <div class="text-red-600 font-bold">
+                                    @related.SalePrice.ToString("N0")₫
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        // Quantity controls
+        function decreaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (qtyInput.disabled) return;
+            let currentValue = parseInt(qtyInput.value);
+            if (currentValue > 1) {
+                qtyInput.value = currentValue - 1;
+            }
+        }
+
+        function increaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (qtyInput.disabled) return;
+            const maxQty = parseInt(qtyInput.max);
+            let currentValue = parseInt(qtyInput.value);
+            if (currentValue < maxQty && maxQty > 0) {
+                qtyInput.value = currentValue + 1;
+            }
+        }
+    </script>
+}
