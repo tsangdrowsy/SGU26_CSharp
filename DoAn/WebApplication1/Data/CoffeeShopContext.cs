@@ -7,6 +7,7 @@ namespace WebApplication1.Data
     {
         public CoffeeShopContext(DbContextOptions<CoffeeShopContext> options) : base(options) { }
 
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
@@ -20,15 +21,37 @@ namespace WebApplication1.Data
             modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Supplier>().ToTable("Suppliers");
+            modelBuilder.Entity<CartItem>().ToTable("CartItems");
+
+
 
             // Cấu hình để EF Core không cố gắng INSERT/UPDATE vào cột SalePrice (vì đây là Computed Column)
             modelBuilder.Entity<Product>()
                 .Property(p => p.SalePrice)
                 .HasComputedColumnSql("CAST(ROUND(CostPrice * (100 + ProfitRate) / 100, 2) AS DECIMAL(18,2)) PERSISTED");
 
+            // 3. CẤU HÌNH TRIGGER (Rất quan trọng để tránh lỗi Output Clause)
+            modelBuilder.Entity<CartItem>()
+               .ToTable(tb => tb.HasTrigger("trg_CartItems_CheckProduct"));
+
+
             // LƯU Ý: Vì bạn có Trigger trên bảng Products, theo cảnh báo trong file SQL số 2:
-            modelBuilder.Entity<Product>().ToTable(tb => tb.HasTrigger("trg_Products_InitialStock"));
+            modelBuilder.Entity<Product>()
+                .ToTable(tb => tb.HasTrigger("trg_Products_InitialStock"))
+                .ToTable(tb => tb.HasTrigger("trg_Products_GuardStock"))
+                .ToTable(tb => tb.HasTrigger("trg_Products_InsteadOfDelete"));
             // Nếu có lỗi với các trigger khác, bạn phải khai báo HasTrigger tiếp ở đây.
+
+            // Nếu sau này bạn làm đến phần Đơn hàng, hãy bỏ comment các dòng dưới đây:
+            /*
+            modelBuilder.Entity<Order>()
+                .ToTable(tb => tb.HasTrigger("trg_Orders_StatusFlow"))
+                .ToTable(tb => tb.HasTrigger("trg_Orders_NoDelete"));
+            
+            modelBuilder.Entity<OrderDetail>()
+                .ToTable(tb => tb.HasTrigger("trg_OrderDetails_InsteadOfInsert"))
+                .ToTable(tb => tb.HasTrigger("trg_OrderDetails_ReadOnly"));
+            */
         }
     }
 }
