@@ -1,8 +1,4 @@
 <Solution>
-  <Project Path="App1/App1.csproj" Id="1f51e907-acc1-41cc-8bbb-3e68bc59defc">
-    <Platform Project="x64" />
-    <Deploy />
-  </Project>
   <Project Path="App67/App67.csproj" Id="e1cf05cd-db64-4001-a0a0-b51c085a949e">
     <Platform Project="x64" />
     <Deploy />

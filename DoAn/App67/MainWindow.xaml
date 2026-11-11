@@ -10,16 +10,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Danh Sách Sản Phẩm" FontSize="28" FontWeight="Bold" Margin="20"/>
+        <!-- Thêm Foreground="Black" cho tiêu đề -->
+        <TextBlock Text="Danh Sách Sản Phẩm" FontSize="28" FontWeight="Bold" Margin="20" Foreground="Black"/>
 
         <ListView Grid.Row="1" x:Name="ProductListView" Margin="20" BorderBrush="Gray" BorderThickness="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Padding="10">
-                        <TextBlock Text="{Binding ProductId}" Width="50"/>
-                        <TextBlock Text="{Binding Name}" Width="250" FontWeight="SemiBold"/>
+                        <!-- Thêm Foreground="Black" cho từng cột -->
+                        <TextBlock Text="{Binding ProductId}" Width="50" Foreground="Black"/>
+                        <TextBlock Text="{Binding Name}" Width="250" FontWeight="SemiBold" Foreground="Black"/>
+                        <!-- Cột giá giữ nguyên màu Đỏ -->
                         <TextBlock Text="{Binding SalePrice}" Width="150" Foreground="Red"/>
-                        <TextBlock Text="{Binding StockQuantity}" Width="100"/>
+                        <TextBlock Text="{Binding StockQuantity}" Width="100" Foreground="Black"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
