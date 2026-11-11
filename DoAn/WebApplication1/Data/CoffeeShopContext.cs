@@ -12,6 +12,8 @@ namespace WebApplication1.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +24,12 @@ namespace WebApplication1.Data
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Supplier>().ToTable("Suppliers");
             modelBuilder.Entity<CartItem>().ToTable("CartItems");
+            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<OrderDetail>().ToTable("OrderDetails");
+
+            // Cấu hình Khóa chính phức hợp cho OrderDetail
+            modelBuilder.Entity<OrderDetail>()
+                .HasKey(od => new { od.OrderId, od.ProductId });
 
 
 
@@ -43,7 +51,7 @@ namespace WebApplication1.Data
             // Nếu có lỗi với các trigger khác, bạn phải khai báo HasTrigger tiếp ở đây.
 
             // Nếu sau này bạn làm đến phần Đơn hàng, hãy bỏ comment các dòng dưới đây:
-            /*
+            
             modelBuilder.Entity<Order>()
                 .ToTable(tb => tb.HasTrigger("trg_Orders_StatusFlow"))
                 .ToTable(tb => tb.HasTrigger("trg_Orders_NoDelete"));
@@ -51,7 +59,7 @@ namespace WebApplication1.Data
             modelBuilder.Entity<OrderDetail>()
                 .ToTable(tb => tb.HasTrigger("trg_OrderDetails_InsteadOfInsert"))
                 .ToTable(tb => tb.HasTrigger("trg_OrderDetails_ReadOnly"));
-            */
+            
         }
     }
 }

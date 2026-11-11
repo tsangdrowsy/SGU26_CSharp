@@ -1,19 +1,37 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
+using WebApplication1.Models;
 
 namespace WebApplication1.Pages
 {
     public class IndexModel : PageModel
     {
-        //đăng xuất
-        public IActionResult OnGetLogout()
+        private readonly CoffeeShopContext _context;
+
+        public IndexModel(CoffeeShopContext context)
         {
-            HttpContext.Session.Clear(); // Xóa session
-            return RedirectToPage("/Index"); // Tải lại trang chủ
+            _context = context;
         }
-        public void OnGet()
+
+        public IList<Category> Categories { get; set; } = default!;
+        public IList<Product> FeaturedProducts { get; set; } = default!;
+
+        public async Task OnGetAsync()
         {
-           
+            // 1. Lấy 4 danh mục đang hoạt động
+            Categories = await _context.Categories
+                .Where(c => c.IsActive)
+                .Take(4)
+                .ToListAsync();
+
+            // 2. Lấy 4 sản phẩm mới nhất đang được bán (IsVisible = true)
+            FeaturedProducts = await _context.Products
+                .Include(p => p.Category) // Lấy kèm tên danh mục
+                .Where(p => p.IsVisible)
+                .OrderByDescending(p => p.CreatedAt) // Sản phẩm mới nhất lên đầu
+                .Take(4)
+                .ToListAsync();
         }
     }
 }

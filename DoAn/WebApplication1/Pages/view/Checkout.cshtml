@@ -1,0 +1,142 @@
+﻿@page
+@model WebApplication1.Pages.View.CheckoutModel
+@{
+    ViewData["Title"] = "Thanh Toán - CoffeeShop";
+}
+
+<main class="container mx-auto px-4 py-8 min-h-[60vh]">
+    <div class="max-w-5xl mx-auto">
+        
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-credit-card text-red-600 mr-2"></i>Thanh toán đơn hàng</h1>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+                <i class="fas fa-exclamation-circle mr-2"></i> @Model.ErrorMessage
+            </div>
+        }
+
+        <form method="post" id="checkoutForm">
+            <div class="flex flex-col lg:flex-row gap-6">
+                
+                <!-- Cột trái: Thông tin giao hàng -->
+                <div class="lg:w-2/3 space-y-5">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Thông tin giao hàng</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên <span class="text-red-500">*</span></label>
+                                    <input type="text" asp-for="ReceiverName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+                                    <span asp-validation-for="ReceiverName" class="text-red-500 text-xs mt-1 block"></span>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại <span class="text-red-500">*</span></label>
+                                    <input type="tel" asp-for="ReceiverPhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" maxlength="10" />
+                                    <span asp-validation-for="ReceiverPhone" class="text-red-500 text-xs mt-1 block"></span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tỉnh/Thành phố <span class="text-red-500">*</span></label>
+                                    <input type="text" asp-for="City" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+                                    <span asp-validation-for="City" class="text-red-500 text-xs mt-1 block"></span>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Quận/Huyện <span class="text-red-500">*</span></label>
+                                    <input type="text" asp-for="District" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+                                    <span asp-validation-for="District" class="text-red-500 text-xs mt-1 block"></span>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phường/Xã <span class="text-red-500">*</span></label>
+                                    <input type="text" asp-for="Ward" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+                                    <span asp-validation-for="Ward" class="text-red-500 text-xs mt-1 block"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ chi tiết (Số nhà, tên đường) <span class="text-red-500">*</span></label>
+                                <input type="text" asp-for="Address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+                                <span asp-validation-for="Address" class="text-red-500 text-xs mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ghi chú (Tùy chọn)</label>
+                                <textarea asp-for="Note" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none placeholder-gray-400" placeholder="Ví dụ: Giao ngoài giờ hành chính..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phương thức thanh toán -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Phương thức thanh toán</h3>
+                        
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" asp-for="PaymentMethod" value="Cash" class="w-4 h-4 text-red-600 focus:ring-red-500">
+                                <span class="flex-1 font-medium">Thanh toán khi nhận hàng (COD)</span>
+                                <i class="fas fa-money-bill-wave text-gray-400"></i>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" asp-for="PaymentMethod" value="BankTransfer" class="w-4 h-4 text-red-600 focus:ring-red-500">
+                                <span class="flex-1 font-medium">Chuyển khoản ngân hàng</span>
+                                <i class="fas fa-university text-gray-400"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Tóm tắt đơn hàng -->
+                <div class="lg:w-1/3">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Đơn hàng của bạn</h3>
+
+                        <div class="space-y-3 max-h-64 overflow-y-auto pr-2 mb-4">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="flex gap-3">
+                                    <img src="~/@(item.Product?.ImageUrl ?? "img/sanpham/placeholder.png")" class="w-14 h-14 object-cover rounded border flex-shrink-0" onerror="this.src='/img/sanpham/placeholder.png'">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-800 line-clamp-1">@item.Product?.Name</p>
+                                        <p class="text-xs text-gray-500">SL: @item.Quantity</p>
+                                        <p class="text-sm font-semibold text-red-600">@(((item.Product?.SalePrice ?? 0) * item.Quantity).ToString("N0"))₫</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="border-t pt-4 space-y-2">
+                            <div class="flex justify-between text-gray-600 text-sm">
+                                <span>Tạm tính</span>
+                                <span>@Model.TotalAmount.ToString("N0")₫</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600 text-sm">
+                                <span>Phí vận chuyển</span>
+                                <span>Miễn phí</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg text-red-600 pt-2 border-t mt-2">
+                                <span>Tổng cộng</span>
+                                <span>@Model.TotalAmount.ToString("N0")₫</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full mt-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-check-circle"></i> Đặt hàng ngay
+                        </button>
+                        <p class="text-center text-xs text-gray-500 mt-3">
+                            <i class="fas fa-lock mr-1"></i> Thông tin của bạn được bảo mật
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
