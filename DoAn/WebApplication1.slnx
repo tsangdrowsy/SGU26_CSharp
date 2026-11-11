@@ -3,9 +3,5 @@
     <Platform Project="x64" />
     <Deploy />
   </Project>
-  <Project Path="App67/App67.csproj" Id="e1cf05cd-db64-4001-a0a0-b51c085a949e">
-    <Platform Project="x64" />
-    <Deploy />
-  </Project>
   <Project Path="WebApplication1/WebApplication1.csproj" />
 </Solution>
