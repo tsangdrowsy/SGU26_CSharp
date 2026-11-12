@@ -1,7 +1,7 @@
 ﻿@page
 @model WebApplication1.Pages.View.MyAccountModel
 @{
-    ViewData["Title"] = "Tài khoản của tôi - NVBPlay";
+    ViewData["Title"] = "Tài khoản của tôi";
     // Format ngày tháng
     var createdDate = Model.CurrentUser.CreatedAt.ToString("dd/MM/yyyy");
 }
@@ -52,19 +52,19 @@
                 <nav class="bg-white rounded-lg shadow-sm overflow-hidden hidden lg:block">
                     <ul class="divide-y divide-gray-200">
                         <li>
-                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium border-l-4 border-[#FF3F1A]">
+                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#8a5a32] font-medium border-l-4 border-[#8a5a32]">
                                 <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
                                 Thông tin tài khoản
                             </a>
                         </li>
                         <li>
-                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
                                 <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
                                 Quản lý đơn hàng
                             </a>
                         </li>
                         <li>
-                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
                                 <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
                                 Sổ địa chỉ
                             </a>
@@ -136,7 +136,7 @@
                         <!-- Submit Button -->
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                    class="px-6 py-3 bg-[#FF3F1A] text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition whitespace-nowrap">
+                                    class="px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition whitespace-nowrap">
                                 Cập nhật thông tin
                             </button>
                         </div>
@@ -191,7 +191,7 @@
         <nav>
             <ul class="space-y-2">
                 <li>
-                    <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium rounded-lg">
+                    <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 bg-red-50 text-[#8a5a32] font-medium rounded-lg">
                         <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
                         <span>Thông tin tài khoản</span>
                     </a>

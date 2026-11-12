@@ -1,131 +1,133 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Trang Chủ - CoffeeShop";
+    ViewData["Title"] = "Trang Chủ";
 }
 
-<div class="container mx-auto px-4 py-6 md:py-8">
-    <!-- Banner Hero -->
-    <section class="banner-hero mb-6 md:mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="md:col-span-2 rounded-lg overflow-hidden shadow-lg h-full">
-                <a href="#" class="block h-full">
-                    <!-- Bạn có thể thay bằng ảnh banner cà phê thật -->
-                    <img src="~/img/icons/banner-1.png" alt="Banner Cà phê" class="w-full h-full object-cover">
-                </a>
-            </div>
-            <div class="flex flex-col space-y-4 h-full">
-                <div class="rounded-lg overflow-hidden shadow-lg flex-1">
-                    <a href="#" class="block h-full">
-                        <img src="~/img/icons/banner-4.jpg" alt="Banner Cà phê" class="w-full h-full object-cover">
-                    </a>
-                </div>
-                <div class="rounded-lg overflow-hidden shadow-lg flex-1">
-                    <a href="#" class="block h-full">
-                        <img src="~/img/icons/banner-5.png" alt="Banner Cà phê" class="w-full h-full object-cover">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ================= HERO ================= -->
+<section class="relative overflow-hidden img-fallback text-white">
+    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=80"
+         alt="" class="absolute inset-0 w-full h-full object-cover"
+         onerror="this.style.display='none'">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#241710]/95 via-[#241710]/75 to-[#241710]/20"></div>
 
-    <!-- Danh mục (Lấy từ Database) -->
-    <section class="home-product mb-8">
-        <div class="mb-4">
-            <h2 class="text-xl md:text-2xl font-bold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-red-600 pb-2">Danh mục Cà phê</h2>
+    <div class="relative container mx-auto px-4 py-20 md:py-28">
+        <div class="max-w-xl">
+            <p class="text-[11px] tracking-[0.3em] uppercase text-coffee-latte/80 mb-5">Cà phê ngon · Ngày mới tươi sáng</p>
+            <h1 class="font-serif text-5xl md:text-7xl leading-[1.05] font-semibold mb-6">
+                Hơn cả<br>một tách<br><span class="text-coffee-light italic">cà phê</span>
+            </h1>
+            <p class="text-coffee-latte/90 text-base md:text-lg leading-relaxed mb-8 max-w-md">
+                Nguồn gốc rõ ràng. Rang xay tận tâm. Giao tận cửa nhà bạn — vì một ngày tuyệt vời bắt đầu từ một tách cà phê ngon.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a asp-page="/View/Shop" class="btn-coffee">Mua cà phê <i class="fas fa-arrow-right text-xs"></i></a>
+                <a href="#our-story" class="btn-outline-light">Câu chuyện của chúng tôi</a>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-12 text-center text-xs text-coffee-latte/90">
+                <div><i class="fas fa-leaf text-xl mb-2 block text-coffee-light"></i>100%<br>Nguồn gốc rõ ràng</div>
+                <div><i class="fas fa-truck text-xl mb-2 block text-coffee-light"></i>Miễn phí giao hàng<br>đơn từ 300K</div>
+                <div><i class="fas fa-fire-alt text-xl mb-2 block text-coffee-light"></i>Rang mẻ nhỏ<br>mỗi ngày</div>
+                <div><i class="fas fa-globe-asia text-xl mb-2 block text-coffee-light"></i>Vì một tương lai<br>xanh hơn</div>
+            </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            @if (Model.Categories.Any())
-            {
-                foreach (var category in Model.Categories)
-                {
-                    <div class="flex-shrink-0">
-                        <!-- Link đến trang Shop với bộ lọc danh mục -->
-                        <a asp-page="/View/Shop" asp-route-categoryId="@category.CategoryId" class="block group">
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                                <div class="aspect-square overflow-hidden p-4 bg-gray-50 flex items-center justify-center">
-                                    <!-- Lấy ảnh placeholder hoặc ảnh mặc định -->
-                                    <img src="~/img/sanpham/coffee-category.png" alt="@category.Name" class="w-full h-full object-contain group-hover:scale-105 transition duration-300" onerror="this.src='/img/sanpham/placeholder.png'">
-                                </div>
-                                <div class="p-4 text-center">
-                                    <h3 class="font-semibold text-base text-gray-800 group-hover:text-red-600 transition">@category.Name</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Xem sản phẩm</p>
-                                </div>
-                            </div>
+    </div>
+</section>
+
+<!-- ================= BỘ SƯU TẬP ================= -->
+<section class="container mx-auto px-4 py-16">
+    <div class="flex items-end justify-between mb-8 gap-4">
+        <div>
+            <p class="eyebrow mb-2">Bộ sưu tập</p>
+            <h2 class="font-serif text-3xl md:text-4xl text-coffee-dark leading-tight">Khám phá hương vị<br>dành cho bạn</h2>
+        </div>
+        <a asp-page="/View/Shop" class="inline-flex items-center min-h-11 text-sm font-medium text-coffee-dark hover:text-red-600 whitespace-nowrap">
+            Xem tất cả <i class="fas fa-arrow-right ml-1 text-xs"></i>
+        </a>
+    </div>
+
+    <!-- Sản phẩm được nạp từ API tìm kiếm có sẵn (/api/search) - không cần sửa backend -->
+    <div id="home-products" class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        @for (int i = 0; i < 4; i++)
+        {
+            <div class="product-card animate-pulse">
+                <div class="aspect-[4/5] bg-gray-100"></div>
+                <div class="p-4 space-y-2">
+                    <div class="h-4 bg-gray-100 rounded w-3/4"></div>
+                    <div class="h-3 bg-gray-100 rounded w-1/2"></div>
+                    <div class="h-11 bg-gray-100 rounded mt-3"></div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- ================= CÂU CHUYỆN ================= -->
+<section id="our-story" class="bg-white">
+    <div class="grid grid-cols-1 lg:grid-cols-[1.25fr,1fr,0.8fr]">
+        <div class="px-6 md:px-12 py-14 flex flex-col justify-center">
+            <p class="eyebrow mb-3">Câu chuyện của chúng tôi</p>
+            <h2 class="font-serif text-3xl md:text-4xl text-coffee-dark leading-tight mb-5">Một tách cà phê<br>tử tế cho thế giới<br>tươi sáng hơn</h2>
+            <p class="text-gray-600 leading-relaxed mb-7 max-w-md">
+                Chúng tôi đồng hành cùng người nông dân Tây Nguyên, ủng hộ canh tác bền vững và đầu tư cho một tương lai xanh — vì cà phê ngon cũng nên mang lại điều tốt đẹp.
+            </p>
+            <div><a asp-page="/View/Shop" class="btn-coffee">Tìm hiểu thêm <i class="fas fa-arrow-right text-xs"></i></a></div>
+        </div>
+        <div class="relative min-h-[300px] img-fallback">
+            <img src="https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?auto=format&fit=crop&w=1400&q=80"
+                 alt="Pha chế cà phê" class="absolute inset-0 w-full h-full object-cover" loading="lazy"
+                 onerror="this.style.display='none'">
+        </div>
+        <div class="bg-coffee-dark text-coffee-latte px-8 py-12 flex flex-col justify-center gap-7">
+            <div class="flex items-center gap-4"><i class="fas fa-hands-helping text-2xl text-coffee-light w-8"></i><span class="text-sm">Hỗ trợ<br>cộng đồng trồng cà phê</span></div>
+            <div class="flex items-center gap-4"><i class="fas fa-seedling text-2xl text-coffee-light w-8"></i><span class="text-sm">Canh tác<br>bền vững</span></div>
+            <div class="flex items-center gap-4"><i class="fas fa-tint text-2xl text-coffee-light w-8"></i><span class="text-sm">Bảo vệ<br>tài nguyên thiên nhiên</span></div>
+            <div class="flex items-center gap-4"><i class="fas fa-globe-asia text-2xl text-coffee-light w-8"></i><span class="text-sm">Hành tinh khỏe mạnh<br>cho tương lai</span></div>
+        </div>
+    </div>
+</section>
+
+
+
+
+@section Scripts {
+    <script>
+        // Nạp sản phẩm cà phê nổi bật từ API tìm kiếm có sẵn
+        (async function () {
+            const box = document.getElementById('home-products');
+            const cardColors = ['#2f4a3a', '#8a5a32', '#2a211c', '#7a2e22'];
+            const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            try {
+                const res = await fetch('/api/search?q=' + encodeURIComponent('Cà phê'));
+                const json = await res.json();
+                const items = (json.data || []).slice(0, 4);
+                if (!items.length) throw new Error('empty');
+                box.innerHTML = items.map((p, i) => `
+                    <div class="product-card flex flex-col">
+                        <a href="${p.url}" class="block aspect-[4/5] bg-coffee-latte overflow-hidden" tabindex="-1" aria-hidden="true">
+                            <img src="/${esc(p.image).replace(/^\//, '')}" alt="" loading="lazy"
+                                 class="w-full h-full object-cover hover:scale-105 transition duration-500"
+                                 onerror="this.onerror=null;this.src='/img/sanpham/placeholder.svg'">
                         </a>
-                    </div>
-                }
-            }
-            else
-            {
-                <p class="text-gray-500 col-span-4">Chưa có danh mục nào.</p>
-            }
-        </div>
-    </section>
-
-    <!-- Sản phẩm nổi bật (Lấy từ Database) -->
-    <section class="home-product mb-8">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl md:text-2xl font-bold relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-red-600 pb-2">CÀ PHÊ NỔI BẬT</h2>
-            <a asp-page="/View/Shop" class="text-red-600 hover:text-red-700 font-medium flex items-center">
-                Xem tất cả <i class="fas fa-chevron-right ml-1 text-sm"></i>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            @if (Model.FeaturedProducts.Any())
-            {
-                foreach (var product in Model.FeaturedProducts)
-                {
-                    // Tính giảm giá nếu có
-                    decimal discount = 0;
-                    if (product.CostPrice > product.SalePrice && product.CostPrice > 0)
-                    {
-                        discount = Math.Round((product.CostPrice - product.SalePrice) / product.CostPrice * 100);
-                    }
-
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition duration-300">
-                        <div class="relative">
-                            @if (discount > 0)
-                            {
-                                <div class="absolute top-2 left-2 z-10">
-                                    <span class="bg-red-600 text-white text-xs px-2 py-1 rounded-full">-@discount%</span>
-                                </div>
-                            }
-                            
-                            <!-- Link tới chi tiết sản phẩm -->
-                            <a asp-page="/View/Product" asp-route-id="@product.ProductId" class="block aspect-square overflow-hidden">
-                                <img src="~/@(product.ImageUrl ?? "img/sanpham/placeholder.png")" alt="@product.Name"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                                     onerror="this.src='/img/sanpham/placeholder.png'">
+                        <div class="p-4 flex flex-col flex-1">
+                            <a href="${p.url}" class="font-semibold text-sm uppercase tracking-wide text-coffee-dark line-clamp-2 hover:text-red-600">${esc(p.name)}</a>
+                            <p class="text-xs text-gray-500 mt-1">${esc(p.category)}${p.brand ? ' · ' + esc(p.brand) : ''}</p>
+                            <p class="text-lg font-bold text-coffee-dark mt-2">${esc(p.price)}</p>
+                            ${p.inStock ? '' : '<p class="text-xs font-medium text-gray-500">Tạm hết hàng</p>'}
+                            <a href="${p.url}" class="mt-auto pt-3" aria-label="Xem chi tiết ${esc(p.name)}">
+                                <span class="flex items-center justify-center gap-2 min-h-11 text-white text-sm rounded-md transition hover:opacity-90"
+                                      style="background:${cardColors[i % cardColors.length]}">
+                                    Xem chi tiết<i class="fas fa-arrow-right text-xs"></i>
+                                </span>
                             </a>
                         </div>
-                        
-                        <div class="p-3">
-                            <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 hover:text-red-600">
-                                <a asp-page="/View/Product" asp-route-id="@product.ProductId">
-                                    @product.Name
-                                </a>
-                            </h3>
-                            
-                            <!-- Hiển thị xuất xứ / danh mục nhỏ -->
-                            <p class="text-xs text-gray-500 mb-2">@product.Category?.Name - @product.Origin</p>
-
-                            <div class="flex items-center space-x-2">
-                                <span class="text-red-600 font-bold">@product.SalePrice.ToString("N0")₫</span>
-                                @if (discount > 0)
-                                {
-                                    <span class="text-gray-400 text-sm line-through">@product.CostPrice.ToString("N0")₫</span>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
+                    </div>`).join('');
+            } catch (e) {
+                box.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">
+                    <i class="fas fa-mug-hot text-4xl text-red-300 mb-3 block"></i>
+                    Chưa có sản phẩm để hiển thị. <a href="/View/Shop" class="text-red-600 font-medium">Vào cửa hàng</a></div>`;
             }
-            else
-            {
-                <p class="text-gray-500 col-span-4">Chưa có sản phẩm nào được bán.</p>
-            }
-        </div>
-    </section>
-</div>
+        })();
+    </script>
+}

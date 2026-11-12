@@ -13,10 +13,10 @@
                         {
                             <div class="absolute top-2 left-2 z-10"><span class="bg-gray-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Hết hàng</span></div>
                         }
-                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/img/sanpham/placeholder.png" : product.ImageUrl)"
+                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/img/sanpham/placeholder.svg" : product.ImageUrl)"
                              alt="@product.Name"
                              class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
-                             onerror="this.src='/img/sanpham/placeholder.png'" />
+                             onerror="this.src='/img/sanpham/placeholder.svg'" />
                     </div>
                     <div class="p-3">
                         <h3 class="font-medium text-sm mb-2 line-clamp-2 h-10 group-hover:text-red-600 transition">@product.Name</h3>

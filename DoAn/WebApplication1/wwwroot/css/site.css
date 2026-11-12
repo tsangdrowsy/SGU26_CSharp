@@ -40,8 +40,8 @@
 }
 
 .category-toggle.active {
-    background-color: #fef2f2;
-    color: #dc2626;
+    background-color: #faf4ec;
+    color: #8a5a32;
 }
 
 .category-submenu {
@@ -164,7 +164,7 @@ body.search-active #searchOverlay {
     .price-wrapper .price {
         font-size: 15px;
         font-weight: 600;
-        color: #dc2626;
+        color: #8a5a32;
     }
 
     .price-wrapper .old-price {
@@ -176,8 +176,8 @@ body.search-active #searchOverlay {
     .price-wrapper .discount-badge {
         font-size: 11px;
         font-weight: 600;
-        color: #dc2626;
-        background: #fef2f2;
+        color: #8a5a32;
+        background: #faf4ec;
         padding: 2px 6px;
         border-radius: 4px;
     }
@@ -217,7 +217,7 @@ body.search-active #searchOverlay {
     gap: 8px;
     padding: 14px;
     background: #f9fafb;
-    color: #dc2626;
+    color: #8a5a32;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
@@ -286,26 +286,26 @@ body.search-active #searchOverlay {
 }
 
 .user-menu-item.logout {
-    color: #dc2626;
+    color: #8a5a32;
 }
 
     .user-menu-item.logout i {
-        color: #dc2626;
+        color: #8a5a32;
     }
 
 #searchInput {
-    background-color: #EEEEEE;
+    background-color: #ffffff;
     transition: all 0.2s ease;
 }
 
     #searchInput:focus {
-        background-color: #EEEEEE;
+        background-color: #ffffff;
         border-color: #ffffff;
-        box-shadow: 0 0 0 3px rgb(255, 255, 255);
+        box-shadow: 0 0 0 3px rgba(198, 156, 109, .45);
     }
 
     #searchInput::placeholder {
-        color: #1a1919;
+        color: #7f6f60;
         font-size: 15px;
         font-weight: 400;
     }
@@ -361,4 +361,142 @@ body.search-active #searchOverlay {
     .suggestion-info .price {
         font-size: 13px;
     }
+}
+
+/* =====================================================================
+   COFFEE THEME - tông nâu / trắng kem
+   ===================================================================== */
+:root {
+    --coffee-cream: #faf7f2;
+    --coffee-latte: #f1e6d6;
+    --coffee-light: #c69c6d;
+    --coffee: #8a5a32;
+    --coffee-dark: #3b2414;
+    --coffee-espresso: #241710;
+}
+
+html { scroll-behavior: smooth; }
+
+::selection { background: var(--coffee-light); color: #fff; }
+
+/* Header */
+.nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, .85);
+    padding: 4px 0;
+    transition: color .2s;
+}
+.nav-link:hover { color: var(--coffee-light); }
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 0; height: 1px;
+    background: var(--coffee-light);
+    transition: width .25s;
+}
+.nav-link:hover::after { width: 100%; }
+
+/* Footer */
+.footer-title {
+    color: #fff;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+.footer-link { color: rgba(241, 230, 214, .7); transition: color .2s; }
+.footer-link:hover { color: var(--coffee-light); }
+.social-btn {
+    width: 44px; height: 44px;
+    border-radius: 9999px;
+    border: 1px solid rgba(241, 230, 214, .25);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--coffee-latte);
+    transition: all .2s;
+}
+.social-btn:hover { background: var(--coffee-light); border-color: var(--coffee-light); color: var(--coffee-espresso); }
+
+/* Mobile menu */
+.mobile-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: background .2s;
+}
+.mobile-link i { width: 20px; color: var(--coffee); text-align: center; }
+.mobile-link:hover { background: var(--coffee-latte); }
+#main-menu.open { transform: translateX(0); }
+
+/* Buttons dùng chung */
+.btn-coffee {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--coffee); color: #fff;
+    min-height: 44px;
+    padding: 12px 22px; border-radius: 6px;
+    font-weight: 500; font-size: 14px;
+    transition: background .2s, transform .2s;
+}
+.btn-coffee:hover { background: #6f4526; transform: translateY(-1px); }
+.btn-outline-light {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid rgba(255, 255, 255, .8); color: #fff;
+    min-height: 44px;
+    padding: 11px 22px; border-radius: 6px;
+    font-weight: 500; font-size: 14px;
+    transition: all .2s;
+}
+.btn-outline-light:hover { background: #fff; color: var(--coffee-dark); }
+
+.eyebrow {
+    font-size: 11px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--coffee);
+    font-weight: 600;
+}
+
+/* Trang chủ: thẻ sản phẩm */
+.product-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ede4d7;
+    transition: box-shadow .25s, transform .25s;
+}
+.product-card:hover { box-shadow: 0 18px 35px -18px rgba(59, 36, 20, .35); transform: translateY(-3px); }
+
+/* Nền màu dự phòng nếu ảnh ngoài không tải được */
+.img-fallback { background: linear-gradient(135deg, #6f4526, #3b2414); }
+
+/* Thanh cuộn tông nâu */
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--coffee-light); }
+
+/* Tiêu đề trang dùng font serif cho cảm giác quán cà phê */
+#main h1, #main h2 { font-family: "Playfair Display", Georgia, serif; }
+:where(#main) :where(h1, h2) { color: var(--coffee-dark); }
+:where(#main) :where(.text-white h1, .text-white h2) { color: #fff; }
+#main h1 .fas, #main h2 .fas { font-family: "Font Awesome 6 Free"; }
+
+/* Vùng chạm tối thiểu 44x44px cho nút icon (ui-ux-pro-max: touch targets) */
+.tap-44 {
+    min-width: 44px; min-height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* Viền focus rõ ràng khi dùng bàn phím */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--coffee-light);
+    outline-offset: 2px;
+}
+
+/* Tôn trọng tuỳ chọn "giảm chuyển động" của người dùng (ui-ux-pro-max: reduced motion) */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+    .product-card:hover, .btn-coffee:hover, [class*="hover:scale"]:hover, .group:hover [class*="group-hover:scale"] { transform: none !important; }
 }

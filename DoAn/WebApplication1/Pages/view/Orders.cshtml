@@ -1,7 +1,7 @@
 ﻿@page
 @model WebApplication1.Pages.View.OrdersModel
 @{
-    ViewData["Title"] = "Quản lý đơn hàng - NVBPlay";
+    ViewData["Title"] = "Quản lý đơn hàng";
     var createdDate = Model.CurrentUser.CreatedAt.ToString("dd/MM/yyyy");
 }
 
@@ -45,20 +45,20 @@
                 <nav class="bg-white rounded-lg shadow-sm overflow-hidden hidden lg:block">
                     <ul class="divide-y divide-gray-200">
                         <li>
-                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
                                 <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
                                 Thông tin tài khoản
                             </a>
                         </li>
                         <li>
                             <!-- SỬA ACTIVE MENU TẠI ĐÂY -->
-                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium border-l-4 border-[#FF3F1A]">
+                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 bg-red-50 text-[#8a5a32] font-medium border-l-4 border-[#8a5a32]">
                                 <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
                                 Quản lý đơn hàng
                             </a>
                         </li>
                         <li>
-                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
                                 <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
                                 Địa chỉ giao hàng
                             </a>
@@ -159,7 +159,7 @@
                                     @foreach (var detail in order.OrderDetails)
                                     {
                                         <div class="flex items-start gap-4">
-                                            <img src="~/@(detail.Product?.ImageUrl ?? "img/sanpham/placeholder.png")" alt="@detail.Product?.Name" class="w-16 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/img/sanpham/placeholder.png'">
+                                            <img src="~/@(detail.Product?.ImageUrl ?? "img/sanpham/placeholder.svg")" alt="@detail.Product?.Name" class="w-16 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/img/sanpham/placeholder.svg'">
                                             <div class="flex-1">
                                                 <h4 class="font-medium text-gray-900">@detail.Product?.Name</h4>
                                                 <div class="flex items-center justify-between mt-1">

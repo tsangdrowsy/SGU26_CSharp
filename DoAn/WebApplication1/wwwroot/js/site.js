@@ -37,7 +37,7 @@
                 suggestionsList.innerHTML = limitedResults.map(product => `
                     <a href="${product.url}" class="suggestion-item">
                         <img src="/${product.image}" alt="${product.name}" loading="lazy"
-                             onerror="this.src='/img/sanpham/placeholder.png'">
+                             onerror="this.src='/img/sanpham/placeholder.svg'">
                         <div class="suggestion-info">
                             <h4>${product.name}</h4>
                             <div class="price-wrapper">
@@ -213,3 +213,27 @@ if (menuDropdown) {
         e.stopPropagation();
     });
 }
+
+// ========== MOBILE MENU (off-canvas) ==========
+document.addEventListener('DOMContentLoaded', function () {
+    const menu = document.getElementById('main-menu');
+    if (!menu) return;
+    const open = () => { menu.classList.add('open'); document.body.classList.add('menu-open'); };
+    const close = () => { menu.classList.remove('open'); document.body.classList.remove('menu-open'); };
+    document.querySelectorAll('.menu-toggle').forEach(b => b.addEventListener('click', open));
+    menu.querySelectorAll('.close-menu, .close-on-click').forEach(b => b.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+});
+
+// ========== ACCESSIBILITY: ẩn icon trang trí khỏi trình đọc màn hình ==========
+// Icon Font Awesome chỉ để minh hoạ; nút chỉ có icon đã có aria-label riêng.
+(function () {
+    const mark = root => root.querySelectorAll?.('i[class*="fa-"]:not([aria-hidden])')
+        .forEach(i => i.setAttribute('aria-hidden', 'true'));
+    document.addEventListener('DOMContentLoaded', () => {
+        mark(document);
+        // Áp dụng cả cho nội dung nạp bằng AJAX (lưới sản phẩm, gợi ý tìm kiếm...)
+        new MutationObserver(list => list.forEach(m => m.addedNodes.forEach(n => n.nodeType === 1 && mark(n.parentNode || n))))
+            .observe(document.body, { childList: true, subtree: true });
+    });
+})();

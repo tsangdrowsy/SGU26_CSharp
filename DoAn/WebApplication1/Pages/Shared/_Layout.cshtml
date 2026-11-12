@@ -8,11 +8,35 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-    <title>@ViewData["Title"] - NVBPlay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CoffeeShop</title>
+
+    <!-- Fonts: serif cho tiêu đề, sans cho nội dung (đều hỗ trợ tiếng Việt) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Bảng màu cà phê: ghi đè "red" thành nâu và "gray" thành tông kem ấm
+        // => mọi class red-* / gray-* cũ trong các trang tự đổi sang tông nâu - trắng
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        red: { 50: '#faf4ec', 100: '#f2e5d3', 200: '#e5cbad', 300: '#d2a97f', 400: '#bb8756', 500: '#a06a3a', 600: '#8a5a32', 700: '#6f4526', 800: '#55341d', 900: '#3b2414' },
+                        gray: { 50: '#faf7f2', 100: '#f3eee6', 200: '#e8dfd2', 300: '#d6c9b8', 400: '#a99886', 500: '#7f6f60', 600: '#5f5146', 700: '#473b32', 800: '#2f2620', 900: '#211a15' },
+                        coffee: { cream: '#faf7f2', latte: '#f1e6d6', light: '#c69c6d', DEFAULT: '#8a5a32', dark: '#3b2414', espresso: '#241710' }
+                    },
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Site CSS -->
@@ -21,7 +45,7 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
-<body class="font-sans antialiased bg-gray-50">
+<body class="font-sans antialiased bg-coffee-cream text-gray-800">
     <!-- Popup Overlay -->
     <div id="popup_overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50"></div>
 
@@ -29,184 +53,50 @@
     <div id="wrapper" class="min-h-screen flex flex-col">
 
         <!-- ================= HEADER ================= -->
-        <header id="header" class="sticky top-0 z-40 bg-white shadow-sm">
+        <header id="header" class="sticky top-0 z-40 bg-coffee-espresso text-white shadow-md">
             <div class="header-wrapper">
-                <!-- Wide Nav -->
-                <div id="wide-nav" class="bg-gray-900 text-white py-2">
-                    <div class="container mx-auto px-4 text-center">
-                        <div class="top-hot">
-                            <a asp-page="/View/Product" asp-route-id="4" class="text-white hover:text-yellow-300 transition text-sm md:text-base">
-                                ⚡ VỢT YONEX NANOFLARE 1000 GAME - RESTOCKED ⚡
-                            </a>
-                        </div>
+                <!-- Top bar -->
+                <div id="wide-nav" class="bg-coffee-dark text-coffee-latte py-1.5">
+                    <div class="container mx-auto px-4 flex items-center justify-center gap-x-4 sm:gap-x-5 text-[11px] sm:text-xs tracking-[0.06em] sm:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden">
+                        <a asp-page="/View/Shop" class="hover:text-white transition">
+                            <i class="fas fa-mug-hot mr-1.5 text-coffee-light"></i>Rang mới mỗi ngày<span class="hidden sm:inline"> · Giao tận nhà</span>
+                        </a>
+                        <span class="flex items-center"><i class="far fa-clock mr-1.5 text-coffee-light"></i>Mở cửa 07:00 – 22:00</span>
                     </div>
                 </div>
 
                 <!-- Main Header -->
-                <div id="masthead" class="py-2 md:py-3 border-b">
+                <div id="masthead" class="py-3">
                     <div class="container mx-auto px-4">
                         <!-- DEFAULT HEADER -->
-                        <div id="defaultHeader" class="grid grid-cols-[1fr,auto,1fr] items-center gap-0 relative">
+                        <div id="defaultHeader" class="flex items-center justify-between gap-2 sm:gap-4 relative">
 
-                            <!-- Cột trái -->
-                            <div class="flex items-center justify-start">
-                                <div class="md:hidden">
-                                    <button class="menu-toggle p-2 focus:outline-none">
-                                        <img src="~/img/icons/menu.svg" class="w-6 h-6" alt="menu">
-                                    </button>
-                                </div>
-
-                                <div class="hidden md:flex items-center ml-0 lg:ml-2">
-                                    <ul class="flex items-center space-x-4">
-                                        <!-- Mega Menu Trigger -->
-                                        <div class="hidden md:flex items-center ml-0 lg:ml-2">
-                                            <ul class="flex items-center space-x-4">
-                                                <li class="relative" id="mega-menu-container">
-                                                    <button id="mega-menu-trigger" class="button-menu flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition">
-                                                        <img src="~/img/icons/menu.svg" class="w-5 h-5 mr-2" alt="menu">
-                                                        <span>Danh mục</span>
-                                                    </button>
-
-                                                    <!-- Mega Menu Dropdown -->
-                                                    <div id="mega-menu-dropdown" class="absolute left-0 top-full mt-2 w-[900px] bg-white rounded-lg shadow-xl hidden z-50">
-                                                        <div class="flex p-4">
-                                                            <!-- Left Sidebar -->
-                                                            <div class="w-64 border-r border-gray-200 pr-4">
-                                                                <div class="icon-box-menu active bg-red-50 rounded-lg p-3 mb-1 cursor-pointer hover:bg-red-50 transition flex items-start" data-menu="badminton">
-                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
-                                                                        <img src="~/img/icons/logo-caulong.png" alt="Cầu Lông" class="w-full h-full">
-                                                                    </div>
-                                                                    <div>
-                                                                        <p class="font-bold text-red-600">Cầu Lông</p>
-                                                                        <p class="text-xs text-gray-500">Trang bị cầu lông chuyên nghiệp</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="icon-box-menu p-3 mb-1 cursor-pointer hover:bg-gray-50 transition flex items-start" data-menu="pickleball">
-                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
-                                                                        <img src="~/img/icons/logo-pickleball.png" alt="Pickleball" class="w-full h-full">
-                                                                    </div>
-                                                                    <div>
-                                                                        <p class="font-bold">Pickleball</p>
-                                                                        <p class="text-xs text-gray-500">Trang bị pickleball hàng đầu</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="icon-box-menu p-3 mb-1 cursor-pointer hover:bg-gray-50 transition flex items-start" data-menu="giay">
-                                                                    <div class="w-8 h-8 flex-shrink-0 mr-3">
-                                                                        <img src="~/img/icons/logo-giay.png" alt="Giày" class="w-full h-full">
-                                                                    </div>
-                                                                    <div>
-                                                                        <p class="font-bold">Giày</p>
-                                                                        <p class="text-xs text-gray-500">Giày thể thao tối ưu hoá vận động</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Right Content -->
-                                                            <div class="flex-1 pl-4">
-                                                                <!-- Content Badminton -->
-                                                                <div id="content-badminton" class="menu-content">
-                                                                    <div class="mb-4">
-                                                                        <div class="flex items-center justify-between mb-2">
-                                                                            <h3 class="font-bold">Thương hiệu nổi bật</h3>
-                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
-                                                                        </div>
-                                                                        <div class="grid grid-cols-4 gap-2">
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-yonex.webp" alt="Yonex" class="w-full h-full object-contain"></div><span class="text-sm font-medium">YONEX</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-adidas.webp" alt="Adidas" class="w-full h-full object-contain"></div><span class="text-sm font-medium">ADIDAS</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-li-ning.png" alt="Li-Ning" class="w-full h-full object-contain"></div><span class="text-sm font-medium">LI-NING</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-victor.png" alt="Victor" class="w-full h-full object-contain"></div><span class="text-sm font-medium">VICTOR</span></a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="border-t border-gray-200 my-3"></div>
-                                                                    <div>
-                                                                        <div class="flex items-center justify-between mb-2">
-                                                                            <h3 class="font-bold">Theo sản phẩm</h3>
-                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
-                                                                        </div>
-                                                                        <div class="grid grid-cols-3 gap-4">
-                                                                            <div>
-                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Vợt cầu lông</a>
-                                                                                <ul class="mt-2 space-y-1">
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Vợt cầu lông Yonex</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Vợt cầu lông Li-Ning</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
-                                                                                </ul>
-                                                                            </div>
-                                                                            <div>
-                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Balo cầu lông</a>
-                                                                                <ul class="mt-2 space-y-1">
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Balo Yonex</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Balo Victor</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
-                                                                                </ul>
-                                                                            </div>
-                                                                            <div>
-                                                                                <a asp-page="/View/Shop" class="font-semibold text-sm hover:text-red-600">Phụ kiện</a>
-                                                                                <ul class="mt-2 space-y-1">
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Quả cầu lông</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-gray-600 hover:text-red-600">Cước đan vợt</a></li>
-                                                                                    <li><a asp-page="/View/Shop" class="text-xs text-red-600 hover:text-red-700 font-medium">Xem thêm <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a></li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Content Pickleball -->
-                                                                <div id="content-pickleball" class="menu-content hidden">
-                                                                    <div class="mb-4">
-                                                                        <div class="flex items-center justify-between mb-2">
-                                                                            <h3 class="font-bold">Thương hiệu nổi bật</h3>
-                                                                            <a asp-page="/View/Shop" class="text-sm text-red-600 hover:text-red-700 flex items-center">Xem tất cả <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
-                                                                        </div>
-                                                                        <div class="grid grid-cols-4 gap-2">
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-joola.png" alt="JOOLA" class="w-full h-full object-contain"></div><span class="text-sm font-medium">JOOLA</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-selkirk.webp" alt="SELKIRK" class="w-full h-full object-contain"></div><span class="text-sm font-medium">SELKIRK</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-kamito.png" alt="KAMITO" class="w-full h-full object-contain"></div><span class="text-sm font-medium">KAMITO</span></a>
-                                                                            <a asp-page="/View/Shop" class="flex items-center bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition group"><div class="w-10 h-10 flex-shrink-0 mr-2"><img src="~/img/icons/logo-wika.png" alt="WIKA" class="w-full h-full object-contain"></div><span class="text-sm font-medium">WIKA</span></a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Content Giày -->
-                                                                <div id="content-giay" class="menu-content hidden">
-                                                                    <div class="text-center py-16">
-                                                                        <div class="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"><i class="fas fa-shoe-prints text-3xl text-gray-400"></i></div>
-                                                                        <h3 class="text-lg font-bold text-gray-700 mb-2">Sản Phẩm Sớm Ra Mắt</h3>
-                                                                        <p class="text-gray-500 text-sm">Chúng tôi đang chuẩn bị những mẫu giày thể thao chất lượng nhất. Hãy quay lại sau nhé!</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <li><a asp-page="/View/Shop" class="flex items-center text-gray-700 hover:text-red-600 font-medium"><img src="~/img/icons/store.svg" class="w-5 h-5 flex-shrink-0 mr-2"><span>CỬA HÀNG</span></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- Cột giữa: LOGO -->
-                            <div id="logo" class="flex justify-center items-center">
-                                <a asp-page="/Index" title="NVBPlay" rel="home">
-                                    <img width="100" height="40" src="~/img/icons/logonvb.png" alt="NVBPlay" class="h-12 md:h-14 w-auto transform scale-75">
+                            <!-- Trái: menu mobile + logo -->
+                            <div class="flex items-center gap-1 sm:gap-3 min-w-0">
+                                <button class="menu-toggle md:hidden w-11 h-11 -ml-2 flex items-center justify-center text-white" type="button" aria-label="Mở menu">
+                                    <i class="fas fa-bars text-xl"></i>
+                                </button>
+                                <a id="logo" asp-page="/Index" title="CoffeeShop" rel="home" class="flex items-center gap-2">
+                                    <span class="w-9 h-9 rounded-full bg-coffee-light/20 hidden sm:flex items-center justify-center">
+                                        <i class="fas fa-mug-hot text-coffee-light"></i>
+                                    </span>
+                                    <span class="font-serif text-xl sm:text-2xl font-semibold tracking-wide">CoffeeShop</span>
                                 </a>
                             </div>
 
-                            <!-- Cột phải -->
-                            <div class="flex items-center justify-end">
-                                <div class="hidden md:flex items-center space-x-4">
-                                    <div class="address-book">
-                                        <a asp-page="/View/AddressBook" class="flex items-center text-gray-700 hover:text-red-600">
-                                            <i class="fas fa-map-marker-alt mr-1"></i>
-                                            <span class="shipping-address text-sm"><span class="text">Chọn địa chỉ</span></span>
-                                        </a>
-                                    </div>
-                                    <div class="h-5 w-px bg-gray-300"></div>
+                            <!-- Giữa: điều hướng -->
+                            <nav class="hidden md:flex items-center gap-8 text-sm">
+                                <a asp-page="/Index" class="nav-link">Trang chủ</a>
+                                <a asp-page="/View/Shop" class="nav-link">Cửa hàng</a>
+                                <a href="/#our-story" class="nav-link">Câu chuyện</a>
+                                <a href="#footer" class="nav-link">Liên hệ</a>
+                            </nav>
 
-                                    <button id="searchToggle" class="search-toggle p-2 text-gray-700 hover:text-red-600">
-                                        <i class="fas fa-search text-xl"></i>
+                            <!-- Phải: tìm kiếm, tài khoản, giỏ hàng -->
+                            <div class="flex items-center justify-end">
+                                <div class="hidden md:flex items-center space-x-2">
+                                    <button id="searchToggle" class="search-toggle tap-44 text-white/90 hover:text-coffee-light transition" type="button" aria-label="Tìm kiếm">
+                                        <i class="fas fa-search text-lg"></i>
                                     </button>
 
                                     <!-- KHỐI TÀI KHOẢN DESKTOP -->
@@ -214,21 +104,21 @@
                                     {
                                         <!-- 1. Khách chưa đăng nhập -->
                                         <div class="relative group">
-                                            <button class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition" type="button">
-                                                <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
-                                                <span class="text-sm font-medium text-gray-700">Tài khoản</span>
-                                                <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                                            <button class="flex items-center space-x-2 hover:bg-white/10 px-3 py-2 rounded-full transition min-h-11" type="button">
+                                                <i class="far fa-user text-lg"></i>
+                                                <span class="text-sm font-medium hidden lg:inline">Tài khoản</span>
+                                                <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                                             </button>
 
-                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block z-50 w-max">
-                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px]">
-                                                    <a asp-page="/View/Login" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
-                                                        <i class="fas fa-sign-in-alt p-1"></i>
+                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block group-focus-within:block z-50 w-max">
+                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] text-gray-700">
+                                                    <a asp-page="/View/Login" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm rounded-t-xl">
+                                                        <i class="fas fa-sign-in-alt text-red-600 w-4"></i>
                                                         <span>Đăng nhập</span>
                                                     </a>
-                                                    <div class="border-t border-gray-100 my-1"></div>
-                                                    <a asp-page="/View/Register" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-b-xl">
-                                                        <i class="fas fa-user-plus p-1"></i>
+                                                    <div class="border-t border-gray-100"></div>
+                                                    <a asp-page="/View/Register" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm rounded-b-xl">
+                                                        <i class="fas fa-user-plus text-red-600 w-4"></i>
                                                         <span>Đăng ký</span>
                                                     </a>
                                                 </div>
@@ -239,38 +129,37 @@
                                     {
                                         <!-- 2. Đã đăng nhập -->
                                         <div class="relative group">
-                                            <button class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition" type="button">
-                                                <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
-                                                <span class="text-sm font-medium text-gray-700">@currentUser</span>
-                                                <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                                            <button class="flex items-center space-x-2 hover:bg-white/10 px-3 py-2 rounded-full transition min-h-11" type="button">
+                                                <i class="fas fa-user-circle text-lg text-coffee-light"></i>
+                                                <span class="text-sm font-semibold hidden lg:inline">@currentUser</span>
+                                                <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                                             </button>
 
-                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block z-50 w-max">
-                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[220px]">
-                                                    <div class="px-4 py-3 border-b border-gray-100">
-                                                        <div class="flex items-center space-x-3">
-                                                            <img src="~/img/icons/account.svg" class="w-10 h-10" alt="Account">
-                                                            <div>
-                                                                <p class="text-sm font-medium text-gray-800">@currentUser</p>
-                                                                <p class="text-xs text-gray-500">@currentEmail</p>
-                                                            </div>
+                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block group-focus-within:block z-50 w-max">
+                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[230px] text-gray-700">
+                                                    <!-- Thông tin user -->
+                                                    <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
+                                                        <span class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center"><i class="fas fa-user"></i></span>
+                                                        <div class="min-w-0">
+                                                            <p class="text-sm font-semibold text-gray-800 truncate">@currentUser</p>
+                                                            <p class="text-xs text-gray-500 truncate">@currentEmail</p>
                                                         </div>
                                                     </div>
-                                                    <a asp-page="/View/MyAccount" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
-                                                        <i class="fas fa-user"></i>
+                                                    <a asp-page="/View/MyAccount" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-user text-red-600 w-4"></i>
                                                         <span>Tài khoản của tôi</span>
                                                     </a>
-                                                    <a asp-page="/View/Orders" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
-                                                        <i class="fas fa-shopping-bag"></i>
+                                                    <a asp-page="/View/Orders" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-shopping-bag text-red-600 w-4"></i>
                                                         <span>Đơn hàng</span>
                                                     </a>
-                                                    <a asp-page="/View/AddressBook" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
-                                                        <i class="fas fa-map-marker-alt"></i>
+                                                    <a asp-page="/View/AddressBook" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-map-marker-alt text-red-600 w-4"></i>
                                                         <span>Sổ địa chỉ</span>
                                                     </a>
-                                                    <div class="border-t border-gray-100 my-1"></div>
-                                                    <a asp-page="/Index" asp-page-handler="Logout" class="flex items-center gap-2.5 px-4 py-3 text-red-600 hover:bg-red-50 transition text-sm rounded-b-xl font-medium">
-                                                        <i class="fas fa-sign-out-alt"></i>
+                                                    <div class="border-t border-gray-100"></div>
+                                                    <a asp-page="/Index" asp-page-handler="Logout" class="flex items-center gap-3 px-4 py-3 text-red-700 hover:bg-red-50 transition text-sm rounded-b-xl font-medium">
+                                                        <i class="fas fa-sign-out-alt w-4"></i>
                                                         <span>Đăng xuất</span>
                                                     </a>
                                                 </div>
@@ -279,50 +168,50 @@
                                     }
 
                                     <!-- Cart -->
-                                    <a asp-page="/View/Cart" class="relative p-2">
-                                        <i class="fas fa-shopping-basket text-gray-700 hover:text-red-600 text-xl"></i>
-                                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center transition-transform hover:scale-110">0</span>
+                                    <a asp-page="/View/Cart" class="relative tap-44 text-white/90 hover:text-coffee-light transition" aria-label="Giỏ hàng">
+                                        <i class="fas fa-shopping-bag text-lg"></i>
+                                        <span class="absolute top-1 right-0.5 bg-coffee-light text-coffee-espresso text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
                                     </a>
                                 </div>
 
                                 <!-- Mobile Right Elements -->
-                                <div class="md:hidden flex items-center space-x-3">
-                                    <button id="searchToggleMobile" class="search-toggle p-1">
-                                        <i class="fas fa-search text-xl text-gray-700"></i>
+                                <div class="md:hidden flex items-center -mr-2">
+                                    <button id="searchToggleMobile" class="search-toggle tap-44" type="button" aria-label="Tìm kiếm">
+                                        <i class="fas fa-search text-lg"></i>
                                     </button>
 
                                     @if (string.IsNullOrEmpty(currentUser))
                                     {
-                                        <a asp-page="/View/Login" class="p-1">
-                                            <i class="far fa-user text-xl text-gray-700"></i>
+                                        <a asp-page="/View/Login" class="tap-44" aria-label="Đăng nhập">
+                                            <i class="far fa-user text-lg"></i>
                                         </a>
                                     }
                                     else
                                     {
-                                        <a asp-page="/View/MyAccount" class="p-1">
-                                            <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
+                                        <a asp-page="/View/MyAccount" class="tap-44" aria-label="Tài khoản">
+                                            <i class="fas fa-user-circle text-lg text-coffee-light"></i>
                                         </a>
                                     }
 
-                                    <a asp-page="/View/Cart" class="relative p-1">
-                                        <i class="fas fa-shopping-basket text-xl"></i>
-                                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                                    <a asp-page="/View/Cart" class="relative tap-44" aria-label="Giỏ hàng">
+                                        <i class="fas fa-shopping-bag text-lg"></i>
+                                        <span class="absolute top-1 right-0.5 bg-coffee-light text-coffee-espresso text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
                                     </a>
                                 </div>
                             </div>
                         </div>
 
                         <!-- SEARCH HEADER -->
-                        <div id="searchHeader" class="hidden items-center justify-center py-2">
-                            <div class="w-full max-w-[800px] relative">
-                                <input type="text" id="searchInput" class="w-full px-5 pr-14 py-3 text-base border-2 border-gray-200 rounded-full focus:border-red-600 focus:outline-none transition-all bg-gray-50 focus:bg-white" placeholder="Tên sản phẩm, hãng..." autocomplete="off">
-                                <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-all rounded-full">
+                        <div id="searchHeader" class="hidden items-center justify-center py-1">
+                            <div class="w-full max-w-[800px] relative pr-12">
+                                <input type="text" id="searchInput" class="w-full px-5 pr-14 py-3 text-base rounded-full focus:outline-none transition-all text-gray-800" placeholder="Tìm cà phê: Arabica, Robusta, Culi..." autocomplete="off" aria-label="Tìm sản phẩm">
+                                <button type="button" class="absolute right-14 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-red-700 transition-all rounded-full" aria-label="Tìm">
                                     <i class="fas fa-search text-lg"></i>
                                 </button>
-                                <button id="closeSearchBtn" type="button" class="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center bg-gray-200 justify-center text-gray-500 hover:text-black transition-all rounded-full">
+                                <button id="closeSearchBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center bg-white/10 justify-center text-white hover:bg-white/20 transition-all rounded-full" aria-label="Đóng tìm kiếm">
                                     <i class="fas fa-times text-lg"></i>
                                 </button>
-                                <div id="searchSuggestions" class="absolute top-full left-0 right-0 z-50">
+                                <div id="searchSuggestions" class="absolute top-full left-0 right-12 z-50 text-gray-800">
                                     <div id="suggestionsList" class="max-h-96 overflow-y-auto custom-scrollbar"></div>
                                 </div>
                             </div>
@@ -341,55 +230,69 @@
         </main>
 
         <!-- ================= FOOTER ================= -->
-        <footer id="footer" class="bg-black text-white mt-auto">
-            <div class="container mx-auto px-4 py-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="pl-5">
-                        <h3 class="text-4xl font-bold mb-4">Boost<br>your power</h3>
-                        <div class="flex space-x-3 mb-4">
-                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-tiktok"></i></a>
-                            <a href="#" target="_blank" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-600 transition"><i class="fas fa-shopping-bag"></i></a>
+        <footer id="footer" class="bg-coffee-espresso text-coffee-latte mt-auto">
+            <div class="container mx-auto px-4 pt-14 pb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <div>
+                        <a asp-page="/Index" class="flex items-center gap-2 text-white mb-3">
+                            <i class="fas fa-mug-hot text-coffee-light text-xl"></i>
+                            <span class="font-serif text-2xl font-semibold">CoffeeShop</span>
+                        </a>
+                        <p class="text-sm text-coffee-latte/70 mb-5">Cà phê ngon · Ngày mới tươi sáng.</p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-btn" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-4">Thông tin khác</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH BẢO MẬT</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH THANH TOÁN</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH BẢO HÀNH ĐỔI TRẢ</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition">CHÍNH SÁCH VẬN CHUYỂN</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition">THOẢ THUẬN SỬ DỤNG</a></li>
+                        <h3 class="footer-title">Cửa hàng</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a asp-page="/View/Shop" class="footer-link">Tất cả cà phê</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Arabica" class="footer-link">Arabica</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Robusta" class="footer-link">Robusta</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Blend" class="footer-link">Cà phê phối trộn</a></li>
+                            <li><a asp-page="/View/Cart" class="footer-link">Giỏ hàng</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-4">Về chúng tôi</h3>
-                        <ul class="space-y-3">
-                            <li><a href="#" class="flex"><span class="font-medium w-20">Địa chỉ:</span><span class="text-gray-400">62 Lê Bình, Tân An, Cần Thơ</span></a></li>
-                            <li><div class="flex"><span class="font-medium w-20">Giờ làm việc:</span><span class="text-gray-400">08:00 - 21:00</span></div></li>
-                            <li><a href="tel:0987.879.243" class="flex"><span class="font-medium w-20">Hotline:</span><span class="text-gray-400">0987.879.243</span></a></li>
-                            <li><a href="mailto:info@nvbplay.vn" class="flex"><span class="font-medium w-20">Email:</span><span class="text-gray-400">info@nvbplay.vn</span></a></li>
+                        <h3 class="footer-title">Chính sách</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="footer-link">Chính sách bảo mật</a></li>
+                            <li><a href="#" class="footer-link">Chính sách thanh toán</a></li>
+                            <li><a href="#" class="footer-link">Đổi trả &amp; bảo quản</a></li>
+                            <li><a href="#" class="footer-link">Chính sách vận chuyển</a></li>
+                            <li><a href="#" class="footer-link">Thoả thuận sử dụng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="footer-title">Liên hệ</h3>
+                        <ul class="space-y-3 text-sm text-coffee-latte/80">
+                            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-coffee-light mt-1"></i><span>273 An Dương Vương, Q.5, TP. Hồ Chí Minh</span></li>
+                            <li class="flex gap-3"><i class="far fa-clock text-coffee-light mt-1"></i><span>07:00 - 22:00 mỗi ngày</span></li>
+                            <li class="flex gap-3"><i class="fas fa-phone-alt text-coffee-light mt-1"></i><a href="tel:0900000000" class="footer-link">0900 000 000</a></li>
+                            <li class="flex gap-3"><i class="far fa-envelope text-coffee-light mt-1"></i><a href="mailto:hello@coffeeshop.vn" class="footer-link">hello@coffeeshop.vn</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-800 my-6"></div>
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="text-gray-500 text-sm mb-4 md:mb-0">
-                        <p>©2025 CÔNG TY CỔ PHẦN NVB PLAY</p>
-                        <p>GPĐKKD số 1801779686 do Sở KHĐT TP. Cần Thơ cấp ngày 22 tháng 01 năm 2025</p>
-                    </div>
-                    <a href="#" target="_blank"><img src="~/img/icons/logoBCT.png" alt="Bộ Công Thương" class="h-12 w-auto"></a>
+                <div class="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-coffee-latte/60">
+                    <p>© @DateTime.Now.Year CoffeeShop. Đồ án môn C# - SGU.</p>
+                    <p class="flex items-center gap-2"><i class="fas fa-seedling text-coffee-light"></i>Vì một tương lai bền vững hơn mỗi ngày.</p>
                 </div>
             </div>
         </footer>
     </div>
 
     <!-- ================= MOBILE MENU (OFF-CANVAS) ================= -->
-    <div id="main-menu" class="fixed inset-0 bg-white z-50 transform -translate-x-full transition duration-300 md:hidden overflow-y-auto">
+    <div id="main-menu" class="fixed inset-0 bg-coffee-cream z-50 transform -translate-x-full transition duration-300 md:hidden overflow-y-auto">
         <div class="p-4">
             <div class="flex justify-between items-center mb-6">
-                <img src="~/img/icons/logonvb.png" height="30" width="50" class="relative-top-left transform scale-75">
-                <button class="close-menu p-2 hover:bg-gray-100 rounded-full transition"><i class="fas fa-times text-2xl text-gray-600"></i></button>
+                <span class="flex items-center gap-2 text-coffee-dark">
+                    <i class="fas fa-mug-hot text-red-600 text-xl"></i>
+                    <span class="font-serif text-2xl font-semibold">CoffeeShop</span>
+                </span>
+                <button class="close-menu tap-44 hover:bg-gray-100 rounded-full transition" type="button" aria-label="Đóng menu"><i class="fas fa-times text-2xl text-gray-600"></i></button>
             </div>
 
             <!-- KHỐI TÀI KHOẢN MOBILE -->
@@ -407,93 +310,36 @@
             else
             {
                 <div class="mb-6 pb-4 border-b border-gray-200">
-                    <!-- Giống hệt PHP: Hiển thị User, Email và nút Đăng xuất -->
+                    <!-- Hiển thị User, Email và nút Đăng xuất -->
                     <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center text-gray-700">
-                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                                <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
-                            </div>
-                            <div>
-                                <div class="font-medium">@currentUser</div>
-                                <span class="text-sm text-gray-500">@currentEmail</span>
+                        <div class="flex items-center text-gray-700 min-w-0">
+                            <div class="w-10 h-10 flex-shrink-0 bg-red-100 text-red-700 rounded-full flex items-center justify-center mr-3"><i class="fas fa-user"></i></div>
+                            <div class="min-w-0">
+                                <div class="font-semibold text-coffee-dark truncate">@currentUser</div>
+                                <span class="text-sm text-gray-500 truncate block">@currentEmail</span>
                             </div>
                         </div>
-                        <a asp-page="/Index" asp-page-handler="Logout" class="text-red-600 text-sm font-medium">Đăng xuất</a>
+                        <a asp-page="/Index" asp-page-handler="Logout" class="text-sm text-red-700 font-medium px-3 py-2 bg-red-50 rounded-lg">Đăng xuất</a>
                     </div>
 
-                    <!-- Bổ sung các nút điều hướng cho tài khoản (giống style bản PHP) -->
-                    <div class="space-y-2 mt-4">
-                        <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
-                            <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account"> <span class="font-medium">Thông tin tài khoản</span>
-                        </a>
-                        <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
-                            <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders"> <span class="font-medium">Quản lý đơn hàng</span>
-                        </a>
-                        <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
-                            <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address"> <span class="font-medium">Sổ địa chỉ</span>
-                        </a>
+                    <!-- Điều hướng tài khoản -->
+                    <div class="space-y-1">
+                        <a asp-page="/View/MyAccount" class="mobile-link"><i class="fas fa-user"></i>Thông tin tài khoản</a>
+                        <a asp-page="/View/Orders" class="mobile-link"><i class="fas fa-clipboard-list"></i>Quản lý đơn hàng</a>
+                        <a asp-page="/View/AddressBook" class="mobile-link"><i class="fas fa-map-marker-alt"></i>Sổ địa chỉ</a>
                     </div>
                 </div>
             }
 
             <!-- Mobile Menu Items -->
-            <div class="mb-4">
-                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Danh mục</h3>
-
-                <!-- Cầu Lông -->
-                <div class="mb-2">
-                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="badminton">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-caulong.png" alt="Cầu Lông" class="w-full h-full"></div>
-                            <span class="font-medium">Cầu Lông</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
-                    </button>
-                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-badminton">
-                        <div>
-                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Vợt cầu lông</a>
-                            <div class="pl-4 mt-1 space-y-1">
-                                <a asp-page="/View/Shop" class="block py-1 text-sm text-gray-600">Vợt Yonex</a>
-                                <a asp-page="/View/Shop" class="block py-1 text-sm text-gray-600">Vợt Li-Ning</a>
-                                <a asp-page="/View/Shop" class="block py-1 text-sm text-red-600">Xem thêm</a>
-                            </div>
-                        </div>
-                        <div>
-                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Phụ kiện</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pickleball -->
-                <div class="mb-2">
-                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="pickleball">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-pickleball.png" alt="Pickleball" class="w-full h-full"></div>
-                            <span class="font-medium">Pickleball</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
-                    </button>
-                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-pickleball">
-                        <div>
-                            <a asp-page="/View/Shop" class="block py-2 text-gray-700 font-medium">Vợt Pickleball</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Giày -->
-                <div class="mb-2">
-                    <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="giay">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0"><img src="~/img/icons/logo-giay.png" alt="Giày" class="w-full h-full"></div>
-                            <span class="font-medium">Giày</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-sm text-gray-500 transition-transform"></i>
-                    </button>
-                    <div class="pl-11 pr-3 mt-2 space-y-2 hidden category-submenu" id="submenu-giay">
-                        <p class="text-sm text-gray-500">Sớm ra mắt!!</p>
-                    </div>
-                </div>
-            </div>
+            <nav class="space-y-1 text-gray-800">
+                <a asp-page="/Index" class="mobile-link"><i class="fas fa-home"></i>Trang chủ</a>
+                <a asp-page="/View/Shop" class="mobile-link"><i class="fas fa-store"></i>Cửa hàng</a>
+                <a asp-page="/View/Shop" asp-route-Search="Arabica" class="mobile-link"><i class="fas fa-seedling"></i>Arabica</a>
+                <a asp-page="/View/Shop" asp-route-Search="Robusta" class="mobile-link"><i class="fas fa-fire"></i>Robusta</a>
+                <a href="/#our-story" class="mobile-link close-on-click"><i class="fas fa-leaf"></i>Câu chuyện</a>
+                <a asp-page="/View/Cart" class="mobile-link"><i class="fas fa-shopping-bag"></i>Giỏ hàng</a>
+            </nav>
         </div>
     </div>
 

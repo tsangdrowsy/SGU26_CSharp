@@ -1,7 +1,7 @@
 ﻿@page
 @model WebApplication1.Pages.View.OrderSuccessModel
 @{
-    ViewData["Title"] = "Đặt hàng thành công - CoffeeShop";
+    ViewData["Title"] = "Đặt hàng thành công";
 }
 
 <main class="container mx-auto px-4 py-12 max-w-2xl min-h-[60vh]">
@@ -26,7 +26,7 @@
             {
                 <div class="flex justify-between items-center text-sm">
                     <div class="flex items-center gap-3">
-                        <img src="~/@(item.Product?.ImageUrl ?? "img/sanpham/placeholder.png")" class="w-10 h-10 object-cover rounded border" onerror="this.src='/img/sanpham/placeholder.png'">
+                        <img src="~/@(item.Product?.ImageUrl ?? "img/sanpham/placeholder.svg")" class="w-10 h-10 object-cover rounded border" onerror="this.src='/img/sanpham/placeholder.svg'">
                         <span class="text-gray-800">@item.Product?.Name (x@(item.Quantity))</span>
                     </div>
                     <span class="font-medium text-gray-900">@((item.UnitPrice * item.Quantity).ToString("N0"))₫</span>

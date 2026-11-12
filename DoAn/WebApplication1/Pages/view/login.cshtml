@@ -1,7 +1,7 @@
 ﻿@page
 @model WebApplication1.Pages.View.LoginModel
 @{
-    ViewData["Title"] = "Đăng nhập - NVBPlay";
+    ViewData["Title"] = "Đăng nhập";
 }
 
 <main id="main" class="bg-white mt-10 mb-20 min-h-[60vh]">
@@ -13,7 +13,7 @@
                         
                         <!-- Banner Image -->
                         <div class="hidden md:block banner-login md:w-3/4 mr-10">
-                            <img decoding="async" src="https://nvbplay.vn/wp-content/themes/nvbplayvn/assets/img/Login-Place.png"
+                            <img decoding="async" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=80"
                                  alt="Banner Login" title="My account" class="w-full h-full object-cover"
                                  style="min-height: 500px;">
                         </div>
@@ -68,14 +68,14 @@
                                     
                                     <!-- Nút đăng nhập -->
                                     <button type="submit" id="submitBtn"
-                                            class="w-full bg-[#FF3F1A] text-white text-sm py-2.5 rounded hover:bg-red-600 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                            class="w-full bg-red-600 text-white text-sm py-2.5 rounded hover:bg-red-600 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">
                                         ĐĂNG NHẬP
                                     </button>
                                     
                                     <!-- Links -->
                                     <div class="flex justify-between text-xs pt-2">
                                         <a href="#" class="text-gray-500 hover:text-red-600"></a>
-                                        <a asp-page="/View/Register" class="text-[#FF3F1A] font-bold hover:underline">Đăng ký</a>
+                                        <a asp-page="/View/Register" class="text-[#8a5a32] font-bold hover:underline">Đăng ký</a>
                                     </div>
                                 </form>
                             </div>
@@ -105,7 +105,7 @@
                     password.setAttribute('type', type);
                     toggleIcon.classList.toggle('fa-eye');
                     toggleIcon.classList.toggle('fa-eye-slash');
-                    if (type === 'text') { togglePasswordBtn.style.color = '#FF3F1A'; }
+                    if (type === 'text') { togglePasswordBtn.style.color = '#8a5a32'; }
                     else { togglePasswordBtn.style.color = '#6b7280'; }
                 });
             }

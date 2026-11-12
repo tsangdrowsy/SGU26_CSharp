@@ -1,7 +1,7 @@
 ﻿@page
 @model WebApplication1.Pages.View.ShopModel
 @{
-    ViewData["Title"] = "Cửa hàng - NVBPlay";
+    ViewData["Title"] = "Cửa hàng";
 }
 
 @section Styles {
@@ -22,9 +22,9 @@
 
                 /* Style cho nút khi được chọn */
                 .filter-btn input[type="checkbox"]:checked + .btn-content {
-                    background: #fef2f2;
-                    border-color: #dc2626;
-                    color: #dc2626;
+                    background: #faf4ec;
+                    border-color: #8a5a32;
+                    color: #8a5a32;
                     font-weight: 500;
                 }
 
@@ -35,7 +35,7 @@
 
             .filter-btn .check-icon {
                 opacity: 0;
-                color: #dc2626;
+                color: #8a5a32;
                 transition: all 0.2s ease;
             }
 
@@ -46,8 +46,8 @@
             }
 
             .filter-btn:hover .btn-content {
-                border-color: #dc2626;
-                background: #fef2f2;
+                border-color: #8a5a32;
+                background: #faf4ec;
             }
 
         .line-clamp-2 {
@@ -61,6 +61,15 @@
 
 <!-- Main Content -->
 <main>
+    <!-- Banner cửa hàng -->
+    <section class="relative img-fallback text-white overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1800&q=70" alt="" class="absolute inset-0 w-full h-full object-cover opacity-40" onerror="this.style.display='none'">
+        <div class="relative container mx-auto px-4 py-12 md:py-16">
+            <p class="text-[11px] tracking-[0.3em] uppercase text-coffee-latte/80 mb-2">Bộ sưu tập</p>
+            <h1 class="font-serif text-4xl md:text-5xl" style="color:#fff">Cửa hàng cà phê</h1>
+            <p class="text-coffee-latte/90 mt-2 text-sm md:text-base">Arabica, Robusta, Culi và các dòng phối trộn — rang mới mỗi ngày.</p>
+        </div>
+    </section>
     <div class="container mx-auto px-4 py-6 md:py-8">
 
         <!-- Hiển thị các Tag bộ lọc đang áp dụng (Nếu có) -->
