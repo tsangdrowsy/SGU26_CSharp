@@ -1,0 +1,145 @@
+﻿@page
+@model WebApplication1.Pages.View.AddressBookModel
+@{
+    ViewData["Title"] = "Địa chỉ giao hàng - NVBPlay";
+    var createdDate = Model.CurrentUser.CreatedAt.ToString("dd/MM/yyyy");
+}
+
+<main class="flex-grow bg-gray-50 py-8">
+    <!-- Mobile Account Header (visible on mobile only) -->
+    <div class="lg:hidden bg-white border-b border-gray-200 mb-4 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="text-lg font-semibold">Tài khoản của tôi</h1>
+                </div>
+                <button class="show-menu p-2" onclick="toggleMobileAccountMenu()">
+                    <i class="fas fa-ellipsis-v text-xl text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-4 md:gap-8">
+
+            <!-- Sidebar -->
+            <div class="lg:w-1/4">
+                <!-- User Info Card -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <img src="~/img/icons/account.svg" alt="User avatar" class="w-16 h-16 rounded-full border-2 border-gray-200">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-gray-900">@Model.CurrentUser.FullName</h3>
+                                <div class="rank">
+                                    <img src="~/img/icons/subscription.svg" class="w-10 h-10" alt="Rank" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Thành viên từ @createdDate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="bg-white rounded-lg shadow-sm overflow-hidden hidden lg:block">
+                    <ul class="divide-y divide-gray-200">
+                        <li>
+                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                                <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition">
+                                <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
+                                Quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li>
+                            <!-- ACTIVE MENU -->
+                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 bg-red-50 text-[#FF3F1A] font-medium border-l-4 border-[#FF3F1A]">
+                                <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
+                                Địa chỉ giao hàng
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 md:p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Địa chỉ giao hàng mặc định</h3>
+
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="bg-green-50 border border-green-200 text-green-600 p-3 rounded mb-6 text-sm">
+                            <i class="fas fa-check-circle mr-2"></i> @Model.SuccessMessage
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="bg-red-50 border border-red-200 text-red-600 p-3 rounded mb-6 text-sm">
+                            <i class="fas fa-exclamation-circle mr-2"></i> @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Tên người nhận -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên người nhận <span class="text-red-500">*</span></label>
+                                <input asp-for="CurrentUser.FullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                                <span asp-validation-for="CurrentUser.FullName" class="text-red-500 text-xs mt-1 block"></span>
+                            </div>
+
+                            <!-- Số điện thoại -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại <span class="text-red-500">*</span></label>
+                                <input asp-for="CurrentUser.Phone" type="tel" maxlength="10" pattern="^0[0-9]{9}$"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                                <span asp-validation-for="CurrentUser.Phone" class="text-red-500 text-xs mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Tỉnh/Thành phố -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tỉnh/Thành phố <span class="text-red-500">*</span></label>
+                                <input asp-for="CurrentUser.City" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                            </div>
+
+                            <!-- Quận/Huyện -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Quận/Huyện <span class="text-red-500">*</span></label>
+                                <input asp-for="CurrentUser.District" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                            </div>
+
+                            <!-- Phường/Xã -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phường/Xã <span class="text-red-500">*</span></label>
+                                <input asp-for="CurrentUser.Ward" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required>
+                            </div>
+                        </div>
+
+                        <!-- Địa chỉ chi tiết -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ chi tiết (Số nhà, đường...) <span class="text-red-500">*</span></label>
+                            <textarea asp-for="CurrentUser.Address" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" required></textarea>
+                            <span asp-validation-for="CurrentUser.Address" class="text-red-500 text-xs mt-1 block"></span>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-100 flex justify-end">
+                            <button type="submit" class="px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition">
+                                <i class="fas fa-save mr-2"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

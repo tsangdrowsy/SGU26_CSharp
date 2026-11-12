@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Pages.View
 {
@@ -15,7 +20,9 @@ namespace WebApplication1.Pages.View
             _context = context;
         }
 
-        public IList<Order> OrdersList { get; set; } = default!;
+        // Thêm = null!; để tránh cảnh báo
+        public User CurrentUser { get; set; } = null!;
+        public IList<Order> OrdersList { get; set; } = new List<Order>();
 
         [BindProperty(SupportsGet = true)]
         public string StatusFilter { get; set; } = "all";
@@ -28,90 +35,86 @@ namespace WebApplication1.Pages.View
 
         public int TotalPages { get; set; }
         public int TotalOrders { get; set; }
+        public int PageSize { get; set; } = 10;
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // 1. Kiểm tra đăng nhập
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                return RedirectToPage("/View/Login", new { error = "login_required" });
+                return RedirectToPage("/View/Login");
             }
 
-            // 2. Xây dựng câu truy vấn
+            // --- BỔ SUNG: Lấy thông tin User cho Sidebar ---
+            CurrentUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (CurrentUser == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToPage("/View/Login");
+            }
+
+            // --- Xây dựng câu truy vấn Đơn hàng ---
             var query = _context.Orders
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
                 .Where(o => o.UserId == userId)
                 .AsQueryable();
 
-            // 3. Lọc theo trạng thái (SQL Server lưu Status dạng chuỗi: Pending, Confirmed, Delivered, Cancelled)
             if (StatusFilter != "all" && !string.IsNullOrEmpty(StatusFilter))
             {
                 query = query.Where(o => o.Status == StatusFilter);
             }
 
-            // 4. Tìm kiếm theo mã đơn hàng (Chỉ tìm số)
-            if (!string.IsNullOrEmpty(SearchQuery))
+            if (!string.IsNullOrEmpty(SearchQuery) && int.TryParse(SearchQuery, out int searchId))
             {
-                // Ép kiểu OrderId sang chuỗi để tìm kiếm tương đối
-                query = query.Where(o => o.OrderId.ToString().Contains(SearchQuery));
+                query = query.Where(o => o.OrderId == searchId);
             }
 
-            // 5. Đếm tổng số đơn và tính số trang
             TotalOrders = await query.CountAsync();
-            int pageSize = 10;
-            TotalPages = (int)Math.Ceiling(TotalOrders / (double)pageSize);
+            TotalPages = (int)Math.Ceiling(TotalOrders / (double)PageSize);
 
-            // Đảm bảo trang hiện tại hợp lệ
             if (CurrentPage < 1) CurrentPage = 1;
-            if (CurrentPage > TotalPages && TotalPages > 0) CurrentPage = TotalPages;
-
-            // 6. Lấy dữ liệu phân trang
             OrdersList = await query
-                .OrderByDescending(o => o.OrderDate) // Đơn mới nhất lên đầu
-                .Skip((CurrentPage - 1) * pageSize)
-                .Take(pageSize)
+                .OrderByDescending(o => o.OrderDate)
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
                 .ToListAsync();
 
             return Page();
         }
 
-        // Hàm hỗ trợ hiển thị màu sắc trạng thái
-        public string GetStatusBadgeClass(string status)
+        // --- BỔ SUNG: Hàm xử lý Hủy Đơn ---
+        public async Task<IActionResult> OnPostCancelAsync(int orderId)
         {
-            return status switch
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToPage("/View/Login");
+
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.UserId == userId);
+
+            // Chỉ cho phép hủy nếu đơn đang ở trạng thái Pending
+            if (order != null && order.Status == "Pending")
             {
-                "Pending" => "bg-yellow-100 text-yellow-800",
-                "Confirmed" => "bg-blue-100 text-blue-800",
-                "Delivered" => "bg-green-100 text-green-800",
-                "Cancelled" => "bg-red-100 text-red-800",
-                _ => "bg-gray-100 text-gray-800"
-            };
+                order.Status = "Cancelled";
+                order.UpdatedAt = DateTime.Now;
+
+                // (Tùy chọn) Hoàn lại số lượng tồn kho nếu bạn có xử lý trừ kho lúc đặt hàng
+                // foreach (var detail in order.OrderDetails) { ... cộng lại StockQuantity ... }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Đã hủy đơn hàng #{orderId} thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể hủy đơn hàng này.";
+            }
+
+            // Tải lại trang hiện tại
+            return RedirectToPage(new { status = StatusFilter, search = SearchQuery, page = CurrentPage });
         }
 
-        public string GetStatusText(string status)
-        {
-            return status switch
-            {
-                "Pending" => "Chờ xác nhận",
-                "Confirmed" => "Đã xác nhận",
-                "Delivered" => "Đã giao hàng",
-                "Cancelled" => "Đã hủy",
-                _ => "Không xác định"
-            };
-        }
-
-        public string GetStatusIcon(string status)
-        {
-            return status switch
-            {
-                "Pending" => "fa-clock",
-                "Confirmed" => "fa-check-circle",
-                "Delivered" => "fa-truck",
-                "Cancelled" => "fa-times-circle",
-                _ => "fa-question-circle"
-            };
-        }
+        // Helpers
+        public string GetStatusText(string status) => status switch { "Pending" => "Chờ xác nhận", "Confirmed" => "Đã xác nhận", "Delivered" => "Đã giao hàng", "Cancelled" => "Đã hủy", _ => "Không xác định" };
+        public string GetStatusBadgeClass(string status) => status switch { "Pending" => "bg-yellow-100 text-yellow-800", "Confirmed" => "bg-blue-100 text-blue-800", "Delivered" => "bg-green-100 text-green-800", "Cancelled" => "bg-red-100 text-red-800", _ => "bg-gray-100 text-gray-800" };
+        public string GetStatusIcon(string status) => status switch { "Pending" => "fa-clock", "Confirmed" => "fa-check-circle", "Delivered" => "fa-truck", "Cancelled" => "fa-times-circle", _ => "fa-question-circle" };
     }
 }
