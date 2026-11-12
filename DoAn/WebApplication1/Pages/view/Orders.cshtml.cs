@@ -24,13 +24,16 @@ namespace WebApplication1.Pages.View
         public User CurrentUser { get; set; } = null!;
         public IList<Order> OrdersList { get; set; } = new List<Order>();
 
-        [BindProperty(SupportsGet = true)]
+        // Name = "status": khớp với tham số ?status=... trên URL (asp-route-status)
+        [BindProperty(Name = "status", SupportsGet = true)]
         public string StatusFilter { get; set; } = "all";
 
-        [BindProperty(SupportsGet = true)]
+        // Name = "search": khớp với ?search=... (ô tìm kiếm có name="search")
+        [BindProperty(Name = "search", SupportsGet = true)]
         public string? SearchQuery { get; set; }
 
-        [BindProperty(SupportsGet = true)]
+        // Không dùng tên "page" vì Razor Pages đã dành "page" làm route value cho tên trang
+        [BindProperty(Name = "pageNumber", SupportsGet = true)]
         public int CurrentPage { get; set; } = 1;
 
         public int TotalPages { get; set; }
@@ -60,7 +63,9 @@ namespace WebApplication1.Pages.View
                 .Where(o => o.UserId == userId)
                 .AsQueryable();
 
-            if (StatusFilter != "all" && !string.IsNullOrEmpty(StatusFilter))
+            if (string.IsNullOrEmpty(StatusFilter)) StatusFilter = "all";
+
+            if (StatusFilter != "all")
             {
                 query = query.Where(o => o.Status == StatusFilter);
             }
@@ -109,7 +114,7 @@ namespace WebApplication1.Pages.View
             }
 
             // Tải lại trang hiện tại
-            return RedirectToPage(new { status = StatusFilter, search = SearchQuery, page = CurrentPage });
+            return RedirectToPage(new { status = StatusFilter, search = SearchQuery, pageNumber = CurrentPage });
         }
 
         // Helpers

@@ -182,6 +182,8 @@
                                         {
                                             <!-- SỬA NÚT HỦY ĐƠN: Dùng Form để gửi POST -->
                                             <form method="post" asp-page-handler="Cancel" asp-route-orderId="@order.OrderId" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                                <input type="hidden" name="status" value="@Model.StatusFilter" />
+                                                <input type="hidden" name="search" value="@Model.SearchQuery" />
                                                 <button type="submit" class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition text-gray-700">
                                                     Hủy đơn
                                                 </button>
