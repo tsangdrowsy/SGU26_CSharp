@@ -15,8 +15,16 @@
             <NavigationView.PaneHeader>
                 <TextBlock Text="Coffee Admin" FontSize="20" FontWeight="Bold" Margin="10,15" Foreground="Black"/>
             </NavigationView.PaneHeader>
+            
+            
 
             <NavigationView.MenuItems>
+                <NavigationViewItem Content="Tổng quan (Dashboard)" Tag="Dashboard">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
                 <NavigationViewItem Content="Quản lý Sản phẩm" Tag="Products">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7B8;" />
@@ -40,14 +48,16 @@
                         <FontIcon Glyph="&#xE716;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-            
 
-            <NavigationViewItem Content="Quản lý Kho" Tag="Inventory">
-                <NavigationViewItem.Icon>
+
+                <NavigationViewItem Content="Quản lý Kho" Tag="Inventory">
+                    <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7B8;" />
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
+            
+            
 
             <NavigationView.PaneFooter>
                 <Grid Padding="10,8" Background="#F2F3F5" BorderThickness="0,1,0,0" BorderBrush="#E3E5E8">

@@ -32,7 +32,9 @@ namespace App67
             if (args.SelectedItem is NavigationViewItem item)
             {
                 string tag = item.Tag.ToString() ?? "";
-                if (tag == "Products")
+                if (tag == "Dashboard")
+                { ContentFrame.Navigate(typeof(Pages.DashboardPage)); }
+                else if (tag == "Products")
                 {
                     ContentFrame.Navigate(typeof(ProductsPage));
                 }
