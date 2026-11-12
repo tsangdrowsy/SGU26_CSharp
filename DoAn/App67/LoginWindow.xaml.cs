@@ -72,6 +72,7 @@ namespace App67
                     // Đăng nhập thành công -> Lưu thông tin Admin và mở MainWindow
                     App.CurrentAdminName = user.FullName; // Lưu tên Admin để hiển thị ở góc trái
                     App.CurrentAdminRole = user.Role;
+                    App.CurrentAdminId = user.UserId;
 
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Activate();

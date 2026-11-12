@@ -36,15 +36,19 @@ namespace App67
                 {
                     ContentFrame.Navigate(typeof(ProductsPage));
                 }
-                if (tag == "Categories")
+                else if (tag == "Categories")
                 {
                     ContentFrame.Navigate(typeof(Pages.CategoriesPage));
                 }
                 // Thêm điều hướng cho trang Đơn hàng (nếu bạn đã tạo OrdersPage)
-                /*else if (tag == "Orders")
+                else if (tag == "Orders")
                 {
                     ContentFrame.Navigate(typeof(OrdersPage));
-                }*/
+                }
+                else if (tag == "Users")
+                {
+                    ContentFrame.Navigate(typeof(Pages.UsersPage));
+                }
             }
         }
 

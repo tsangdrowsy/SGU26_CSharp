@@ -12,6 +12,7 @@ namespace App67
 
         public static string CurrentAdminName { get; set; } = "Admin";
         public static string CurrentAdminRole { get; set; } = "Quản trị viên";
+        public static int CurrentAdminId { get; set; } = 0;
 
         public App()
         {

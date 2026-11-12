@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="App67.Pages.UsersPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App67.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Hàng 0: Tiêu đề -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Quản Lý Người Dùng" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Hàng 1: Thanh tìm kiếm và Tải lại -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBox x:Name="txtSearch" PlaceholderText="Tìm theo tên, email..." Width="300" TextChanged="txtSearch_TextChanged"/>
+                <Button Content="Tải lại" Background="#3B82F6" Foreground="White" Click="btnRefresh_Click" CornerRadius="5" Padding="15,8"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Hàng 2: Bảng dữ liệu -->
+        <ListView Grid.Row="2" x:Name="UserListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
+            <ListView.Header>
+                <Grid Background="#F3F4F6" Padding="15,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="240"/>
+                        <!-- Tăng độ rộng cho 3 nút -->
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="ID" FontWeight="Bold" />
+                    <TextBlock Text="Tên đăng nhập" FontWeight="Bold" Grid.Column="1"/>
+                    <TextBlock Text="Họ và tên" FontWeight="Bold" Grid.Column="2"/>
+                    <TextBlock Text="Email" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Quyền" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="5"/>
+                    <TextBlock Text="Hành động" FontWeight="Bold" Grid.Column="6"/>
+                </Grid>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="240"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding UserId}" Grid.Column="0" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Username}" Grid.Column="1" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding FullName}" Grid.Column="2" Foreground="#111827" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Email}" Grid.Column="3" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RoleString}" Grid.Column="4" FontWeight="SemiBold" Foreground="#3B82F6" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="5" FontWeight="SemiBold" Foreground="{Binding StatusColor}" VerticalAlignment="Center"/>
+
+                        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                            <Button Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEdit_Click" Tag="{Binding UserId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                            <Button Content="Khóa/Mở" Background="#F59E0B" Foreground="White" Click="btnToggleLock_Click" Tag="{Binding UserId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                            <Button Content="Reset MK" Background="#EF4444" Foreground="White" Click="btnResetPassword_Click" Tag="{Binding UserId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Form Sửa Người Dùng -->
+        <ContentDialog x:Name="EditUserDialog" Title="Sửa thông tin người dùng" PrimaryButtonText="Lưu" CloseButtonText="Hủy" DefaultButton="Primary" PrimaryButtonClick="EditUserDialog_PrimaryButtonClick">
+            <ScrollViewer MaxHeight="500">
+                <StackPanel Spacing="10" Width="400">
+                    <TextBox x:Name="txtEditUsername" Header="Tên đăng nhập" IsReadOnly="True" Background="#F3F4F6"/>
+                    <TextBox x:Name="txtEditFullName" Header="Họ và tên (*)"/>
+                    <TextBox x:Name="txtEditEmail" Header="Email" IsReadOnly="True" Background="#F3F4F6"/>
+                    <TextBox x:Name="txtEditPhone" Header="Số điện thoại (*)" MaxLength="10" InputScope="Number"/>
+                    <TextBox x:Name="txtEditAddress" Header="Địa chỉ (Số nhà, đường...) (*)"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtEditWard" Header="Phường/Xã (*)" Grid.Column="0" Margin="0,0,5,0"/>
+                        <TextBox x:Name="txtEditDistrict" Header="Quận/Huyện (*)" Grid.Column="1" Margin="5,0,0,0"/>
+                    </Grid>
+                    <TextBox x:Name="txtEditCity" Header="Tỉnh/Thành phố (*)"/>
+
+                    <TextBlock Text="(*): Bắt buộc phải nhập đối với tài khoản Khách hàng." Foreground="Red" FontSize="11" Margin="0,5,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </ContentDialog>
+    </Grid>
+</Page>

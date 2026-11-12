@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
@@ -32,6 +33,15 @@ namespace WebApplication1.Pages
                 .OrderByDescending(p => p.CreatedAt) // Sản phẩm mới nhất lên đầu
                 .Take(4)
                 .ToListAsync();
+        }
+
+        public IActionResult OnGetLogout()
+        {
+            // Xóa toàn bộ Session
+            HttpContext.Session.Clear();
+
+            // Chuyển hướng về trang chủ
+            return RedirectToPage("/Index");
         }
     }
 }

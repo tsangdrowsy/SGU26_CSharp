@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="App67.Pages.OrdersPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App67.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tiêu đề -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Quản Lý Đơn Hàng" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button x:Name="btnRefresh" Content="Tải lại" Background="#3B82F6" Foreground="White" Click="btnRefresh_Click" CornerRadius="5" Padding="15,8" HorizontalAlignment="Right"/>
+        </Grid>
+
+        <!-- Bảng Danh sách Đơn hàng -->
+        <ListView Grid.Row="1" x:Name="OrderListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
+            <ListView.Header>
+                <Grid Background="#F3F4F6" Padding="15,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <!-- ID -->
+                        <ColumnDefinition Width="150"/>
+                        <!-- Ngày đặt -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Người nhận -->
+                        <ColumnDefinition Width="120"/>
+                        <!-- Tổng tiền -->
+                        <ColumnDefinition Width="120"/>
+                        <!-- Trạng thái -->
+                        <ColumnDefinition Width="200"/>
+                        <!-- Hành động -->
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Mã Đơn" FontWeight="Bold" />
+                    <TextBlock Text="Ngày đặt" FontWeight="Bold" Grid.Column="1"/>
+                    <TextBlock Text="Người nhận" FontWeight="Bold" Grid.Column="2"/>
+                    <TextBlock Text="Tổng tiền" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Hành động" FontWeight="Bold" Grid.Column="5"/>
+                </Grid>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding OrderId}" Grid.Column="0" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding OrderDateString}" Grid.Column="1" Foreground="#111827" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ReceiverName}" Grid.Column="2" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding TotalAmountString}" Grid.Column="3" Foreground="#DC2626" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="4" FontWeight="SemiBold" 
+           Foreground="{Binding StatusColor}" 
+           VerticalAlignment="Center"/>
+
+                        <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                            <Button Content="Chi tiết" Background="#6B7280" Foreground="White" Click="btnViewDetails_Click" Tag="{Binding OrderId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                            <Button Content="Duyệt" Background="#10B981" Foreground="White" Click="btnConfirm_Click" Tag="{Binding OrderId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                            <Button Content="Hủy" Background="#EF4444" Foreground="White" Click="btnCancelOrder_Click" Tag="{Binding OrderId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Hộp thoại Xem chi tiết -->
+        <ContentDialog x:Name="DetailDialog" Title="Chi tiết đơn hàng" CloseButtonText="Đóng" DefaultButton="Close">
+            <ScrollViewer MaxHeight="400" Width="450">
+                <StackPanel x:Name="DetailContentPanel" Spacing="10" />
+            </ScrollViewer>
+        </ContentDialog>
+    </Grid>
+</Page>
