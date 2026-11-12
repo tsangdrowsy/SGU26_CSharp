@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Remove="LoginWindow.xaml" />
     <None Remove="Pages\CategoriesPage.xaml" />
+    <None Remove="Pages\InventoryPage.xaml" />
     <None Remove="Pages\OrdersPage.xaml" />
     <None Remove="Pages\ProductsPage.xaml" />
     <None Remove="Pages\UsersPage.xaml" />
@@ -62,6 +63,11 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="*" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="*" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\InventoryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\UsersPage.xaml">

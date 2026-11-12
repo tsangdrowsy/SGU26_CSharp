@@ -20,6 +20,9 @@ namespace App67.Data // Nhớ sửa lại namespace này cho khớp với dự �
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ImportReceipt> ImportReceipts { get; set; }
+        public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
+        public DbSet<ImportReceiptDetail> ImportReceiptDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +39,10 @@ namespace App67.Data // Nhớ sửa lại namespace này cho khớp với dự �
             // CẤU HÌNH KHÓA CHÍNH PHỨC HỢP (Đã thêm lại cho bạn)
             modelBuilder.Entity<OrderDetail>()
                 .HasKey(od => new { od.OrderId, od.ProductId });
+
+            // Cấu hình Khóa chính phức hợp cho ImportReceiptDetail
+            modelBuilder.Entity<ImportReceiptDetail>()
+                .HasKey(ird => new { ird.ReceiptId, ird.ProductId });
 
             // Cấu hình Computed Column
             modelBuilder.Entity<Product>()
@@ -57,6 +64,15 @@ namespace App67.Data // Nhớ sửa lại namespace này cho khớp với dự �
             modelBuilder.Entity<OrderDetail>()
                 .ToTable(tb => tb.HasTrigger("trg_OrderDetails_InsteadOfInsert"))
                 .ToTable(tb => tb.HasTrigger("trg_OrderDetails_ReadOnly"));
+
+            modelBuilder.Entity<ImportReceipt>()
+                .ToTable(tb => tb.HasTrigger("trg_ImportReceipts_AfterUpdate"))
+                .ToTable(tb => tb.HasTrigger("trg_ImportReceipts_AfterDelete"));
+
+            modelBuilder.Entity<ImportReceiptDetail>()
+                .ToTable(tb => tb.HasTrigger("trg_ImportReceiptDetails_LockCompleted"));
+
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
