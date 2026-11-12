@@ -86,7 +86,8 @@
                                             <Button Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEditReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
                                             <Button Content="Xóa" Background="#EF4444" Foreground="White" Click="btnDeleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
                                             <Button Content="Hoàn Thành" Background="#F59E0B" Foreground="White" Click="btnCompleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
-                                        </StackPanel>
+                                        <Button Content="Xem chi tiết" Background="#6B7280" Foreground="White" Click="btnViewReceiptDetails_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12"/>
+                                    </StackPanel>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

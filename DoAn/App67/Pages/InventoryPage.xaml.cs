@@ -328,6 +328,71 @@ namespace App67.Pages
             }
         }
 
+        private async void btnViewReceiptDetails_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is int receiptId)
+            {
+                try
+                {
+                    using (var context = new CoffeeShopContext())
+                    {
+                        // Lấy thông tin phiếu kèm theo danh sách chi tiết và tên sản phẩm
+                        var receipt = context.ImportReceipts
+                            .Include(r => r.ImportReceiptDetails)
+                            .ThenInclude(d => d.Product)
+                            .FirstOrDefault(r => r.ReceiptId == receiptId);
+
+                        if (receipt != null)
+                        {
+                            // Tạo nội dung hiển thị
+                            string detailText = $"Mã phiếu: {receipt.ReceiptCode}\n";
+                            detailText += $"Ngày nhập: {receipt.ImportDate:dd/MM/yyyy HH:mm}\n";
+                            detailText += $"Trạng thái: {(receipt.Status == "Completed" ? "Đã hoàn thành" : "Bản nháp")}\n";
+                            detailText += $"Ghi chú: {receipt.Note ?? "Không có"}\n";
+                            detailText += "----------------------------------------\n";
+                            detailText += "DANH SÁCH SẢN PHẨM:\n";
+
+                            decimal totalAmount = 0;
+
+                            foreach (var item in receipt.ImportReceiptDetails)
+                            {
+                                string productName = item.Product?.Name ?? "SP đã xóa";
+                                decimal lineTotal = item.Quantity * item.ImportPrice;
+                                totalAmount += lineTotal;
+                                detailText += $"- {productName} | SL: {item.Quantity} | Giá: {item.ImportPrice:N0}đ | T.Tiền: {lineTotal:N0}đ\n";
+                            }
+
+                            if (!receipt.ImportReceiptDetails.Any())
+                            {
+                                detailText += "(Phiếu này chưa có sản phẩm nào)\n";
+                            }
+
+                            detailText += "----------------------------------------\n";
+                            detailText += $"TỔNG TIỀN NHẬP: {totalAmount:N0} VNĐ";
+
+                            // Hiển thị lên màn hình bằng ContentDialog
+                            ContentDialog dialog = new ContentDialog
+                            {
+                                Title = "Chi Tiết Phiếu Nhập",
+                                Content = new ScrollViewer
+                                {
+                                    Content = new TextBlock { Text = detailText, TextWrapping = TextWrapping.Wrap, FontFamily = new FontFamily("Consolas") },
+                                    MaxHeight = 400
+                                },
+                                CloseButtonText = "Đóng",
+                                XamlRoot = this.Content.XamlRoot
+                            };
+                            await dialog.ShowAsync();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowMessage("Lỗi", ex.Message);
+                }
+            }
+        }
+
         // =================================================================
         // XỬ LÝ TAB 2: LỊCH SỬ KHO
         // =================================================================
