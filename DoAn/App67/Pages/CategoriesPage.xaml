@@ -22,6 +22,7 @@
                 <Button x:Name="btnAdd" Content="Thêm mới" Background="#10B981" Foreground="White" Click="btnAdd_Click" CornerRadius="5" Padding="15,8"/>
                 <Button x:Name="btnEdit" Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEdit_Click" CornerRadius="5" Padding="15,8"/>
                 <Button x:Name="btnToggle" Content="Bật / Tắt" Background="#F59E0B" Foreground="White" Click="btnToggle_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnDelete" Content="Xóa" Background="#EF4444" Foreground="White" Click="btnDelete_Click" CornerRadius="5" Padding="15,8"/>
             </StackPanel>
         </Grid>
 
@@ -34,11 +35,13 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="ID" FontWeight="Bold" />
                     <TextBlock Text="Tên Danh Mục" FontWeight="Bold" Grid.Column="1"/>
                     <TextBlock Text="Mô tả" FontWeight="Bold" Grid.Column="2"/>
-                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Số SP" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="4"/>
                 </Grid>
             </ListView.Header>
 
@@ -50,11 +53,13 @@
                             <ColumnDefinition Width="200"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding CategoryId}" Grid.Column="0" Foreground="#6B7280"/>
                         <TextBlock Text="{Binding Name}" Grid.Column="1" FontWeight="SemiBold" Foreground="#111827"/>
                         <TextBlock Text="{Binding Description}" Grid.Column="2" Foreground="#6B7280"/>
-                        <TextBlock Text="{Binding StatusString}" Grid.Column="3" FontWeight="SemiBold" Foreground="#10B981"/>
+                        <TextBlock Text="{Binding ProductCount}" Grid.Column="3" Foreground="#6B7280"/>
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="4" FontWeight="SemiBold" Foreground="{Binding StatusColor}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -69,8 +74,10 @@
                        PrimaryButtonClick="CategoryDialog_PrimaryButtonClick">
 
             <StackPanel Spacing="10" Width="350">
-                <TextBox x:Name="txtName" Header="Tên danh mục (*)" PlaceholderText="VD: Arabica, Robusta..."/>
-                <TextBox x:Name="txtDescription" Header="Mô tả" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+                <TextBox x:Name="txtName" Header="Tên danh mục (*)" PlaceholderText="VD: Arabica, Robusta..." MaxLength="100"/>
+                <TextBox x:Name="txtDescription" Header="Mô tả (tối đa 100 ký tự)" AcceptsReturn="True" TextWrapping="Wrap" Height="80" MaxLength="100"/>
+                <!-- Lỗi hiển thị ngay trong dialog: WinUI không cho mở 2 ContentDialog cùng lúc -->
+                <TextBlock x:Name="txtFormError" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" FontSize="12"/>
             </StackPanel>
         </ContentDialog>
     </Grid>

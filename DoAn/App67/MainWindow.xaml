@@ -37,6 +37,11 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
+                <NavigationViewItem Content="Quản lý Giá bán" Tag="Prices">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8C7;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="Quản lý Đơn hàng" Tag="Orders">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7BF;" />

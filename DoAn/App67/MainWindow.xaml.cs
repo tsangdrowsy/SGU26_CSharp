@@ -10,6 +10,7 @@ namespace App67
         public MainWindow()
         {
             this.InitializeComponent();
+            App.MainAppWindow = this;
 
             // =========================================================
             // 1. THÊM ĐOẠN NÀY ĐỂ LẤY THÔNG TIN ADMIN TỪ LÚC ĐĂNG NHẬP
@@ -42,6 +43,10 @@ namespace App67
                 {
                     ContentFrame.Navigate(typeof(Pages.CategoriesPage));
                 }
+                else if (tag == "Prices")
+                {
+                    ContentFrame.Navigate(typeof(Pages.PricesPage));
+                }
                 // Thêm điều hướng cho trang Đơn hàng (nếu bạn đã tạo OrdersPage)
                 else if (tag == "Orders")
                 {
@@ -59,18 +64,33 @@ namespace App67
         }
 
         // =========================================================
-        // 2. THÊM HÀM NÀY ĐỂ XỬ LÝ KHI BẤM NÚT CÀI ĐẶT (BÁNH RĂNG)
+        // 2. NÚT CÀI ĐẶT (BÁNH RĂNG): Đăng xuất
         // =========================================================
-        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        private async void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             ContentDialog dialog = new ContentDialog
             {
-                Title = "Cài đặt hệ thống",
-                Content = "Chức năng cài đặt đang được phát triển.",
+                Title = "Tài khoản",
+                Content = $"Đang đăng nhập: {App.CurrentAdminName} ({App.CurrentAdminRole})",
+                PrimaryButtonText = "Đăng xuất",
                 CloseButtonText = "Đóng",
+                DefaultButton = ContentDialogButton.Close,
                 XamlRoot = this.Content.XamlRoot
             };
-            _ = dialog.ShowAsync();
+
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                // Xóa thông tin phiên đăng nhập, mở lại màn đăng nhập rồi đóng cửa sổ chính.
+                // Phải mở LoginWindow TRƯỚC khi đóng: đóng cửa sổ cuối cùng sẽ thoát cả ứng dụng.
+                App.CurrentAdminId = 0;
+                App.CurrentAdminName = "Admin";
+                App.CurrentAdminRole = "Quản trị viên";
+                App.MainAppWindow = null;
+
+                var loginWindow = new LoginWindow();
+                loginWindow.Activate();
+                this.Close();
+            }
         }
     }
 }

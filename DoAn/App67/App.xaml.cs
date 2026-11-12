@@ -14,6 +14,9 @@ namespace App67
         public static string CurrentAdminRole { get; set; } = "Quản trị viên";
         public static int CurrentAdminId { get; set; } = 0;
 
+        // Cửa sổ chính đang mở (dùng để lấy HWND cho FileOpenPicker và để Đăng xuất)
+        public static Window? MainAppWindow { get; set; }
+
         public App()
         {
             this.InitializeComponent();

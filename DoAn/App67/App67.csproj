@@ -21,6 +21,7 @@
     <None Remove="Pages\DashboardPage.xaml" />
     <None Remove="Pages\InventoryPage.xaml" />
     <None Remove="Pages\OrdersPage.xaml" />
+    <None Remove="Pages\PricesPage.xaml" />
     <None Remove="Pages\ProductsPage.xaml" />
     <None Remove="Pages\UsersPage.xaml" />
   </ItemGroup>
@@ -77,6 +78,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\UsersPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\PricesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

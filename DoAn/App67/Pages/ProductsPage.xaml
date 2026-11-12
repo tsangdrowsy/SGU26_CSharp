@@ -22,22 +22,39 @@
             </StackPanel>
         </Grid>
 
+        <!-- Bộ lọc: Tìm kiếm / Danh mục / Trạng thái -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,0,0,15">
+            <TextBox x:Name="txtSearch" PlaceholderText="Tìm theo tên, mã hoặc ID sản phẩm..." Width="300" TextChanged="txtSearch_TextChanged"/>
+            <ComboBox x:Name="cboFilterCategory" Width="200" PlaceholderText="Tất cả danh mục" SelectionChanged="Filter_SelectionChanged"/>
+            <ComboBox x:Name="cboFilterStatus" Width="160" SelectedIndex="0" SelectionChanged="Filter_SelectionChanged">
+                <ComboBoxItem Content="Tất cả trạng thái" Tag=""/>
+                <ComboBoxItem Content="Đang bán" Tag="visible"/>
+                <ComboBoxItem Content="Đã ẩn" Tag="hidden"/>
+            </ComboBox>
+            <Button Content="Xóa lọc" Background="#6B7280" Foreground="White" Click="btnClearFilter_Click" CornerRadius="5" Padding="15,8"/>
+            <TextBlock x:Name="txtResultCount" VerticalAlignment="Center" Foreground="#6B7280"/>
+        </StackPanel>
+
         <!-- Bảng Danh sách Sản phẩm -->
         <ListView Grid.Row="2" x:Name="ProductListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
             <ListView.Header>
                 <Grid Background="#F3F4F6" Padding="15,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="ID" FontWeight="Bold" />
-                    <TextBlock Text="Tên Sản Phẩm" FontWeight="Bold" Grid.Column="1"/>
-                    <TextBlock Text="Giá Bán" FontWeight="Bold" Grid.Column="2"/>
-                    <TextBlock Text="Tồn Kho" FontWeight="Bold" Grid.Column="3"/>
-                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Mã SP" FontWeight="Bold" Grid.Column="1"/>
+                    <TextBlock Text="Tên Sản Phẩm" FontWeight="Bold" Grid.Column="2"/>
+                    <TextBlock Text="Danh Mục" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Giá Bán" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Tồn Kho" FontWeight="Bold" Grid.Column="5"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="6"/>
                 </Grid>
             </ListView.Header>
 
@@ -46,18 +63,22 @@
                     <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="160"/>
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding ProductId}" Grid.Column="0" Foreground="#6B7280"/>
-                        <TextBlock Text="{Binding Name}" Grid.Column="1" FontWeight="SemiBold" Foreground="#111827"/>
+                        <TextBlock Text="{Binding Code}" Grid.Column="1" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding Name}" Grid.Column="2" FontWeight="SemiBold" Foreground="#111827" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding Category.Name}" Grid.Column="3" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
                         <!-- Sử dụng thuộc tính SalePriceString vừa tạo -->
-                        <TextBlock Text="{Binding SalePriceString}" Grid.Column="2" Foreground="#DC2626" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding StockQuantity}" Grid.Column="3" Foreground="#10B981"/>
+                        <TextBlock Text="{Binding SalePriceString}" Grid.Column="4" Foreground="#DC2626" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding StockQuantity}" Grid.Column="5" Foreground="#10B981"/>
                         <!-- Sử dụng thuộc tính StatusString vừa tạo -->
-                        <TextBlock Text="{Binding StatusString}" Grid.Column="4" Foreground="#6B7280"/>
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="6" Foreground="#6B7280"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -72,7 +93,7 @@
                        PrimaryButtonClick="ProductDialog_PrimaryButtonClick">
 
             <ScrollViewer MaxHeight="500">
-                <StackPanel Spacing="10" Width="350">
+                <StackPanel Spacing="10" Width="380">
                     <TextBox x:Name="txtName" Header="Tên sản phẩm (*)" PlaceholderText="VD: Cà phê Robusta"/>
                     <TextBox x:Name="txtCode" Header="Mã sản phẩm (*)" PlaceholderText="VD: CF-ROB-01"/>
 
@@ -84,6 +105,7 @@
                         <TextBox x:Name="txtCostPrice" Header="Giá nhập (*)" Grid.Column="0" Margin="0,0,5,0" PlaceholderText="VD: 100000" InputScope="Number"/>
                         <TextBox x:Name="txtProfitRate" Header="Tỷ lệ lãi (%)" Grid.Column="1" Margin="5,0,0,0" PlaceholderText="VD: 20" InputScope="Number"/>
                     </Grid>
+                    <TextBlock x:Name="txtStockNote" Text="Giá nhập và tồn kho chỉ thay đổi qua Phiếu nhập hàng (trang Quản lý Kho)." Foreground="#6B7280" FontSize="11" TextWrapping="Wrap"/>
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -92,6 +114,15 @@
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="txtStock" Header="Số lượng tồn (*)" Grid.Column="0" Margin="0,0,5,0" PlaceholderText="VD: 50" InputScope="Number"/>
                         <ComboBox x:Name="cboCategory" Header="Danh mục (*)" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="cboSupplier" Header="Nhà cung cấp" Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Stretch" PlaceholderText="(Không chọn)"/>
+                        <TextBox x:Name="txtUnit" Header="Đơn vị tính" Grid.Column="1" Margin="5,0,0,0" PlaceholderText="VD: Gói, Hộp"/>
                     </Grid>
 
                     <TextBox x:Name="txtOrigin" Header="Xuất xứ" PlaceholderText="VD: Đắk Lắk"/>
@@ -103,8 +134,18 @@
                         <ComboBoxItem Content="Dark"/>
                     </ComboBox>
 
-                    <TextBox x:Name="txtImageUrl" Header="Đường dẫn ảnh" PlaceholderText="VD: img/sanpham/cf1.jpg"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtImageUrl" Header="Đường dẫn ảnh" PlaceholderText="VD: img/sanpham/cf1.jpg"/>
+                        <Button x:Name="btnBrowseImage" Grid.Column="1" Content="Chọn ảnh..." Click="btnBrowseImage_Click" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
+                    </Grid>
                     <TextBox x:Name="txtDesc" Header="Mô tả" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+
+                    <!-- Lỗi hiển thị ngay trong dialog: WinUI không cho mở 2 ContentDialog cùng lúc -->
+                    <TextBlock x:Name="txtFormError" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" FontSize="12"/>
                 </StackPanel>
             </ScrollViewer>
         </ContentDialog>

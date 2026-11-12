@@ -16,6 +16,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Tiêu đề -->
@@ -63,8 +65,54 @@
                     </Border>
                 </Grid>
 
+                <!-- PHẦN 1B: KPI SO SÁNH THEO KỲ + TÌNH TRẠNG SẢN PHẨM -->
+                <Grid Grid.Row="2" Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Doanh thu tháng này (đơn Đã duyệt + Đã giao) so với tháng trước -->
+                    <Border Grid.Column="0" Background="#E0E7FF" CornerRadius="10" Padding="20" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="Doanh Thu Tháng Này" FontWeight="SemiBold" Foreground="#4338CA"/>
+                            <TextBlock x:Name="txtMonthRevenue" Text="0 ₫" FontSize="24" FontWeight="Bold" Foreground="#3730A3" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="txtMonthRevenueChange" FontSize="12" Foreground="#4338CA" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Đơn hôm nay so với hôm qua -->
+                    <Border Grid.Column="1" Background="#CCFBF1" CornerRadius="10" Padding="20" Margin="10,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="Đơn Hàng Hôm Nay" FontWeight="SemiBold" Foreground="#0F766E"/>
+                            <TextBlock x:Name="txtOrdersToday" Text="0" FontSize="24" FontWeight="Bold" Foreground="#115E59" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="txtOrdersTodayChange" FontSize="12" Foreground="#0F766E" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sản phẩm đang bán / đã ẩn -->
+                    <Border Grid.Column="2" Background="#FCE7F3" CornerRadius="10" Padding="20" Margin="10,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="Sản Phẩm" FontWeight="SemiBold" Foreground="#BE185D"/>
+                            <TextBlock x:Name="txtTotalProducts" Text="0" FontSize="24" FontWeight="Bold" Foreground="#9D174D" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="txtProductStatus" FontSize="12" Foreground="#BE185D" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Hết hàng / sắp hết -->
+                    <Border Grid.Column="3" Background="#FEE2E2" CornerRadius="10" Padding="20" Margin="10,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Tình Trạng Kho" FontWeight="SemiBold" Foreground="#B91C1C"/>
+                            <TextBlock x:Name="txtOutOfStock" Text="0" FontSize="24" FontWeight="Bold" Foreground="#991B1B" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="txtStockStatus" FontSize="12" Foreground="#B91C1C" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
                 <!-- PHẦN 2: DANH SÁCH (2 CỘT) -->
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="6*"/>
                         <!-- Cột Đơn hàng rộng hơn -->
@@ -88,11 +136,13 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="110"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding OrderIdString}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding ReceiverName}" Grid.Column="1" Foreground="#6B7280"/>
-                                            <TextBlock Text="{Binding TotalAmountString}" Grid.Column="2" Foreground="#DC2626" FontWeight="Bold" TextAlignment="Right"/>
+                                            <TextBlock Text="{Binding ReceiverName}" Grid.Column="1" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding StatusString}" Grid.Column="2" Foreground="{Binding StatusColor}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding TotalAmountString}" Grid.Column="3" Foreground="#DC2626" FontWeight="Bold" TextAlignment="Right"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -119,6 +169,64 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                             <TextBlock Text="{Binding StockString}" Grid.Column="1" Foreground="#DC2626" FontWeight="Bold" Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- PHẦN 3: BIỂU ĐỒ DOANH THU 7 NGÀY + TOP SẢN PHẨM BÁN CHẠY -->
+                <Grid Grid.Row="4" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="6*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Biểu đồ cột: mỗi cột là 1 Rectangle, chiều cao tính trong code-behind -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="15" Margin="0,0,10,0" BorderBrush="#E5E7EB" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Doanh Thu 7 Ngày Gần Nhất" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#111827"/>
+                            <ItemsControl x:Name="RevenueChart" Height="220">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Bottom"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Width="70" VerticalAlignment="Bottom" ToolTipService.ToolTip="{Binding TooltipText}">
+                                            <TextBlock Text="{Binding ShortValue}" FontSize="11" Foreground="#4338CA" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                            <Rectangle Height="{Binding BarHeight}" Width="40" Fill="#6366F1" RadiusX="4" RadiusY="4" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DayLabel}" FontSize="12" Foreground="#6B7280" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="15" Margin="10,0,0,0" BorderBrush="#E5E7EB" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Top 5 Bán Chạy Tháng Này" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#111827"/>
+
+                            <ListView Grid.Row="1" x:Name="TopProductsListView" SelectionMode="None">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="0,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding RankString}" FontWeight="Bold" Foreground="#F59E0B"/>
+                                            <TextBlock Text="{Binding ProductName}" Grid.Column="1" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding SoldString}" Grid.Column="2" Foreground="#10B981" FontWeight="Bold" Margin="10,0,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

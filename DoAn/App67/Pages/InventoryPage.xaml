@@ -49,20 +49,26 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="150"/>
                                         <!-- Mã phiếu -->
-                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="130"/>
                                         <!-- Ngày nhập -->
                                         <ColumnDefinition Width="*"/>
                                         <!-- Người tạo -->
-                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <!-- Số mặt hàng -->
+                                        <ColumnDefinition Width="130"/>
+                                        <!-- Tổng giá trị -->
+                                        <ColumnDefinition Width="110"/>
                                         <!-- Trạng thái -->
-                                        <ColumnDefinition Width="280"/>
+                                        <ColumnDefinition Width="300"/>
                                         <!-- Hành động -->
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Mã Phiếu" FontWeight="Bold"/>
                                     <TextBlock Text="Ngày Nhập" FontWeight="Bold" Grid.Column="1"/>
                                     <TextBlock Text="Người Tạo" FontWeight="Bold" Grid.Column="2"/>
-                                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="3"/>
-                                    <TextBlock Text="Hành động" FontWeight="Bold" Grid.Column="4"/>
+                                    <TextBlock Text="Số MH" FontWeight="Bold" Grid.Column="3"/>
+                                    <TextBlock Text="Tổng Giá Trị" FontWeight="Bold" Grid.Column="4"/>
+                                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="5"/>
+                                    <TextBlock Text="Hành động" FontWeight="Bold" Grid.Column="6"/>
                                 </Grid>
                             </ListView.Header>
                             <ListView.ItemTemplate>
@@ -70,19 +76,23 @@
                                     <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150"/>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="130"/>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="120"/>
-                                            <ColumnDefinition Width="280"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="130"/>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="300"/>
                                         </Grid.ColumnDefinitions>
 
                                         <TextBlock Text="{Binding ReceiptCode}" Grid.Column="0" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                         <TextBlock Text="{Binding DateString}" Grid.Column="1" Foreground="#6B7280" VerticalAlignment="Center"/>
                                         <TextBlock Text="{Binding CreatorName}" Grid.Column="2" VerticalAlignment="Center"/>
-                                        <TextBlock Text="{Binding StatusString}" Grid.Column="3" FontWeight="SemiBold" Foreground="{Binding StatusColor}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding ItemCount}" Grid.Column="3" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding TotalValueString}" Grid.Column="4" Foreground="#DC2626" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding StatusString}" Grid.Column="5" FontWeight="SemiBold" Foreground="{Binding StatusColor}" VerticalAlignment="Center"/>
 
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                            <Button Content="Thêm SP" Background="#8B5CF6" Foreground="White" Click="btnAddProduct_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
+                                        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                            <Button Content="Sản phẩm" Background="#8B5CF6" Foreground="White" Click="btnAddProduct_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
                                             <Button Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEditReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
                                             <Button Content="Xóa" Background="#EF4444" Foreground="White" Click="btnDeleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
                                             <Button Content="Hoàn Thành" Background="#F59E0B" Foreground="White" Click="btnCompleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
@@ -158,21 +168,370 @@
                         </ListView>
                     </Grid>
                 </TabViewItem>
+
+                <!-- ================= TAB 3: TỒN KHO THEO NGÀY ================= -->
+                <TabViewItem Header="Tồn Kho Theo Ngày" IsClosable="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,10,0,15" VerticalAlignment="Center">
+                            <TextBlock Text="Xem tồn kho ngày:" VerticalAlignment="Center"/>
+                            <CalendarDatePicker x:Name="dpStockDate" PlaceholderText="Chọn ngày" Width="140"/>
+                            <ComboBox x:Name="cboStockCategory" Width="200"/>
+                            <Button Content="Xem tồn kho" Background="#3B82F6" Foreground="White" Click="btnViewStockAtDate_Click" CornerRadius="5" Padding="15,8"/>
+                        </StackPanel>
+
+                        <ListView Grid.Row="1" x:Name="StockAtDateListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="None">
+                            <ListView.Header>
+                                <Grid Background="#F3F4F6" Padding="15,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="140"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Mã SP" FontWeight="Bold"/>
+                                    <TextBlock Text="Sản Phẩm" FontWeight="Bold" Grid.Column="1"/>
+                                    <TextBlock Text="Danh Mục" FontWeight="Bold" Grid.Column="2"/>
+                                    <TextBlock Text="Tồn đầu" FontWeight="Bold" Grid.Column="3"/>
+                                    <TextBlock Text="Nhập" FontWeight="Bold" Grid.Column="4"/>
+                                    <TextBlock Text="Xuất" FontWeight="Bold" Grid.Column="5"/>
+                                    <TextBlock Text="Tồn cuối" FontWeight="Bold" Grid.Column="6"/>
+                                    <TextBlock Text="Giá nhập BQ" FontWeight="Bold" Grid.Column="7"/>
+                                    <TextBlock Text="Giá trị tồn cuối" FontWeight="Bold" Grid.Column="8"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="140"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Code}" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding ProductName}" Grid.Column="1" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding CategoryName}" Grid.Column="2" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Opening}" Grid.Column="3"/>
+                                        <TextBlock Text="{Binding InQuantity}" Grid.Column="4" Foreground="Green"/>
+                                        <TextBlock Text="{Binding OutQuantity}" Grid.Column="5" Foreground="Red"/>
+                                        <TextBlock Text="{Binding Closing}" Grid.Column="6" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding CostPriceString}" Grid.Column="7" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding ClosingValueString}" Grid.Column="8" Foreground="#DC2626" FontWeight="SemiBold"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <TextBlock Grid.Row="2" x:Name="txtStockAtDateSummary" Margin="0,10,0,0" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   Text="Chọn ngày rồi bấm &quot;Xem tồn kho&quot;. Tồn kho được tính từ sổ kho (InventoryTransactions) tới hết ngày đã chọn."/>
+                    </Grid>
+                </TabViewItem>
+
+                <!-- ================= TAB 4: BÁO CÁO NHẬP - XUẤT ================= -->
+                <TabViewItem Header="Báo Cáo Nhập - Xuất" IsClosable="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,10,0,15" VerticalAlignment="Center">
+                            <TextBlock Text="Từ ngày:" VerticalAlignment="Center"/>
+                            <CalendarDatePicker x:Name="dpReportFrom" PlaceholderText="Bắt đầu" Width="130"/>
+                            <TextBlock Text="Đến ngày:" VerticalAlignment="Center"/>
+                            <CalendarDatePicker x:Name="dpReportTo" PlaceholderText="Kết thúc" Width="130"/>
+                            <ComboBox x:Name="cboReportProduct" Width="260" PlaceholderText="Tất cả sản phẩm"/>
+                            <Button Content="Xem báo cáo" Background="#3B82F6" Foreground="White" Click="btnGenerateReport_Click" CornerRadius="5" Padding="15,8"/>
+                        </StackPanel>
+
+                        <!-- Tóm tắt kỳ báo cáo (cùng phong cách thẻ KPI của Dashboard) -->
+                        <Grid Grid.Row="1" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#E0F2FE" CornerRadius="10" Padding="15" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="Tồn đầu kỳ" FontWeight="SemiBold" Foreground="#0284C7"/>
+                                    <TextBlock x:Name="txtReportOpening" Text="-" FontSize="22" FontWeight="Bold" Foreground="#0369A1"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#DCFCE7" CornerRadius="10" Padding="15" Margin="4,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Nhập trong kỳ" FontWeight="SemiBold" Foreground="#15803D"/>
+                                    <TextBlock x:Name="txtReportIn" Text="-" FontSize="22" FontWeight="Bold" Foreground="#166534"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#FEE2E2" CornerRadius="10" Padding="15" Margin="4,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Xuất (bán) trong kỳ" FontWeight="SemiBold" Foreground="#B91C1C"/>
+                                    <TextBlock x:Name="txtReportOut" Text="-" FontSize="22" FontWeight="Bold" Foreground="#991B1B"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="3" Background="#FEF3C7" CornerRadius="10" Padding="15" Margin="4,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Trả về (đơn hủy)" FontWeight="SemiBold" Foreground="#B45309"/>
+                                    <TextBlock x:Name="txtReportReturn" Text="-" FontSize="22" FontWeight="Bold" Foreground="#92400E"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="4" Background="#F3E8FF" CornerRadius="10" Padding="15" Margin="8,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Tồn cuối kỳ" FontWeight="SemiBold" Foreground="#7E22CE"/>
+                                    <TextBlock x:Name="txtReportClosing" Text="-" FontSize="22" FontWeight="Bold" Foreground="#6B21A8"/>
+                                    <TextBlock x:Name="txtReportClosingValue" FontSize="12" Foreground="#6B21A8" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- 2 bảng: Nhập (trái) và Xuất (phải) -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Margin="0,0,8,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="txtImportTitle" Text="Chi tiết nhập hàng" FontSize="16" FontWeight="Bold" Foreground="#15803D" Margin="0,0,0,8"/>
+                                <ListView Grid.Row="1" x:Name="ReportImportListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="None">
+                                    <ListView.Header>
+                                        <Grid Background="#F3F4F6" Padding="10,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Ngày" FontWeight="Bold"/>
+                                            <TextBlock Text="Phiếu / Sản phẩm" FontWeight="Bold" Grid.Column="1"/>
+                                            <TextBlock Text="SL" FontWeight="Bold" Grid.Column="2"/>
+                                            <TextBlock Text="Thành tiền" FontWeight="Bold" Grid.Column="3"/>
+                                        </Grid>
+                                    </ListView.Header>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="10,8" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="90"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="50"/>
+                                                    <ColumnDefinition Width="100"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DateString}" Foreground="#6B7280"/>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Reference}" FontSize="11" Foreground="#6B7280"/>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Quantity}" Grid.Column="2" Foreground="Green" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding TotalString}" Grid.Column="3"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+
+                            <Grid Grid.Column="1" Margin="8,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="txtExportTitle" Text="Chi tiết xuất hàng (đơn hàng)" FontSize="16" FontWeight="Bold" Foreground="#B91C1C" Margin="0,0,0,8"/>
+                                <ListView Grid.Row="1" x:Name="ReportExportListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="None">
+                                    <ListView.Header>
+                                        <Grid Background="#F3F4F6" Padding="10,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Ngày" FontWeight="Bold"/>
+                                            <TextBlock Text="Đơn / Sản phẩm" FontWeight="Bold" Grid.Column="1"/>
+                                            <TextBlock Text="SL" FontWeight="Bold" Grid.Column="2"/>
+                                            <TextBlock Text="Thành tiền" FontWeight="Bold" Grid.Column="3"/>
+                                        </Grid>
+                                    </ListView.Header>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="10,8" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="90"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="50"/>
+                                                    <ColumnDefinition Width="100"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DateString}" Foreground="#6B7280"/>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Reference}" FontSize="11" Foreground="#6B7280"/>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Quantity}" Grid.Column="2" Foreground="Red" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding TotalString}" Grid.Column="3"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </TabViewItem>
+
+                <!-- ================= TAB 5: CẢNH BÁO TỒN KHO ================= -->
+                <TabViewItem Header="Cảnh Báo Tồn Kho" IsClosable="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,10,0,15" VerticalAlignment="Center">
+                            <TextBox x:Name="txtWarningThreshold" Header="Ngưỡng sắp hết (≤)" Text="10" Width="140" InputScope="Number"/>
+                            <ComboBox x:Name="cboWarningCategory" Header="Danh mục" Width="200"/>
+                            <TextBox x:Name="txtWarningKeyword" Header="Tìm sản phẩm" PlaceholderText="Tên hoặc mã..." Width="220"/>
+                            <CheckBox x:Name="chkWarningVisibleOnly" Content="Chỉ SP đang bán" IsChecked="True" VerticalAlignment="Bottom"/>
+                            <Button Content="Lọc cảnh báo" Background="#3B82F6" Foreground="White" Click="btnFilterWarning_Click" CornerRadius="5" Padding="15,8" VerticalAlignment="Bottom"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#FEE2E2" CornerRadius="10" Padding="15" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="Hết hàng" FontWeight="SemiBold" Foreground="#B91C1C"/>
+                                    <TextBlock x:Name="txtCountOutOfStock" Text="0" FontSize="24" FontWeight="Bold" Foreground="#991B1B"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#FEF3C7" CornerRadius="10" Padding="15" Margin="4,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Sắp hết hàng" FontWeight="SemiBold" Foreground="#B45309"/>
+                                    <TextBlock x:Name="txtCountLowStock" Text="0" FontSize="24" FontWeight="Bold" Foreground="#92400E"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="10" Padding="15" Margin="8,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Đủ hàng" FontWeight="SemiBold" Foreground="#15803D"/>
+                                    <TextBlock x:Name="txtCountOkStock" Text="0" FontSize="24" FontWeight="Bold" Foreground="#166534"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <ListView Grid.Row="2" x:Name="WarningListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="None">
+                            <ListView.Header>
+                                <Grid Background="#F3F4F6" Padding="15,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="110"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Mã SP" FontWeight="Bold"/>
+                                    <TextBlock Text="Sản Phẩm" FontWeight="Bold" Grid.Column="1"/>
+                                    <TextBlock Text="Danh Mục" FontWeight="Bold" Grid.Column="2"/>
+                                    <TextBlock Text="Tồn kho" FontWeight="Bold" Grid.Column="3"/>
+                                    <TextBlock Text="Mức cảnh báo" FontWeight="Bold" Grid.Column="4"/>
+                                    <TextBlock Text="Trạng thái bán" FontWeight="Bold" Grid.Column="5"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="110"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Code}" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding ProductName}" Grid.Column="1" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding CategoryName}" Grid.Column="2" Foreground="#6B7280" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Stock}" Grid.Column="3" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding LevelString}" Grid.Column="4" FontWeight="SemiBold" Foreground="{Binding LevelColor}"/>
+                                        <TextBlock Text="{Binding VisibleString}" Grid.Column="5" Foreground="#6B7280"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </TabViewItem>
             </TabView>
 
-            <!-- Các Dialog (Form) giữ nguyên -->
+            <!-- Dialog Tạo / Sửa phiếu nhập -->
             <ContentDialog x:Name="CreateReceiptDialog" Title="Tạo Phiếu Nhập Mới" PrimaryButtonText="Tạo phiếu" CloseButtonText="Hủy" DefaultButton="Primary" PrimaryButtonClick="CreateReceiptDialog_PrimaryButtonClick">
                 <StackPanel Spacing="10" Width="350">
                     <TextBlock x:Name="txtAutoCodeNotice" Text="Mã phiếu sẽ được tạo tự động." FontSize="12" Foreground="Gray" Margin="0,0,0,10"/>
-                    <TextBox x:Name="txtReceiptNote" Header="Ghi chú (Tùy chọn)" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+                    <CalendarDatePicker x:Name="dpImportDate" Header="Ngày nhập" HorizontalAlignment="Stretch"/>
+                    <TextBox x:Name="txtReceiptNote" Header="Ghi chú (Tùy chọn)" AcceptsReturn="True" TextWrapping="Wrap" Height="80" MaxLength="500"/>
+                    <TextBlock x:Name="txtReceiptError" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" FontSize="12"/>
                 </StackPanel>
             </ContentDialog>
 
-            <ContentDialog x:Name="AddProductDialog" Title="Thêm Sản Phẩm Vào Phiếu" PrimaryButtonText="Thêm" CloseButtonText="Đóng" DefaultButton="Primary" PrimaryButtonClick="AddProductDialog_PrimaryButtonClick">
-                <StackPanel Spacing="15" Width="350">
-                    <ComboBox x:Name="cboProducts" Header="Chọn sản phẩm (*)" DisplayMemberPath="Name" SelectedValuePath="ProductId" HorizontalAlignment="Stretch"/>
-                    <TextBox x:Name="txtImportQuantity" Header="Số lượng nhập (*)" InputScope="Number" Text="1"/>
-                    <TextBox x:Name="txtImportPrice" Header="Giá nhập (VNĐ) (*)" InputScope="Number" Text="0"/>
+            <!-- Dialog Quản lý sản phẩm trong phiếu nháp: xem / thêm / sửa / xóa dòng -->
+            <ContentDialog x:Name="AddProductDialog" Title="Sản Phẩm Trong Phiếu" PrimaryButtonText="Lưu dòng" CloseButtonText="Xong" DefaultButton="Primary" PrimaryButtonClick="AddProductDialog_PrimaryButtonClick">
+                <StackPanel Spacing="12" Width="520">
+                    <TextBlock Text="Các sản phẩm đã có trong phiếu:" FontWeight="SemiBold"/>
+                    <ListView x:Name="ReceiptLinesListView" MaxHeight="180" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="6" SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="5,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding ProductName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding QuantityString}" Grid.Column="1" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding PriceString}" Grid.Column="2" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="3" Content="Xóa" Background="#EF4444" Foreground="White" Click="btnRemoveLine_Click" Tag="{Binding ProductId}" Padding="8,2" CornerRadius="4" FontSize="12"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock x:Name="txtLinesTotal" FontWeight="Bold" Foreground="#DC2626"/>
+
+                    <Border Height="1" Background="#E5E7EB"/>
+                    <TextBlock Text="Thêm / sửa dòng (chọn SP đã có để sửa số lượng, giá):" FontWeight="SemiBold"/>
+                    <ComboBox x:Name="cboProducts" Header="Chọn sản phẩm (*)" DisplayMemberPath="DisplayName" SelectedValuePath="ProductId" HorizontalAlignment="Stretch" SelectionChanged="cboProducts_SelectionChanged"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtImportQuantity" Header="Số lượng nhập (*)" InputScope="Number" Text="1" Margin="0,0,5,0" TextChanged="ImportInput_TextChanged"/>
+                        <TextBox x:Name="txtImportPrice" Header="Giá nhập (VNĐ) (*)" InputScope="Number" Text="0" Grid.Column="1" Margin="5,0,0,0" TextChanged="ImportInput_TextChanged"/>
+                    </Grid>
+                    <TextBlock x:Name="txtProductInfo" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap"/>
                     <TextBlock x:Name="txtProductError" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" FontSize="12"/>
                 </StackPanel>
             </ContentDialog>
