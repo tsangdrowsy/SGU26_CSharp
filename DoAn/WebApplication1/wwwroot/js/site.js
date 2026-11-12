@@ -159,3 +159,57 @@
         }
     });
 });
+
+// ========== DESKTOP MEGA MENU ==========
+const menuTrigger = document.getElementById('mega-menu-trigger');
+const menuDropdown = document.getElementById('mega-menu-dropdown');
+const menuItems = document.querySelectorAll('.icon-box-menu[data-menu]');
+const menuContents = document.querySelectorAll('.menu-content');
+
+if (menuTrigger) {
+    menuTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        menuDropdown.classList.toggle('hidden');
+    });
+}
+
+menuItems.forEach(item => {
+    item.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const menuId = this.getAttribute('data-menu');
+
+        // Xóa trạng thái active của tất cả các mục
+        menuItems.forEach(el => {
+            el.classList.remove('active', 'bg-red-50');
+            const titleEl = el.querySelector('.font-bold');
+            if (titleEl) titleEl.classList.remove('text-red-600');
+        });
+
+        // Thêm trạng thái active cho mục được chọn
+        this.classList.add('active', 'bg-red-50');
+        const activeTitle = this.querySelector('.font-bold');
+        if (activeTitle) activeTitle.classList.add('text-red-600');
+
+        // Ẩn tất cả nội dung bên phải
+        menuContents.forEach(content => content.classList.add('hidden'));
+
+        // Hiển thị nội dung tương ứng
+        const activeContent = document.getElementById(`content-${menuId}`);
+        if (activeContent) activeContent.classList.remove('hidden');
+    });
+});
+
+// Đóng Mega Menu khi click ra ngoài
+document.addEventListener('click', function (e) {
+    if (menuDropdown && menuTrigger &&
+        !menuDropdown.contains(e.target) && !menuTrigger.contains(e.target)) {
+        menuDropdown.classList.add('hidden');
+    }
+});
+
+// Ngăn việc click bên trong Menu làm đóng Menu
+if (menuDropdown) {
+    menuDropdown.addEventListener('click', function (e) {
+        e.stopPropagation();
+    });
+}

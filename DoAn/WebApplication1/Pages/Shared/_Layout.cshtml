@@ -2,6 +2,7 @@
 @{
     // Lấy tên User từ Session (Nếu chưa đăng nhập thì nó sẽ là null)
     var currentUser = Context.Session.GetString("Username");
+    var currentEmail = Context.Session.GetString("Email"); // Lấy thêm Email để hiển thị
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -9,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     <title>@ViewData["Title"] - NVBPlay</title>
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -26,7 +27,7 @@
 
     <!-- Main Wrapper -->
     <div id="wrapper" class="min-h-screen flex flex-col">
-        
+
         <!-- ================= HEADER ================= -->
         <header id="header" class="sticky top-0 z-40 bg-white shadow-sm">
             <div class="header-wrapper">
@@ -46,7 +47,7 @@
                     <div class="container mx-auto px-4">
                         <!-- DEFAULT HEADER -->
                         <div id="defaultHeader" class="grid grid-cols-[1fr,auto,1fr] items-center gap-0 relative">
-                            
+
                             <!-- Cột trái -->
                             <div class="flex items-center justify-start">
                                 <div class="md:hidden">
@@ -215,19 +216,19 @@
                                         <div class="relative group">
                                             <button class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition" type="button">
                                                 <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
-                                                <span class="text-sm font-medium text-gray-700 hidden sm:inline">Tài khoản</span>
+                                                <span class="text-sm font-medium text-gray-700">Tài khoản</span>
                                                 <i class="fas fa-chevron-down text-xs text-gray-500"></i>
                                             </button>
-            
+
                                             <div class="absolute right-0 top-full pt-2 hidden group-hover:block z-50 w-max">
                                                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px]">
-                                                    <a asp-page="/View/Login" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
-                                                        <i class="fas fa-sign-in-alt text-gray-500"></i>
+                                                    <a asp-page="/View/Login" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
+                                                        <i class="fas fa-sign-in-alt p-1"></i>
                                                         <span>Đăng nhập</span>
                                                     </a>
-                                                    <div class="border-t border-gray-100"></div>
-                                                    <a asp-page="/View/Register" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-b-xl">
-                                                        <i class="fas fa-user-plus text-gray-500"></i>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <a asp-page="/View/Register" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-b-xl">
+                                                        <i class="fas fa-user-plus p-1"></i>
                                                         <span>Đăng ký</span>
                                                     </a>
                                                 </div>
@@ -240,22 +241,35 @@
                                         <div class="relative group">
                                             <button class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition" type="button">
                                                 <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
-                                                <span class="text-sm font-bold text-red-600 hidden sm:inline">@currentUser</span>
+                                                <span class="text-sm font-medium text-gray-700">@currentUser</span>
                                                 <i class="fas fa-chevron-down text-xs text-gray-500"></i>
                                             </button>
-            
+
                                             <div class="absolute right-0 top-full pt-2 hidden group-hover:block z-50 w-max">
                                                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[220px]">
-                                                    <a asp-page="/View/MyAccount" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
-                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    <div class="px-4 py-3 border-b border-gray-100">
+                                                        <div class="flex items-center space-x-3">
+                                                            <img src="~/img/icons/account.svg" class="w-10 h-10" alt="Account">
+                                                            <div>
+                                                                <p class="text-sm font-medium text-gray-800">@currentUser</p>
+                                                                <p class="text-xs text-gray-500">@currentEmail</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a asp-page="/View/MyAccount" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm rounded-t-xl">
+                                                        <i class="fas fa-user"></i>
                                                         <span>Tài khoản của tôi</span>
                                                     </a>
-                                                    <a asp-page="/View/Orders" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
-                                                        <i class="fas fa-shopping-bag text-gray-500"></i>
+                                                    <a asp-page="/View/Orders" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-shopping-bag"></i>
                                                         <span>Đơn hàng</span>
                                                     </a>
-                                                    <div class="border-t border-gray-100"></div>
-                                                    <a asp-page="/Index" asp-page-handler="Logout" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition text-sm rounded-b-xl font-medium">
+                                                    <a asp-page="/View/AddressBook" class="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-map-marker-alt"></i>
+                                                        <span>Sổ địa chỉ</span>
+                                                    </a>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <a asp-page="/Index" asp-page-handler="Logout" class="flex items-center gap-2.5 px-4 py-3 text-red-600 hover:bg-red-50 transition text-sm rounded-b-xl font-medium">
                                                         <i class="fas fa-sign-out-alt"></i>
                                                         <span>Đăng xuất</span>
                                                     </a>
@@ -276,7 +290,7 @@
                                     <button id="searchToggleMobile" class="search-toggle p-1">
                                         <i class="fas fa-search text-xl text-gray-700"></i>
                                     </button>
-                                    
+
                                     @if (string.IsNullOrEmpty(currentUser))
                                     {
                                         <a asp-page="/View/Login" class="p-1">
@@ -285,8 +299,8 @@
                                     }
                                     else
                                     {
-                                        <a asp-page="/View/Profile" class="p-1">
-                                            <i class="fas fa-user-circle text-xl text-red-600"></i>
+                                        <a asp-page="/View/MyAccount" class="p-1">
+                                            <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
                                         </a>
                                     }
 
@@ -377,36 +391,55 @@
                 <img src="~/img/icons/logonvb.png" height="30" width="50" class="relative-top-left transform scale-75">
                 <button class="close-menu p-2 hover:bg-gray-100 rounded-full transition"><i class="fas fa-times text-2xl text-gray-600"></i></button>
             </div>
-            
+
             <!-- KHỐI TÀI KHOẢN MOBILE -->
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                @if (string.IsNullOrEmpty(currentUser))
-                {
+            @if (string.IsNullOrEmpty(currentUser))
+            {
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
                     <a asp-page="/View/Login" class="flex items-center text-gray-700">
                         <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3"><i class="far fa-user text-xl text-gray-600"></i></div>
                         <div>
                             <div class="font-medium">Tài khoản</div><span class="text-sm text-gray-500">Đăng nhập / Đăng ký</span>
                         </div>
                     </a>
-                }
-                else
-                {
-                    <div class="flex items-center justify-between w-full">
-                        <a asp-page="/View/Profile" class="flex items-center text-gray-700">
-                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3"><i class="fas fa-user-circle text-xl text-red-600"></i></div>
-                            <div>
-                                <div class="font-bold text-red-600">@currentUser</div><span class="text-sm text-gray-500">Thành viên</span>
+                </div>
+            }
+            else
+            {
+                <div class="mb-6 pb-4 border-b border-gray-200">
+                    <!-- Giống hệt PHP: Hiển thị User, Email và nút Đăng xuất -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center text-gray-700">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                                <img src="~/img/icons/account.svg" class="w-6 h-6" alt="Account">
                             </div>
-                        </a>
-                        <a asp-page="/Index" asp-page-handler="Logout" class="text-sm text-red-600 font-medium px-2 py-1 bg-red-50 rounded">Đăng xuất</a>
+                            <div>
+                                <div class="font-medium">@currentUser</div>
+                                <span class="text-sm text-gray-500">@currentEmail</span>
+                            </div>
+                        </div>
+                        <a asp-page="/Index" asp-page-handler="Logout" class="text-red-600 text-sm font-medium">Đăng xuất</a>
                     </div>
-                }
-            </div>
+
+                    <!-- Bổ sung các nút điều hướng cho tài khoản (giống style bản PHP) -->
+                    <div class="space-y-2 mt-4">
+                        <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
+                            <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account"> <span class="font-medium">Thông tin tài khoản</span>
+                        </a>
+                        <a asp-page="/View/Orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
+                            <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders"> <span class="font-medium">Quản lý đơn hàng</span>
+                        </a>
+                        <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#FF3F1A] transition rounded-lg bg-gray-50">
+                            <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address"> <span class="font-medium">Sổ địa chỉ</span>
+                        </a>
+                    </div>
+                </div>
+            }
 
             <!-- Mobile Menu Items -->
             <div class="mb-4">
                 <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Danh mục</h3>
-                
+
                 <!-- Cầu Lông -->
                 <div class="mb-2">
                     <button class="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg category-toggle" data-category="badminton">
