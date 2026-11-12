@@ -40,6 +40,13 @@
                         <FontIcon Glyph="&#xE716;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+            
+
+            <NavigationViewItem Content="Quản lý Kho" Tag="Inventory">
+                <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.PaneFooter>

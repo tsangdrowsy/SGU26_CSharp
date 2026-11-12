@@ -49,6 +49,10 @@ namespace App67
                 {
                     ContentFrame.Navigate(typeof(Pages.UsersPage));
                 }
+                else if (tag == "Inventory")
+                {
+                    ContentFrame.Navigate(typeof(Pages.InventoryPage));
+                }
             }
         }
 

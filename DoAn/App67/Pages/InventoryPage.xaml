@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="App67.Pages.InventoryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App67.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Tiêu đề -->
+            <TextBlock Text="Quản Lý Kho Hàng" FontSize="28" FontWeight="Bold" Margin="0,0,0,15"/>
+
+            <TabView Grid.Row="1" IsAddTabButtonVisible="False">
+                <!-- ================= TAB 1: PHIẾU NHẬP HÀNG ================= -->
+                <TabViewItem Header="Phiếu Nhập Hàng" IsClosable="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Thanh công cụ và Bộ lọc Phiếu Nhập -->
+                        <Grid Grid.Row="0" Margin="0,10,0,15">
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <Button x:Name="btnCreateReceipt" Content="Tạo Phiếu Nhập" Background="#10B981" Foreground="White" Click="btnCreateReceipt_Click" CornerRadius="5" Padding="15,8"/>
+                                <Button Content="Tải lại" Background="#6B7280" Foreground="White" Click="btnRefreshReceipts_Click" CornerRadius="5" Padding="15,8"/>
+
+                                <Border Width="1" Height="20" Background="LightGray" Margin="10,0"/>
+
+                                <TextBlock Text="Từ ngày:" VerticalAlignment="Center"/>
+                                <CalendarDatePicker x:Name="dpReceiptStartDate" PlaceholderText="Bắt đầu" Width="130"/>
+                                <TextBlock Text="Đến ngày:" VerticalAlignment="Center"/>
+                                <CalendarDatePicker x:Name="dpReceiptEndDate" PlaceholderText="Kết thúc" Width="130"/>
+                                <Button Content="Lọc" Background="#3B82F6" Foreground="White" Click="btnFilterReceipts_Click" CornerRadius="5" Padding="15,8"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Bảng Phiếu Nhập -->
+                        <ListView Grid.Row="1" x:Name="ReceiptListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
+                            <ListView.Header>
+                                <Grid Background="#F3F4F6" Padding="15,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <!-- Mã phiếu -->
+                                        <ColumnDefinition Width="150"/>
+                                        <!-- Ngày nhập -->
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- Người tạo -->
+                                        <ColumnDefinition Width="120"/>
+                                        <!-- Trạng thái -->
+                                        <ColumnDefinition Width="280"/>
+                                        <!-- Hành động -->
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Mã Phiếu" FontWeight="Bold"/>
+                                    <TextBlock Text="Ngày Nhập" FontWeight="Bold" Grid.Column="1"/>
+                                    <TextBlock Text="Người Tạo" FontWeight="Bold" Grid.Column="2"/>
+                                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="3"/>
+                                    <TextBlock Text="Hành động" FontWeight="Bold" Grid.Column="4"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="280"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding ReceiptCode}" Grid.Column="0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding DateString}" Grid.Column="1" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CreatorName}" Grid.Column="2" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding StatusString}" Grid.Column="3" FontWeight="SemiBold" Foreground="{Binding StatusColor}" VerticalAlignment="Center"/>
+
+                                        <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                            <Button Content="Thêm SP" Background="#8B5CF6" Foreground="White" Click="btnAddProduct_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
+                                            <Button Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEditReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
+                                            <Button Content="Xóa" Background="#EF4444" Foreground="White" Click="btnDeleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
+                                            <Button Content="Hoàn Thành" Background="#F59E0B" Foreground="White" Click="btnCompleteReceipt_Click" Tag="{Binding ReceiptId}" Padding="8,4" CornerRadius="4" FontSize="12" Visibility="{Binding CompleteButtonVisibility}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </TabViewItem>
+
+                <!-- ================= TAB 2: LỊCH SỬ KHO ================= -->
+                <TabViewItem Header="Lịch Sử Giao Dịch Kho" IsClosable="False">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Bộ lọc thời gian Tab 2 -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,10,0,15" VerticalAlignment="Center">
+                            <TextBlock Text="Từ ngày:" VerticalAlignment="Center"/>
+                            <CalendarDatePicker x:Name="dpStartDate" PlaceholderText="Bắt đầu" Width="130"/>
+                            <TextBlock Text="Đến ngày:" VerticalAlignment="Center"/>
+                            <CalendarDatePicker x:Name="dpEndDate" PlaceholderText="Kết thúc" Width="130"/>
+                            <Button Content="Lọc dữ liệu" Background="#3B82F6" Foreground="White" Click="btnFilterTransactions_Click" CornerRadius="5" Padding="15,8"/>
+                            <Button Content="Tải lại tất cả" Background="#6B7280" Foreground="White" Click="btnReloadTransactions_Click" CornerRadius="5" Padding="15,8"/>
+                        </StackPanel>
+
+                        <!-- Bảng Lịch sử kho -->
+                        <ListView Grid.Row="1" x:Name="TransactionListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8">
+                            <ListView.Header>
+                                <Grid Background="#F3F4F6" Padding="15,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <!-- Ngày -->
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- Tên sản phẩm -->
+                                        <ColumnDefinition Width="120"/>
+                                        <!-- Loại giao dịch -->
+                                        <ColumnDefinition Width="120"/>
+                                        <!-- Số lượng -->
+                                        <ColumnDefinition Width="200"/>
+                                        <!-- Ghi chú -->
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Thời Gian" FontWeight="Bold"/>
+                                    <TextBlock Text="Sản Phẩm" FontWeight="Bold" Grid.Column="1"/>
+                                    <TextBlock Text="Loại G.Dịch" FontWeight="Bold" Grid.Column="2"/>
+                                    <TextBlock Text="Thay Đổi" FontWeight="Bold" Grid.Column="3"/>
+                                    <TextBlock Text="Ghi Chú" FontWeight="Bold" Grid.Column="4"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="200"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding DateString}" Grid.Column="0" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding ProductName}" Grid.Column="1" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding TypeString}" Grid.Column="2" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding QuantityString}" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" Foreground="{Binding QuantityColor}"/>
+                                        <TextBlock Text="{Binding Note}" Grid.Column="4" Foreground="#6B7280" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
+
+            <!-- Các Dialog (Form) giữ nguyên -->
+            <ContentDialog x:Name="CreateReceiptDialog" Title="Tạo Phiếu Nhập Mới" PrimaryButtonText="Tạo phiếu" CloseButtonText="Hủy" DefaultButton="Primary" PrimaryButtonClick="CreateReceiptDialog_PrimaryButtonClick">
+                <StackPanel Spacing="10" Width="350">
+                    <TextBlock x:Name="txtAutoCodeNotice" Text="Mã phiếu sẽ được tạo tự động." FontSize="12" Foreground="Gray" Margin="0,0,0,10"/>
+                    <TextBox x:Name="txtReceiptNote" Header="Ghi chú (Tùy chọn)" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+                </StackPanel>
+            </ContentDialog>
+
+            <ContentDialog x:Name="AddProductDialog" Title="Thêm Sản Phẩm Vào Phiếu" PrimaryButtonText="Thêm" CloseButtonText="Đóng" DefaultButton="Primary" PrimaryButtonClick="AddProductDialog_PrimaryButtonClick">
+                <StackPanel Spacing="15" Width="350">
+                    <ComboBox x:Name="cboProducts" Header="Chọn sản phẩm (*)" DisplayMemberPath="Name" SelectedValuePath="ProductId" HorizontalAlignment="Stretch"/>
+                    <TextBox x:Name="txtImportQuantity" Header="Số lượng nhập (*)" InputScope="Number" Text="1"/>
+                    <TextBox x:Name="txtImportPrice" Header="Giá nhập (VNĐ) (*)" InputScope="Number" Text="0"/>
+                    <TextBlock x:Name="txtProductError" Foreground="Red" Visibility="Collapsed" TextWrapping="Wrap" FontSize="12"/>
+                </StackPanel>
+            </ContentDialog>
+        </Grid>
+    </Page>
