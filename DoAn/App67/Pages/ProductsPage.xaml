@@ -1,0 +1,42 @@
+<Page
+    x:Class="App67.Pages.ProductsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="#F9FAFB">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Danh sách Sản phẩm" FontSize="24" FontWeight="Bold" Foreground="Black" Margin="0,0,0,15"/>
+
+        <Border Grid.Row="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="10">
+            <ListView x:Name="ProductListView" BorderThickness="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="{Binding ProductId}" Foreground="Gray" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SalePrice}" Foreground="#DC2626" FontWeight="Medium"/>
+                                <TextBlock Text=" đ" Foreground="#DC2626" FontWeight="Medium"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="3" Text="{Binding StockQuantity}" Foreground="Black" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+    </Grid>
+</Page>

@@ -4,28 +4,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Quản Trị CoffeeShop">
 
-    <Grid Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <NavigationView x:Name="NavView"
+                        IsBackButtonVisible="Collapsed"
+                        IsSettingsVisible="False"
+                        PaneDisplayMode="Left"
+                        OpenPaneLength="220"
+                        SelectionChanged="NavView_SelectionChanged">
 
-        <!-- Thêm Foreground="Black" cho tiêu đề -->
-        <TextBlock Text="Danh Sách Sản Phẩm" FontSize="28" FontWeight="Bold" Margin="20" Foreground="Black"/>
+            <NavigationView.PaneHeader>
+                <TextBlock Text="Coffee Admin" FontSize="20" FontWeight="Bold" Margin="10,15" Foreground="Black"/>
+            </NavigationView.PaneHeader>
 
-        <ListView Grid.Row="1" x:Name="ProductListView" Margin="20" BorderBrush="Gray" BorderThickness="1">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Padding="10">
-                        <!-- Thêm Foreground="Black" cho từng cột -->
-                        <TextBlock Text="{Binding ProductId}" Width="50" Foreground="Black"/>
-                        <TextBlock Text="{Binding Name}" Width="250" FontWeight="SemiBold" Foreground="Black"/>
-                        <!-- Cột giá giữ nguyên màu Đỏ -->
-                        <TextBlock Text="{Binding SalePrice}" Width="150" Foreground="Red"/>
-                        <TextBlock Text="{Binding StockQuantity}" Width="100" Foreground="Black"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Quản lý Sản phẩm" Tag="Products">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem Content="Quản lý Đơn hàng" Tag="Orders">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7BF;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <!-- Khung chứa nội dung thay đổi -->
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
     </Grid>
 </Window>

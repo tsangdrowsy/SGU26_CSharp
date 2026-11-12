@@ -1,8 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Linq;
-using App67.Data; // <-- Sửa lại namespace này nếu bạn đã đổi tên
+using App67.Pages;
 
 namespace App67
 {
@@ -11,22 +9,19 @@ namespace App67
         public MainWindow()
         {
             this.InitializeComponent();
-            LoadData();
+            // Mặc định mở trang Sản phẩm
+            NavView.SelectedItem = NavView.MenuItems[0];
         }
 
-        private void LoadData()
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            try
+            if (args.SelectedItem is NavigationViewItem item)
             {
-                using (var context = new CoffeeShopContext())
+                string tag = item.Tag.ToString() ?? "";
+                if (tag == "Products")
                 {
-                    var products = context.Products.ToList();
-                    ProductListView.ItemsSource = products;
+                    ContentFrame.Navigate(typeof(ProductsPage));
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("LỖI KẾT NỐI: " + ex.Message);
             }
         }
     }
