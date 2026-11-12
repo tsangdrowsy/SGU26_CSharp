@@ -31,6 +31,7 @@ namespace WebApplication1.Pages.View
             // Lấy thông tin sản phẩm (kèm theo Category và Supplier)
             var product = await _context.Products
                 .Include(p => p.Category)
+                .Where(p => p.IsVisible && p.Category.IsActive == true)
                 .Include(p => p.Supplier)
                 .FirstOrDefaultAsync(p => p.ProductId == Id && p.IsVisible);
 

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="App67.Pages.CategoriesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App67.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="White">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tiêu đề và Thanh công cụ -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Quản Lý Danh Mục" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button x:Name="btnAdd" Content="Thêm mới" Background="#10B981" Foreground="White" Click="btnAdd_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnEdit" Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEdit_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnToggle" Content="Bật / Tắt" Background="#F59E0B" Foreground="White" Click="btnToggle_Click" CornerRadius="5" Padding="15,8"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Bảng Danh sách Danh mục -->
+        <ListView Grid.Row="1" x:Name="CategoryListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
+            <ListView.Header>
+                <Grid Background="#F3F4F6" Padding="15,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="ID" FontWeight="Bold" />
+                    <TextBlock Text="Tên Danh Mục" FontWeight="Bold" Grid.Column="1"/>
+                    <TextBlock Text="Mô tả" FontWeight="Bold" Grid.Column="2"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="3"/>
+                </Grid>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding CategoryId}" Grid.Column="0" Foreground="#6B7280"/>
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" FontWeight="SemiBold" Foreground="#111827"/>
+                        <TextBlock Text="{Binding Description}" Grid.Column="2" Foreground="#6B7280"/>
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="3" FontWeight="SemiBold" Foreground="#10B981"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Form Ẩn: Dùng để Thêm/Sửa -->
+        <ContentDialog x:Name="CategoryDialog"
+                       Title="Thông tin Danh mục"
+                       PrimaryButtonText="Lưu"
+                       CloseButtonText="Hủy"
+                       DefaultButton="Primary"
+                       PrimaryButtonClick="CategoryDialog_PrimaryButtonClick">
+
+            <StackPanel Spacing="10" Width="350">
+                <TextBox x:Name="txtName" Header="Tên danh mục (*)" PlaceholderText="VD: Arabica, Robusta..."/>
+                <TextBox x:Name="txtDescription" Header="Mô tả" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+            </StackPanel>
+        </ContentDialog>
+    </Grid>
+</Page>

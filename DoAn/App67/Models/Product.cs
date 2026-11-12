@@ -31,5 +31,7 @@ namespace WebApplication1.Models
         public int StockQuantity { get; set; }
         public bool IsVisible { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string SalePriceString => SalePrice.ToString("N0") + " ₫";
+        public string StatusString => IsVisible ? "Đang bán" : "Đã ẩn";
     }
 }

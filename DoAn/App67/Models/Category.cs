@@ -7,5 +7,6 @@
         public string? Description { get; set; }
         public bool IsActive { get; set; }
         public virtual ICollection<Product> Products { get; set; }
+        public string StatusString => IsActive ? "Đang bật" : "Đang tắt";
     }
 }

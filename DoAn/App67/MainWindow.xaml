@@ -23,12 +23,51 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
+                <NavigationViewItem Content="Quản lý Danh mục" Tag="Categories">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
                 <NavigationViewItem Content="Quản lý Đơn hàng" Tag="Orders">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7BF;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <Grid Padding="10,8" Background="#F2F3F5" BorderThickness="0,1,0,0" BorderBrush="#E3E5E8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Avatar và Chấm trạng thái -->
+                    <Grid Grid.Column="0" Width="38" Height="38" VerticalAlignment="Center">
+                        <Border CornerRadius="19" Background="#FF3F1A">
+                            <TextBlock x:Name="txtAvatarLetter" Text="A" Foreground="White" FontWeight="Bold" FontSize="18" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Ellipse Width="12" Height="12" Fill="#23A55A" Stroke="White" StrokeThickness="2" 
+                                 HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                    </Grid>
+
+                    <!-- Tên và Role -->
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="txtAdminName" Text="Admin Name" FontWeight="SemiBold" FontSize="14" Foreground="#060607"/>
+                        <TextBlock x:Name="txtAdminRole" Text="Quản trị viên" FontSize="12" Foreground="#5C5E66"/>
+                    </StackPanel>
+
+                    <!-- Nút Cài đặt -->
+                    <Button Grid.Column="2" x:Name="btnSettings" Background="Transparent" BorderThickness="0" 
+                            Padding="6" CornerRadius="4" VerticalAlignment="Center" ToolTipService.ToolTip="Cài đặt"
+                            Click="btnSettings_Click">
+                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="#5C5E66"/>
+                    </Button>
+                </Grid>
+            </NavigationView.PaneFooter>
 
             <!-- Khung chứa nội dung thay đổi -->
             <Frame x:Name="ContentFrame" />

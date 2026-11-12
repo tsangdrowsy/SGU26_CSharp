@@ -4,39 +4,109 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="#F9FAFB">
 
-    <Grid Margin="20">
+    <Grid Padding="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Danh sách Sản phẩm" FontSize="24" FontWeight="Bold" Foreground="Black" Margin="0,0,0,15"/>
+        <!-- Tiêu đề và Thanh công cụ -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Danh Sách Sản Phẩm" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button x:Name="btnAdd" Content="Thêm mới" Background="#10B981" Foreground="White" Click="btnAdd_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnEdit" Content="Sửa" Background="#3B82F6" Foreground="White" Click="btnEdit_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnToggleVisibility" Content="Hiện / Ẩn" Background="#F59E0B" Foreground="White" Click="btnToggleVisibility_Click" CornerRadius="5" Padding="15,8"/>
+                <Button x:Name="btnDelete" Content="Xóa" Background="#EF4444" Foreground="White" Click="btnDelete_Click" CornerRadius="5" Padding="15,8"/>
+            </StackPanel>
+        </Grid>
 
-        <Border Grid.Row="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="10">
-            <ListView x:Name="ProductListView" BorderThickness="0">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="60"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
+        <!-- Bảng Danh sách Sản phẩm -->
+        <ListView Grid.Row="2" x:Name="ProductListView" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" SelectionMode="Single">
+            <ListView.Header>
+                <Grid Background="#F3F4F6" Padding="15,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="ID" FontWeight="Bold" />
+                    <TextBlock Text="Tên Sản Phẩm" FontWeight="Bold" Grid.Column="1"/>
+                    <TextBlock Text="Giá Bán" FontWeight="Bold" Grid.Column="2"/>
+                    <TextBlock Text="Tồn Kho" FontWeight="Bold" Grid.Column="3"/>
+                    <TextBlock Text="Trạng thái" FontWeight="Bold" Grid.Column="4"/>
+                </Grid>
+            </ListView.Header>
 
-                            <TextBlock Grid.Column="0" Text="{Binding ProductId}" Foreground="Gray" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15,10" BorderBrush="#F3F4F6" BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding ProductId}" Grid.Column="0" Foreground="#6B7280"/>
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" FontWeight="SemiBold" Foreground="#111827"/>
+                        <!-- Sử dụng thuộc tính SalePriceString vừa tạo -->
+                        <TextBlock Text="{Binding SalePriceString}" Grid.Column="2" Foreground="#DC2626" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding StockQuantity}" Grid.Column="3" Foreground="#10B981"/>
+                        <!-- Sử dụng thuộc tính StatusString vừa tạo -->
+                        <TextBlock Text="{Binding StatusString}" Grid.Column="4" Foreground="#6B7280"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding SalePrice}" Foreground="#DC2626" FontWeight="Medium"/>
-                                <TextBlock Text=" đ" Foreground="#DC2626" FontWeight="Medium"/>
-                            </StackPanel>
+        <!-- FORM ẨN: Dùng để Thêm/Sửa (ContentDialog) -->
+        <ContentDialog x:Name="ProductDialog"
+                       Title="Thông tin sản phẩm"
+                       PrimaryButtonText="Lưu"
+                       CloseButtonText="Hủy"
+                       DefaultButton="Primary"
+                       PrimaryButtonClick="ProductDialog_PrimaryButtonClick">
 
-                            <TextBlock Grid.Column="3" Text="{Binding StockQuantity}" Foreground="Black" VerticalAlignment="Center"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Border>
+            <ScrollViewer MaxHeight="500">
+                <StackPanel Spacing="10" Width="350">
+                    <TextBox x:Name="txtName" Header="Tên sản phẩm (*)" PlaceholderText="VD: Cà phê Robusta"/>
+                    <TextBox x:Name="txtCode" Header="Mã sản phẩm (*)" PlaceholderText="VD: CF-ROB-01"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtCostPrice" Header="Giá nhập (*)" Grid.Column="0" Margin="0,0,5,0" PlaceholderText="VD: 100000" InputScope="Number"/>
+                        <TextBox x:Name="txtProfitRate" Header="Tỷ lệ lãi (%)" Grid.Column="1" Margin="5,0,0,0" PlaceholderText="VD: 20" InputScope="Number"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtStock" Header="Số lượng tồn (*)" Grid.Column="0" Margin="0,0,5,0" PlaceholderText="VD: 50" InputScope="Number"/>
+                        <ComboBox x:Name="cboCategory" Header="Danh mục (*)" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
+                    </Grid>
+
+                    <TextBox x:Name="txtOrigin" Header="Xuất xứ" PlaceholderText="VD: Đắk Lắk"/>
+                    <TextBox x:Name="txtWeight" Header="Khối lượng (Gram)" PlaceholderText="VD: 500" InputScope="Number"/>
+
+                    <ComboBox x:Name="cboRoastLevel" Header="Mức độ rang">
+                        <ComboBoxItem Content="Light"/>
+                        <ComboBoxItem Content="Medium"/>
+                        <ComboBoxItem Content="Dark"/>
+                    </ComboBox>
+
+                    <TextBox x:Name="txtImageUrl" Header="Đường dẫn ảnh" PlaceholderText="VD: img/sanpham/cf1.jpg"/>
+                    <TextBox x:Name="txtDesc" Header="Mô tả" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+                </StackPanel>
+            </ScrollViewer>
+        </ContentDialog>
     </Grid>
 </Page>

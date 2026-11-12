@@ -10,6 +10,9 @@ namespace App67
         public static IServiceProvider Services { get; private set; } = null!;
         private Window? _window;
 
+        public static string CurrentAdminName { get; set; } = "Admin";
+        public static string CurrentAdminRole { get; set; } = "Quản trị viên";
+
         public App()
         {
             this.InitializeComponent();
@@ -28,7 +31,7 @@ namespace App67
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
+            _window = new LoginWindow();
             _window.Activate();
         }
     }
