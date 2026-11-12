@@ -6,6 +6,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Cho phép dùng "dotnet user-secrets" để lưu VnPay:HashSecret ngoài source code -->
+    <UserSecretsId>coffeeshop-webapp-5f3c2a1e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

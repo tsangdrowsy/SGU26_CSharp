@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Services.VnPay;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.AddDbContext<CoffeeShopContext>(options =>
 
 // 2. BẬT TÍNH NĂNG SESSION
 builder.Services.AddSession();
+
+// 3. CẤU HÌNH VNPAY: đọc mục "VnPay" (appsettings.json + user-secrets) vào VnPayOptions
+builder.Services.Configure<VnPayOptions>(builder.Configuration.GetSection("VnPay"));
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

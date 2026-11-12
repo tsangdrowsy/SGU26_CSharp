@@ -4,16 +4,19 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Services.VnPay;
 
 namespace WebApplication1.Pages.View
 {
     public class CheckoutModel : PageModel
     {
         private readonly CoffeeShopContext _context;
+        private readonly IVnPayService _vnPay;
 
-        public CheckoutModel(CoffeeShopContext context)
+        public CheckoutModel(CoffeeShopContext context, IVnPayService vnPay)
         {
             _context = context;
+            _vnPay = vnPay;
         }
 
         public List<CartItem> CartItems { get; set; } = new();
@@ -66,6 +69,9 @@ namespace WebApplication1.Pages.View
             var user = await _context.Users.FindAsync(userId);
             if (user == null) return RedirectToPage("/Index");
 
+            // Lỗi thanh toán VNPay (do trang PaymentReturn gửi sang)
+            ErrorMessage = TempData["PaymentError"] as string ?? string.Empty;
+
             CurrentUser = user;
             ReceiverName = user.FullName;
             ReceiverPhone = user.Phone ?? "";
@@ -94,6 +100,17 @@ namespace WebApplication1.Pages.View
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null) return RedirectToPage("/View/Login");
+
+            // Chỉ chấp nhận 2 phương thức đang hỗ trợ (không tin giá trị client gửi lên)
+            if (PaymentMethod != "Cash" && PaymentMethod != "Online")
+            {
+                ModelState.AddModelError(nameof(PaymentMethod), "Phương thức thanh toán không hợp lệ");
+            }
+            // Kiểm tra cấu hình VNPay TRƯỚC khi tạo đơn, tránh tạo đơn (và trừ kho) rồi mới báo lỗi
+            else if (PaymentMethod == "Online" && !_vnPay.IsConfigured)
+            {
+                ModelState.AddModelError(nameof(PaymentMethod), "Thanh toán VNPay đang tạm ngưng, vui lòng chọn COD");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -152,7 +169,28 @@ namespace WebApplication1.Pages.View
                 // - Ghi log vào InventoryTransactions
                 await _context.SaveChangesAsync();
 
-                // 3. Xóa giỏ hàng sau khi đặt thành công
+                // 3a. Thanh toán VNPay: chuyển khách sang cổng VNPay.
+                //     Giỏ hàng GIỮ NGUYÊN, chỉ xóa khi VNPay báo thành công (xem PaymentReturn).
+                if (PaymentMethod == "Online")
+                {
+                    // TotalAmount do trigger SQL tính -> đọc lại từ DB, không dùng giá trị 0 trong bộ nhớ
+                    await _context.Entry(order).ReloadAsync();
+
+                    var returnUrl = Url.Page("/View/PaymentReturn", pageHandler: null, values: null, protocol: Request.Scheme)!;
+                    var ip = HttpContext.Connection.RemoteIpAddress;
+                    var ipAddress = ip == null || System.Net.IPAddress.IsLoopback(ip) ? "127.0.0.1" : ip.MapToIPv4().ToString();
+
+                    var paymentUrl = _vnPay.CreatePaymentUrl(
+                        txnRef: order.OrderCode,
+                        amount: order.TotalAmount,
+                        orderInfo: $"Thanh toan don hang {order.OrderCode}", // không dấu, tránh lỗi mã hóa
+                        returnUrl: returnUrl,
+                        ipAddress: ipAddress);
+
+                    return Redirect(paymentUrl);
+                }
+
+                // 3b. COD: xóa giỏ hàng sau khi đặt thành công
                 _context.CartItems.RemoveRange(cartItems);
                 await _context.SaveChangesAsync();
 

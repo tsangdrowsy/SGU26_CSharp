@@ -92,9 +92,12 @@
                                 <i class="fas fa-money-bill-wave text-gray-400"></i>
                             </label>
                             <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                                <input type="radio" asp-for="PaymentMethod" value="BankTransfer" class="w-4 h-4 text-red-600 focus:ring-red-500">
-                                <span class="flex-1 font-medium">Chuyển khoản ngân hàng</span>
-                                <i class="fas fa-university text-gray-400"></i>
+                                <input type="radio" asp-for="PaymentMethod" value="Online" class="w-4 h-4 text-red-600 focus:ring-red-500">
+                                <span class="flex-1">
+                                    <span class="block font-medium">Thanh toán online qua VNPay</span>
+                                    <span class="block text-xs text-gray-500">Thẻ ATM nội địa, Visa/Master, QR ngân hàng</span>
+                                </span>
+                                <i class="fas fa-credit-card text-gray-400"></i>
                             </label>
                         </div>
                     </div>
