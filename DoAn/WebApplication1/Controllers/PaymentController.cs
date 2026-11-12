@@ -10,13 +10,20 @@ namespace WebApplication1.Controllers
         private readonly IVnPayService _vnPay;
         private readonly VnPayPaymentHandler _handler;
         private readonly ILogger<PaymentController> _logger;
+        private readonly OrderViewTokenService _orderToken;
 
-        public PaymentController(IVnPayService vnPay, VnPayPaymentHandler handler, ILogger<PaymentController> logger)
+        public PaymentController(IVnPayService vnPay, VnPayPaymentHandler handler, ILogger<PaymentController> logger,
+            OrderViewTokenService orderToken)
         {
             _vnPay = vnPay;
             _handler = handler;
             _logger = logger;
+            _orderToken = orderToken;
         }
+
+        // Kèm token để OrderSuccess hiển thị được cả khi session bị mất (khác domain, cookie hết hạn)
+        private IActionResult RedirectToOrderSuccess(int orderId) =>
+            RedirectToPage("/View/OrderSuccess", new { orderId, t = _orderToken.Create(orderId) });
 
         // ===== RETURN URL: trình duyệt của khách được VNPay chuyển về đây =====
         // Mục đích chính: hiển thị kết quả cho khách. Vẫn cập nhật đơn (idempotent) để chạy được cả khi IPN chưa tới.
@@ -28,11 +35,11 @@ namespace WebApplication1.Controllers
             switch (r.Outcome)
             {
                 case PaymentOutcome.Paid:
-                    return RedirectToPage("/View/OrderSuccess", new { orderId = r.OrderId });
+                    return RedirectToOrderSuccess(r.OrderId!.Value);
 
                 case PaymentOutcome.AlreadyProcessed when r.OrderStatus != "Cancelled":
                     // IPN đã xử lý trước (hoặc khách bấm F5)
-                    return RedirectToPage("/View/OrderSuccess", new { orderId = r.OrderId });
+                    return RedirectToOrderSuccess(r.OrderId!.Value);
 
                 case PaymentOutcome.Failed:
                 case PaymentOutcome.AlreadyProcessed:

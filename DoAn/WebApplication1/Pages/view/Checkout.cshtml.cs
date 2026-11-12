@@ -176,9 +176,9 @@ namespace WebApplication1.Pages.View
                     // TotalAmount do trigger SQL tính -> đọc lại từ DB, không dùng giá trị 0 trong bộ nhớ
                     await _context.Entry(order).ReloadAsync();
 
-                    // Ưu tiên VnPay:ReturnUrl trong cấu hình (vd: domain ngrok), nếu trống thì dùng domain hiện tại
-                    var returnUrl = _vnPay.ConfiguredReturnUrl
-                        ?? $"{Request.Scheme}://{Request.Host}/api/payment/vnpay-return";
+                    // Return URL LUÔN theo domain khách đang dùng (localhost hay ngrok), để trình duyệt
+                    // quay về đúng domain -> giữ được cookie session. (IPN cấu hình riêng trên VNPay.)
+                    var returnUrl = $"{Request.Scheme}://{Request.Host}/api/payment/vnpay-return";
                     var ip = HttpContext.Connection.RemoteIpAddress;
                     var ipAddress = ip == null || System.Net.IPAddress.IsLoopback(ip) ? "127.0.0.1" : ip.MapToIPv4().ToString();
 

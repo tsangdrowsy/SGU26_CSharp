@@ -17,6 +17,8 @@ builder.Services.AddSession();
 builder.Services.Configure<VnPayOptions>(builder.Configuration.GetSection("VnPay"));
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
 builder.Services.AddScoped<VnPayPaymentHandler>(); // Scoped vì dùng DbContext
+builder.Services.AddDataProtection();                  // khóa ký token xem OrderSuccess
+builder.Services.AddSingleton<OrderViewTokenService>();
 
 // Khi chạy sau ngrok/reverse proxy: tin header X-Forwarded-Proto/For do proxy (chạy ở localhost) gửi tới.
 // Nhờ vậy app biết request gốc là https -> UseHttpsRedirection không chuyển hướng sai,
