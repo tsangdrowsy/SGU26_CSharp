@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Biến môi trường / secret cục bộ - không commit
+.env
+.env.*

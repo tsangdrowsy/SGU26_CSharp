@@ -11,6 +11,8 @@ namespace WebApplication1.Services.VnPay
     {
         public string TmnCode { get; set; } = string.Empty;     // Mã website (Terminal ID) VNPay cấp
         public string HashSecret { get; set; } = string.Empty;  // Chuỗi bí mật để ký dữ liệu - KHÔNG commit lên git
+        // URL VNPay chuyển khách về sau khi thanh toán. Để trống = tự lấy theo domain đang truy cập.
+        public string? ReturnUrl { get; set; }
         public string BaseUrl { get; set; } = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         public string Version { get; set; } = "2.1.0";
         public int ExpireMinutes { get; set; } = 15;
@@ -28,6 +30,7 @@ namespace WebApplication1.Services.VnPay
     public interface IVnPayService
     {
         bool IsConfigured { get; }
+        string? ConfiguredReturnUrl { get; }
         string CreatePaymentUrl(string txnRef, decimal amount, string orderInfo, string returnUrl, string ipAddress);
         VnPayResult ValidateResponse(IQueryCollection query);
     }
@@ -43,6 +46,9 @@ namespace WebApplication1.Services.VnPay
 
         public bool IsConfigured =>
             !string.IsNullOrWhiteSpace(_options.TmnCode) && !string.IsNullOrWhiteSpace(_options.HashSecret);
+
+        public string? ConfiguredReturnUrl =>
+            string.IsNullOrWhiteSpace(_options.ReturnUrl) ? null : _options.ReturnUrl;
 
         public string CreatePaymentUrl(string txnRef, decimal amount, string orderInfo, string returnUrl, string ipAddress)
         {

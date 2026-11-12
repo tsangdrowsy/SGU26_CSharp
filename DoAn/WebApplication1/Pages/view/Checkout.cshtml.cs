@@ -69,7 +69,7 @@ namespace WebApplication1.Pages.View
             var user = await _context.Users.FindAsync(userId);
             if (user == null) return RedirectToPage("/Index");
 
-            // Lỗi thanh toán VNPay (do trang PaymentReturn gửi sang)
+            // Lỗi thanh toán VNPay (do PaymentController.VnPayReturn gửi sang)
             ErrorMessage = TempData["PaymentError"] as string ?? string.Empty;
 
             CurrentUser = user;
@@ -170,13 +170,15 @@ namespace WebApplication1.Pages.View
                 await _context.SaveChangesAsync();
 
                 // 3a. Thanh toán VNPay: chuyển khách sang cổng VNPay.
-                //     Giỏ hàng GIỮ NGUYÊN, chỉ xóa khi VNPay báo thành công (xem PaymentReturn).
+                //     Giỏ hàng GIỮ NGUYÊN, chỉ xóa khi VNPay báo thành công (xem PaymentController).
                 if (PaymentMethod == "Online")
                 {
                     // TotalAmount do trigger SQL tính -> đọc lại từ DB, không dùng giá trị 0 trong bộ nhớ
                     await _context.Entry(order).ReloadAsync();
 
-                    var returnUrl = Url.Page("/View/PaymentReturn", pageHandler: null, values: null, protocol: Request.Scheme)!;
+                    // Ưu tiên VnPay:ReturnUrl trong cấu hình (vd: domain ngrok), nếu trống thì dùng domain hiện tại
+                    var returnUrl = _vnPay.ConfiguredReturnUrl
+                        ?? $"{Request.Scheme}://{Request.Host}/api/payment/vnpay-return";
                     var ip = HttpContext.Connection.RemoteIpAddress;
                     var ipAddress = ip == null || System.Net.IPAddress.IsLoopback(ip) ? "127.0.0.1" : ip.MapToIPv4().ToString();
 
