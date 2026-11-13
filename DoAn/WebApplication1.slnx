@@ -3,5 +3,6 @@
     <Platform Project="x64" />
     <Deploy />
   </Project>
+  <Project Path="WebApplication1.Tests/WebApplication1.Tests.csproj" />
   <Project Path="WebApplication1/WebApplication1.csproj" />
 </Solution>

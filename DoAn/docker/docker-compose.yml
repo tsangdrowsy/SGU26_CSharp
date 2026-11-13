@@ -1,0 +1,39 @@
+# SQL Server cho đồ án CoffeeShop — đặt thư mục docker/ này trong DoAn/ (cạnh WebApplication1/)
+# Chạy:   docker compose --env-file .env up -d
+# Xem log khởi tạo:  docker compose logs -f db-init
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: coffeeshop-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  # Chạy một lần: tạo CoffeeShopDb nếu chưa có (01 -> 02 -> 04_*). Đã có thì bỏ qua, không xoá dữ liệu.
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ../WebApplication1/DB:/scripts:ro
+      - ./init-db.sh:/init-db.sh:ro
+    entrypoint: ["/bin/bash", "/init-db.sh"]
+    restart: "no"
+
+volumes:
+  mssql-data:
