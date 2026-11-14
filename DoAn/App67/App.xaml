@@ -10,7 +10,13 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+            <!-- Mọi dòng của ListView giãn hết chiều ngang và không có padding thừa.
+                 Mặc định WinUI căn trái nội dung + padding 12px -> Grid trong dòng không giãn,
+                 cột "*" chỉ rộng bằng chữ, các dòng lệch so với header. -->
+            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
