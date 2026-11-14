@@ -79,8 +79,8 @@ namespace App67.Data // Nhớ sửa lại namespace này cho khớp với dự �
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // Sửa lại chuỗi này cho giống hệt bên Web của bạn
-                optionsBuilder.UseSqlServer("Server=localhost;Database=CoffeeShopDb;Trusted_Connection=True;TrustServerCertificate=True");
+                // Chuỗi kết nối lấy từ DbConfig (biến môi trường COFFEESHOP_DB hoặc mặc định)
+                optionsBuilder.UseSqlServer(DbConfig.ConnectionString);
             }
         }
     }

@@ -9,6 +9,10 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
       MSSQL_PID: Developer
+      # Giờ Việt Nam: trigger ghi sổ kho bằng SYSDATETIME() (giờ của SQL Server), còn app ghi
+      # OrderDate/CompletedAt bằng DateTime.Now (giờ máy). Container mặc định UTC -> lệch 7 tiếng,
+      # báo cáo tồn kho theo ngày sẽ sai quanh nửa đêm.
+      TZ: Asia/Ho_Chi_Minh
     ports:
       - "1433:1433"
     volumes:

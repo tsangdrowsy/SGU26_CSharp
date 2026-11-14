@@ -24,8 +24,8 @@ namespace App67
 
             // Cấu hình Dependency Injection
             var services = new ServiceCollection();
-            string connectionString = "Server=localhost;Database=CoffeeShopDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true";
-            services.AddDbContext<CoffeeShopContext>(options => options.UseSqlServer(connectionString));
+            // Dùng chung chuỗi kết nối với mọi trang (xem Data/DbConfig.cs)
+            services.AddDbContext<CoffeeShopContext>(options => options.UseSqlServer(DbConfig.ConnectionString));
 
             // Đăng ký các Page sau này (nếu cần)
             services.AddTransient<Pages.ProductsPage>();

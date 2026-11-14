@@ -1,11 +1,18 @@
-using App67.Data;
+using App67.Services;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace App67.Pages
 {
+    // Cách tải dữ liệu (tương đương AJAX bên PHP):
+    //  - Không tải trong constructor nữa: chờ trang hiển thị (Loaded) rồi mới tải -> mở trang ngay, không bị đơ.
+    //  - Tải BẤT ĐỒNG BỘ (async/await): câu SQL chạy nền, giao diện vẫn bấm được, có vòng xoay báo đang tải.
+    //  - Tự làm mới mỗi 30 giây (DispatcherTimer) + nút "Làm mới"; hiện giờ cập nhật gần nhất.
+    //  - Lỗi hiện lên InfoBar thay vì bị nuốt (bản cũ lỗi giữa chừng -> nửa trang hiện số 0 mà không báo gì).
     public sealed partial class DashboardPage : Page
     {
         // Lớp phụ để hiển thị đơn hàng
@@ -42,16 +49,71 @@ namespace App67.Pages
             public string SoldString { get; set; } = string.Empty;
         }
 
-        // Doanh thu "thực" = đơn đã duyệt hoặc đã giao (giống dashboard.php: TrangThai IN (1,2)).
-        // Đơn chờ duyệt có thể còn bị hủy, đơn đã hủy thì không tính.
-        private static readonly string[] RevenueStatuses = { "Confirmed", "Delivered" };
-
         private const double MaxBarHeight = 160;
+
+        private readonly DashboardService _service = new();
+        private readonly DispatcherTimer _refreshTimer = new() { Interval = TimeSpan.FromSeconds(30) };
+
+        // Mỗi lần tải tăng số này. Kết quả về muộn của lần tải CŨ (vd bấm Làm mới 2 lần liên tiếp)
+        // sẽ bị bỏ qua, tránh dữ liệu cũ ghi đè dữ liệu mới.
+        private int _loadVersion;
+        private bool _isLoading;
 
         public DashboardPage()
         {
             this.InitializeComponent();
-            LoadDashboardData();
+            _refreshTimer.Tick += async (s, e) => await RefreshAsync();
+            this.Loaded += DashboardPage_Loaded;
+            this.Unloaded += DashboardPage_Unloaded;
+        }
+
+        private async void DashboardPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            await RefreshAsync();
+            if (tglAutoRefresh.IsOn) _refreshTimer.Start();
+        }
+
+        // Rời trang thì dừng timer, nếu không timer vẫn chạy ngầm và truy vấn DB mãi
+        private void DashboardPage_Unloaded(object sender, RoutedEventArgs e) => _refreshTimer.Stop();
+
+        private async void btnRefresh_Click(object sender, RoutedEventArgs e) => await RefreshAsync();
+
+        private void tglAutoRefresh_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (tglAutoRefresh.IsOn) _refreshTimer.Start(); else _refreshTimer.Stop();
+        }
+
+        private async Task RefreshAsync()
+        {
+            if (_isLoading) return; // timer bắn khi lần tải trước chưa xong -> bỏ qua
+            _isLoading = true;
+            int version = ++_loadVersion;
+            LoadingRing.IsActive = true;
+            btnRefresh.IsEnabled = false;
+
+            try
+            {
+                // await: câu SQL chạy nền; khi xong, code phía dưới chạy tiếp trên luồng giao diện
+                var data = await _service.LoadAsync(DateTime.Now);
+                if (version != _loadVersion) return;
+
+                Render(data);
+                ErrorInfoBar.IsOpen = false;
+                txtLastUpdated.Text = $"Cập nhật lúc {data.LoadedAt:HH:mm:ss}";
+            }
+            catch (Exception ex)
+            {
+                // Giữ nguyên dữ liệu đang hiển thị, chỉ báo lỗi
+                ErrorInfoBar.Message = ex.InnerException?.Message ?? ex.Message;
+                ErrorInfoBar.IsOpen = true;
+                txtLastUpdated.Text = "Lỗi khi tải";
+            }
+            finally
+            {
+                _isLoading = false;
+                LoadingRing.IsActive = false;
+                btnRefresh.IsEnabled = true;
+            }
         }
 
         // 1.500.000 -> "1.5M", 25.000 -> "25K" (giống hàm formatMoney trong PHP)
@@ -73,156 +135,75 @@ namespace App67.Pages
             return $"{arrow} {Math.Abs(percent):0.#}% so với {periodName}";
         }
 
-        private void LoadDashboardData()
+        private static SolidColorBrush StatusBrush(string status) => new SolidColorBrush(status switch
         {
-            try
+            "Pending" => Microsoft.UI.Colors.Orange,
+            "Confirmed" => Microsoft.UI.Colors.DodgerBlue,
+            "Delivered" => Microsoft.UI.Colors.Green,
+            _ => Microsoft.UI.Colors.Red
+        });
+
+        // Chỉ đổ dữ liệu ra giao diện, không truy vấn DB
+        private void Render(DashboardData d)
+        {
+            // 1. KPI
+            txtRevenue.Text = d.TotalRevenue.ToString("N0") + " ₫";
+            txtTotalOrders.Text = d.TotalOrders.ToString();
+            txtCustomers.Text = d.TotalCustomers.ToString();
+            txtPendingOrders.Text = d.PendingOrders.ToString();
+
+            txtMonthRevenue.Text = d.MonthRevenue.ToString("N0") + " ₫";
+            txtMonthRevenueChange.Text = FormatChange(d.MonthRevenue, d.LastMonthRevenue, "tháng trước");
+            txtOrdersToday.Text = d.OrdersToday.ToString();
+            txtOrdersTodayChange.Text = FormatChange(d.OrdersToday, d.OrdersYesterday, "hôm qua");
+            txtTotalProducts.Text = d.TotalProducts.ToString();
+            txtProductStatus.Text = $"Đang bán: {d.VisibleProducts} | Đã ẩn: {d.TotalProducts - d.VisibleProducts}";
+            txtOutOfStock.Text = $"{d.OutOfStock} hết hàng";
+            txtStockStatus.Text = $"{d.LowStock} sản phẩm sắp hết (≤ {DashboardService.LowStockThreshold})";
+
+            // 2. Đơn mới nhất
+            RecentOrdersListView.ItemsSource = d.RecentOrders.Select(o => new RecentOrderModel
             {
-                using (var context = new CoffeeShopContext())
-                {
-                    // 1. THỐNG KÊ (KPI)
-                    // Tổng doanh thu (Chỉ tính các đơn đã giao thành công)
-                    decimal revenue = context.Orders
-                        .Where(o => o.Status == "Delivered")
-                        .Sum(o => (decimal?)o.TotalAmount) ?? 0;
-                    txtRevenue.Text = revenue.ToString("N0") + " ₫";
+                OrderIdString = "#" + o.OrderId,
+                ReceiverName = o.ReceiverName,
+                TotalAmountString = o.TotalAmount.ToString("N0") + " ₫",
+                StatusString = OrdersPage.GetStatusText(o.Status),
+                StatusColor = StatusBrush(o.Status)
+            }).ToList();
 
-                    // Tổng số đơn hàng
-                    int totalOrders = context.Orders.Count();
-                    txtTotalOrders.Text = totalOrders.ToString();
-
-                    // Số lượng khách hàng
-                    int totalCustomers = context.Users.Count(u => u.Role == "Customer");
-                    txtCustomers.Text = totalCustomers.ToString();
-
-                    // Số đơn đang chờ duyệt
-                    int pendingOrders = context.Orders.Count(o => o.Status == "Pending");
-                    txtPendingOrders.Text = pendingOrders.ToString();
-
-                    // 1B. KPI SO SÁNH THEO KỲ
-                    DateTime today = DateTime.Today;
-                    DateTime monthStart = new DateTime(today.Year, today.Month, 1);
-                    DateTime lastMonthStart = monthStart.AddMonths(-1);
-
-                    decimal monthRevenue = context.Orders
-                        .Where(o => RevenueStatuses.Contains(o.Status) && o.OrderDate >= monthStart)
-                        .Sum(o => (decimal?)o.TotalAmount) ?? 0;
-                    decimal lastMonthRevenue = context.Orders
-                        .Where(o => RevenueStatuses.Contains(o.Status) && o.OrderDate >= lastMonthStart && o.OrderDate < monthStart)
-                        .Sum(o => (decimal?)o.TotalAmount) ?? 0;
-                    txtMonthRevenue.Text = monthRevenue.ToString("N0") + " ₫";
-                    txtMonthRevenueChange.Text = FormatChange(monthRevenue, lastMonthRevenue, "tháng trước");
-
-                    int ordersToday = context.Orders.Count(o => o.OrderDate >= today);
-                    int ordersYesterday = context.Orders.Count(o => o.OrderDate >= today.AddDays(-1) && o.OrderDate < today);
-                    txtOrdersToday.Text = ordersToday.ToString();
-                    txtOrdersTodayChange.Text = FormatChange(ordersToday, ordersYesterday, "hôm qua");
-
-                    int totalProducts = context.Products.Count();
-                    int visibleProducts = context.Products.Count(p => p.IsVisible);
-                    txtTotalProducts.Text = totalProducts.ToString();
-                    txtProductStatus.Text = $"Đang bán: {visibleProducts} | Đã ẩn: {totalProducts - visibleProducts}";
-
-                    int outOfStock = context.Products.Count(p => p.IsVisible && p.StockQuantity == 0);
-                    int lowStockCount = context.Products.Count(p => p.IsVisible && p.StockQuantity > 0 && p.StockQuantity <= 10);
-                    txtOutOfStock.Text = $"{outOfStock} hết hàng";
-                    txtStockStatus.Text = $"{lowStockCount} sản phẩm sắp hết (≤ 10)";
-
-
-                    // 2. LẤY 5 ĐƠN HÀNG MỚI NHẤT
-                    var recentOrders = context.Orders
-                        .OrderByDescending(o => o.OrderId)
-                        .Take(5)
-                        .Select(o => new { o.OrderId, o.ReceiverName, o.TotalAmount, o.Status })
-                        .ToList()
-                        .Select(o => new RecentOrderModel
-                        {
-                            OrderIdString = "#" + o.OrderId,
-                            ReceiverName = o.ReceiverName,
-                            TotalAmountString = o.TotalAmount.ToString("N0") + " ₫",
-                            StatusString = OrdersPage.GetStatusText(o.Status),
-                            StatusColor = new SolidColorBrush(o.Status switch
-                            {
-                                "Pending" => Microsoft.UI.Colors.Orange,
-                                "Confirmed" => Microsoft.UI.Colors.DodgerBlue,
-                                "Delivered" => Microsoft.UI.Colors.Green,
-                                _ => Microsoft.UI.Colors.Red
-                            })
-                        }).ToList();
-                    RecentOrdersListView.ItemsSource = recentOrders;
-
-
-                    // 3. LẤY SẢN PHẨM SẮP HẾT HÀNG (Tồn kho <= 10)
-                    var lowStock = context.Products
-                        .Where(p => p.IsVisible && p.StockQuantity <= 10)
-                        .OrderBy(p => p.StockQuantity)
-                        .Select(p => new LowStockModel
-                        {
-                            ProductName = p.Name,
-                            StockString = p.StockQuantity == 0 ? "Hết hàng" : $"Còn {p.StockQuantity}"
-                        }).ToList();
-
-                    if (lowStock.Count == 0)
-                    {
-                        lowStock.Add(new LowStockModel { ProductName = "Tất cả sản phẩm đều đủ hàng", StockString = "" });
-                    }
-
-                    LowStockListView.ItemsSource = lowStock;
-
-
-                    // 4. BIỂU ĐỒ DOANH THU 7 NGÀY (gồm hôm nay)
-                    DateTime chartStart = today.AddDays(-6);
-                    var dailyRevenue = context.Orders
-                        .Where(o => RevenueStatuses.Contains(o.Status) && o.OrderDate >= chartStart)
-                        .Select(o => new { o.OrderDate, o.TotalAmount })
-                        .ToList()                                   // gom nhóm theo ngày ở phía C#
-                        .GroupBy(o => o.OrderDate.Date)
-                        .ToDictionary(g => g.Key, g => g.Sum(x => x.TotalAmount));
-
-                    var bars = Enumerable.Range(0, 7)
-                        .Select(i => chartStart.AddDays(i))
-                        .Select(day => new RevenueBarModel
-                        {
-                            DayLabel = day.ToString("dd/MM"),
-                            Value = dailyRevenue.TryGetValue(day, out var v) ? v : 0
-                        })
-                        .ToList();
-
-                    // Chiều cao cột tỉ lệ với ngày cao nhất; cột 0 vẫn cao 2px để thấy được
-                    decimal max = bars.Max(b => b.Value);
-                    foreach (var bar in bars)
-                    {
-                        bar.BarHeight = max > 0 ? Math.Max(2, (double)(bar.Value / max) * MaxBarHeight) : 2;
-                    }
-                    RevenueChart.ItemsSource = bars;
-
-
-                    // 5. TOP 5 SẢN PHẨM BÁN CHẠY THÁNG NÀY
-                    var topProducts = context.OrderDetails
-                        .Where(d => RevenueStatuses.Contains(d.Order.Status) && d.Order.OrderDate >= monthStart)
-                        .GroupBy(d => new { d.ProductId, d.Product.Name })
-                        .Select(g => new { g.Key.Name, Sold = g.Sum(d => d.Quantity) })
-                        .OrderByDescending(x => x.Sold)
-                        .Take(5)
-                        .ToList()
-                        .Select((x, i) => new TopProductModel
-                        {
-                            RankString = $"#{i + 1}",
-                            ProductName = x.Name,
-                            SoldString = $"{x.Sold} đã bán"
-                        })
-                        .ToList();
-
-                    if (topProducts.Count == 0)
-                    {
-                        topProducts.Add(new TopProductModel { ProductName = "Chưa có đơn hàng nào trong tháng", SoldString = "" });
-                    }
-                    TopProductsListView.ItemsSource = topProducts;
-                }
-            }
-            catch (Exception ex)
+            // 3. Cảnh báo tồn kho
+            var lowStock = d.LowStockProducts.Select(p => new LowStockModel
             {
-                System.Diagnostics.Debug.WriteLine("Lỗi tải Dashboard: " + ex.Message);
+                ProductName = p.ProductName,
+                StockString = p.Stock == 0 ? "Hết hàng" : $"Còn {p.Stock}"
+            }).ToList();
+            if (lowStock.Count == 0)
+            {
+                lowStock.Add(new LowStockModel { ProductName = "Tất cả sản phẩm đều đủ hàng", StockString = "" });
             }
+            LowStockListView.ItemsSource = lowStock;
+
+            // 4. Biểu đồ: chiều cao cột tỉ lệ với ngày cao nhất; cột 0 vẫn cao 2px để thấy được
+            decimal max = d.DailyRevenue.Count > 0 ? d.DailyRevenue.Max(x => x.Revenue) : 0;
+            RevenueChart.ItemsSource = d.DailyRevenue.Select(x => new RevenueBarModel
+            {
+                DayLabel = x.Day.ToString("dd/MM"),
+                Value = x.Revenue,
+                BarHeight = max > 0 ? Math.Max(2, (double)(x.Revenue / max) * MaxBarHeight) : 2
+            }).ToList();
+
+            // 5. Top bán chạy
+            var top = d.TopProducts.Select((x, i) => new TopProductModel
+            {
+                RankString = $"#{i + 1}",
+                ProductName = x.ProductName,
+                SoldString = $"{x.Sold} đã bán"
+            }).ToList();
+            if (top.Count == 0)
+            {
+                top.Add(new TopProductModel { ProductName = "Chưa có đơn hàng nào trong tháng", SoldString = "" });
+            }
+            TopProductsListView.ItemsSource = top;
         }
     }
 }

@@ -18,7 +18,14 @@ Server=localhost,1433;Database=CoffeeShopDb;User Id=sa;Password=<mật khẩu tr
 
 - **Web:** không sửa appsettings.json, đặt bằng user-secrets:
   `dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<chuỗi trên>" --project WebApplication1`
-- **App67:** chuỗi kết nối đang viết cứng trong `App67/App.xaml.cs`; đổi tạm thành chuỗi trên khi chạy với Docker.
+- **App67:** đặt biến môi trường `COFFEESHOP_DB` (đọc trong `App67/Data/DbConfig.cs`), rồi mở lại Visual Studio:
+  `setx COFFEESHOP_DB "<chuỗi trên>"` (xoá: `reg delete HKCU\Environment /v COFFEESHOP_DB /f`).
+  Không đặt thì App67 dùng SQL Server cài trên máy (Windows Authentication).
+
+## Múi giờ
+Container đặt `TZ: Asia/Ho_Chi_Minh` vì trigger ghi sổ kho bằng giờ của SQL Server còn ứng dụng ghi giờ máy.
+Nếu đã tạo container trước khi có dòng này: `docker compose --env-file .env up -d db` để tạo lại (dữ liệu vẫn giữ).
+Kiểm tra: `SELECT SYSDATETIME()` phải ra đúng giờ Việt Nam.
 
 ## Lệnh hay dùng
 | Việc | Lệnh |
