@@ -1,0 +1,11 @@
+# Không gửi các thư mục này vào Docker build: nặng, và bin/obj của Windows làm hỏng restore trong Linux
+bin/
+obj/
+.vs/
+*.user
+Dockerfile
+.dockerignore
+# Không bao giờ đưa secret vào image
+.env
+*.env
+appsettings.*.local.json

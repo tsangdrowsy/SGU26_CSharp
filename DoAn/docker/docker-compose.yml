@@ -1,5 +1,6 @@
-# SQL Server cho đồ án CoffeeShop — đặt thư mục docker/ này trong DoAn/ (cạnh WebApplication1/)
-# Chạy:   docker compose --env-file .env up -d
+# SQL Server + Web cho đồ án CoffeeShop — đặt thư mục docker/ này trong DoAn/ (cạnh WebApplication1/)
+# Chạy:   docker compose --env-file .env up -d --build
+# Web:    http://localhost:5144
 # Xem log khởi tạo:  docker compose logs -f db-init
 services:
   db:
@@ -39,5 +40,34 @@ services:
     entrypoint: ["/bin/bash", "/init-db.sh"]
     restart: "no"
 
+  # Web ASP.NET Core, build từ WebApplication1/Dockerfile
+  web:
+    build:
+      context: ../WebApplication1
+    image: coffeeshop-web
+    container_name: coffeeshop-web
+    depends_on:
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully   # chờ tạo xong DB mới chạy Web
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      TZ: Asia/Ho_Chi_Minh
+      # "db" là tên service ở trên: trong mạng của compose, các container gọi nhau bằng tên service
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=CoffeeShopDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      # Khóa VNPay lấy từ file .env (không commit). Để trống thì chỉ dùng được COD.
+      VnPay__TmnCode: ${VNPAY_TMN_CODE:-}
+      VnPay__HashSecret: ${VNPAY_HASH_SECRET:-}
+      DataProtection__KeysPath: /app/keys
+    ports:
+      - "5144:8080"   # cùng cổng với "dotnet run" -> ngrok / IPN VNPay giữ nguyên cấu hình
+    volumes:
+      - web-keys:/app/keys
+      # Ảnh sản phẩm: dùng thẳng thư mục trên máy, để ảnh App WinUI vừa thêm hiện ngay trên Web
+      - ../WebApplication1/wwwroot/img/sanpham:/app/wwwroot/img/sanpham:ro
+    restart: unless-stopped
+
 volumes:
   mssql-data:
+  web-keys:

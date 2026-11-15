@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
@@ -17,7 +18,19 @@ builder.Services.AddSession();
 builder.Services.Configure<VnPayOptions>(builder.Configuration.GetSection("VnPay"));
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
 builder.Services.AddScoped<VnPayPaymentHandler>(); // Scoped vì dùng DbContext
-builder.Services.AddDataProtection();                  // khóa ký token xem OrderSuccess
+// Data Protection: khóa ký/mã hóa token chống giả mạo form (antiforgery), cookie session
+// và token xem OrderSuccess sau khi thanh toán VNPay.
+// Trong Docker, nếu không lưu khóa ra volume thì mỗi lần container khởi động lại sẽ sinh khóa mới
+// -> form đang mở báo lỗi khi gửi, link OrderSuccess cũ mất hiệu lực. DataProtection:KeysPath do compose đặt.
+// LƯU Ý: dữ liệu session (UserId) vẫn nằm trong RAM (AddSession dùng bộ nhớ trong tiến trình),
+// nên restart container thì người dùng vẫn phải đăng nhập lại. Muốn giữ cả session cần cache dùng chung
+// (vd. SQL Server/Redis distributed cache) - cũng là điều kiện để chạy nhiều bản Web cùng lúc.
+var dataProtection = builder.Services.AddDataProtection();
+var keysPath = builder.Configuration["DataProtection:KeysPath"];
+if (!string.IsNullOrWhiteSpace(keysPath))
+{
+    dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+}
 builder.Services.AddSingleton<OrderViewTokenService>();
 
 // Khi chạy sau ngrok/reverse proxy: tin header X-Forwarded-Proto/For do proxy (chạy ở localhost) gửi tới.
@@ -44,6 +57,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Phục vụ file tĩnh có trong wwwroot LÚC CHẠY. MapStaticAssets (bên dưới) chỉ biết các file có lúc build,
+// nên ảnh sản phẩm do App WinUI copy vào wwwroot/img/sanpham sau đó sẽ bị 404 nếu thiếu dòng này.
+app.UseStaticFiles();
 
 // =========================================================
 // 3. THỨ TỰ MIDDLEWARE CHUẨN (Rất quan trọng)
