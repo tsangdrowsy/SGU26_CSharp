@@ -1,0 +1,219 @@
+﻿@page
+@model WebApplication1.Pages.View.OrdersModel
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    var createdDate = Model.CurrentUser.CreatedAt.ToString("dd/MM/yyyy");
+}
+
+<main class="flex-grow bg-gray-50 py-8">
+    <!-- Mobile Account Header (visible on mobile only) -->
+    <div class="lg:hidden bg-white border-b border-gray-200 mb-4 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="text-lg font-semibold">Tài khoản của tôi</h1>
+                </div>
+                <button class="show-menu p-2" onclick="toggleMobileAccountMenu()">
+                    <i class="fas fa-ellipsis-v text-xl text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-4 md:gap-8">
+            <!-- Sidebar -->
+            <div class="lg:w-1/4">
+                <!-- User Info Card -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <img src="~/img/icons/account.svg" alt="User avatar" class="w-16 h-16 rounded-full border-2 border-gray-200">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-gray-900">@Model.CurrentUser.FullName</h3>
+                                <div class="rank">
+                                    <img src="~/img/icons/subscription.svg" class="w-10 h-10" alt="Rank" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Thành viên từ @createdDate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="bg-white rounded-lg shadow-sm overflow-hidden hidden lg:block">
+                    <ul class="divide-y divide-gray-200">
+                        <li>
+                            <a asp-page="/View/MyAccount" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
+                                <img src="~/img/icons/account.svg" class="w-5 h-5 mr-3" alt="Account">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <!-- SỬA ACTIVE MENU TẠI ĐÂY -->
+                            <a asp-page="/View/Orders" class="flex items-center px-4 py-3 bg-red-50 text-[#8a5a32] font-medium border-l-4 border-[#8a5a32]">
+                                <img src="~/img/icons/clipboard.svg" class="w-5 h-5 mr-3" alt="Orders">
+                                Quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-page="/View/AddressBook" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#8a5a32] transition">
+                                <img src="~/img/icons/diachi.svg" class="w-5 h-5 mr-3" alt="Address">
+                                Địa chỉ giao hàng
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:w-3/4">
+
+                <!-- Hiển thị thông báo khi Hủy đơn -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="bg-green-50 border border-green-200 text-green-600 p-3 rounded mb-4 text-sm animate-pulse">
+                        <i class="fas fa-check-circle mr-2"></i> @TempData["SuccessMessage"]
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="bg-red-50 border border-red-200 text-red-600 p-3 rounded mb-4 text-sm">
+                        <i class="fas fa-exclamation-circle mr-2"></i> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <!-- Header & Filter -->
+                <div class="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <h3 class="text-lg md:text-xl font-semibold text-gray-900">Đơn hàng của tôi</h3>
+
+                        <!-- Tìm kiếm -->
+                        <form method="get" class="flex flex-col sm:flex-row gap-3">
+                            <input type="hidden" name="status" value="@Model.StatusFilter" />
+                            <div class="relative flex-1">
+                                <input type="text" name="search" value="@Model.SearchQuery" placeholder="Tìm mã đơn hàng..."
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none pl-10 text-sm"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition whitespace-nowrap text-sm">
+                                Tìm kiếm
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tabs Trạng thái -->
+                    <div class="flex overflow-x-auto mt-6 border-b border-gray-200">
+                        <!-- Giữ nguyên phần Tabs của bạn -->
+                        <a asp-page="/View/Orders" asp-route-status="all" asp-route-search="@Model.SearchQuery" class="px-4 py-2 text-sm font-medium whitespace-nowrap transition border-b-2 @(Model.StatusFilter == "all" ? "border-red-600 text-red-600" : "border-transparent text-gray-600 hover:text-red-600")">Tất cả (@Model.TotalOrders)</a>
+                        <a asp-page="/View/Orders" asp-route-status="Pending" asp-route-search="@Model.SearchQuery" class="px-4 py-2 text-sm font-medium whitespace-nowrap transition border-b-2 @(Model.StatusFilter == "Pending" ? "border-red-600 text-red-600" : "border-transparent text-gray-600 hover:text-red-600")">Chờ xác nhận</a>
+                        <a asp-page="/View/Orders" asp-route-status="Confirmed" asp-route-search="@Model.SearchQuery" class="px-4 py-2 text-sm font-medium whitespace-nowrap transition border-b-2 @(Model.StatusFilter == "Confirmed" ? "border-red-600 text-red-600" : "border-transparent text-gray-600 hover:text-red-600")">Đã xác nhận</a>
+                        <a asp-page="/View/Orders" asp-route-status="Delivered" asp-route-search="@Model.SearchQuery" class="px-4 py-2 text-sm font-medium whitespace-nowrap transition border-b-2 @(Model.StatusFilter == "Delivered" ? "border-red-600 text-red-600" : "border-transparent text-gray-600 hover:text-red-600")">Đã giao</a>
+                        <a asp-page="/View/Orders" asp-route-status="Cancelled" asp-route-search="@Model.SearchQuery" class="px-4 py-2 text-sm font-medium whitespace-nowrap transition border-b-2 @(Model.StatusFilter == "Cancelled" ? "border-red-600 text-red-600" : "border-transparent text-gray-600 hover:text-red-600")">Đã hủy</a>
+                    </div>
+                </div>
+
+                <!-- Danh sách Đơn hàng -->
+                <div class="space-y-4">
+                    @if (Model.OrdersList.Count == 0)
+                    {
+                        <!-- Giữ nguyên Empty State -->
+                        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                            <i class="fas fa-shopping-bag text-4xl text-gray-400 mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Chưa có đơn hàng nào</h3>
+                            <a asp-page="/Index" class="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Tiếp tục mua sắm</a>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var order in Model.OrdersList)
+                        {
+                            <div class="bg-white rounded-lg shadow-sm p-4 md:p-6 hover:shadow-md transition">
+                                <!-- Order Header (Giữ nguyên) -->
+                                <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                                    <div class="flex items-center gap-4">
+                                        <div>
+                                            <span class="text-sm text-gray-500">Mã đơn hàng</span>
+                                            <p class="font-semibold text-gray-900">#@order.OrderId</p>
+                                        </div>
+                                        <div class="hidden sm:block w-px h-8 bg-gray-200"></div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Ngày đặt</span>
+                                            <p class="font-medium">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 w-fit @Model.GetStatusBadgeClass(order.Status)">
+                                            <i class="fas @Model.GetStatusIcon(order.Status)"></i> @Model.GetStatusText(order.Status)
+                                        </span>
+                                        <button class="text-gray-400 hover:text-gray-600" onclick="toggleOrderDetails(@order.OrderId)">
+                                            <i class="fas fa-chevron-down" id="icon-@order.OrderId"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Order Products -->
+                                <div class="py-4 space-y-3 hidden transition-all" id="details-@order.OrderId">
+                                    @foreach (var detail in order.OrderDetails)
+                                    {
+                                        <div class="flex items-start gap-4">
+                                            <img src="~/@(detail.Product?.ImageUrl ?? "img/sanpham/placeholder.svg")" alt="@detail.Product?.Name" class="w-16 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/img/sanpham/placeholder.svg'">
+                                            <div class="flex-1">
+                                                <h4 class="font-medium text-gray-900">@detail.Product?.Name</h4>
+                                                <div class="flex items-center justify-between mt-1">
+                                                    <span class="text-sm text-gray-600">Số lượng: @detail.Quantity</span>
+                                                    <span class="font-semibold text-red-600">@((detail.UnitPrice * detail.Quantity).ToString("N0"))₫</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Order Footer -->
+                                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-600">Tổng tiền:</span>
+                                        <span class="text-xl font-bold text-red-600">@order.TotalAmount.ToString("N0")₫</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <!-- SỬA NÚT HỦY ĐƠN: Dùng Form để gửi POST -->
+                                            <form method="post" asp-page-handler="Cancel" asp-route-orderId="@order.OrderId" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                                <input type="hidden" name="status" value="@Model.StatusFilter" />
+                                                <input type="hidden" name="search" value="@Model.SearchQuery" />
+                                                <button type="submit" class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition text-gray-700">
+                                                    Hủy đơn
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Phân trang (Giữ nguyên) -->
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        function toggleOrderDetails(orderId) {
+            const details = document.getElementById(`details-${orderId}`);
+            const icon = document.getElementById(`icon-${orderId}`);
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                details.classList.add('hidden');
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        }
+    </script>
+}

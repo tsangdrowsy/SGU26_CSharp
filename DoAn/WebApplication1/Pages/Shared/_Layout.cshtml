@@ -1,0 +1,350 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    // Lấy tên User từ Session (Nếu chưa đăng nhập thì nó sẽ là null)
+    var currentUser = Context.Session.GetString("Username");
+    var currentEmail = Context.Session.GetString("Email"); // Lấy thêm Email để hiển thị
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CoffeeShop</title>
+
+    <!-- Fonts: serif cho tiêu đề, sans cho nội dung (đều hỗ trợ tiếng Việt) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Bảng màu cà phê: ghi đè "red" thành nâu và "gray" thành tông kem ấm
+        // => mọi class red-* / gray-* cũ trong các trang tự đổi sang tông nâu - trắng
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        red: { 50: '#faf4ec', 100: '#f2e5d3', 200: '#e5cbad', 300: '#d2a97f', 400: '#bb8756', 500: '#a06a3a', 600: '#8a5a32', 700: '#6f4526', 800: '#55341d', 900: '#3b2414' },
+                        gray: { 50: '#faf7f2', 100: '#f3eee6', 200: '#e8dfd2', 300: '#d6c9b8', 400: '#a99886', 500: '#7f6f60', 600: '#5f5146', 700: '#473b32', 800: '#2f2620', 900: '#211a15' },
+                        coffee: { cream: '#faf7f2', latte: '#f1e6d6', light: '#c69c6d', DEFAULT: '#8a5a32', dark: '#3b2414', espresso: '#241710' }
+                    },
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" href="~/img/icons/favicon.png" sizes="32x32">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body class="font-sans antialiased bg-coffee-cream text-gray-800">
+    <!-- Popup Overlay -->
+    <div id="popup_overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50"></div>
+
+    <!-- Main Wrapper -->
+    <div id="wrapper" class="min-h-screen flex flex-col">
+
+        <!-- ================= HEADER ================= -->
+        <header id="header" class="sticky top-0 z-40 bg-coffee-espresso text-white shadow-md">
+            <div class="header-wrapper">
+                <!-- Top bar -->
+                <div id="wide-nav" class="bg-coffee-dark text-coffee-latte py-1.5">
+                    <div class="container mx-auto px-4 flex items-center justify-center gap-x-4 sm:gap-x-5 text-[11px] sm:text-xs tracking-[0.06em] sm:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden">
+                        <a asp-page="/View/Shop" class="hover:text-white transition">
+                            <i class="fas fa-mug-hot mr-1.5 text-coffee-light"></i>Rang mới mỗi ngày<span class="hidden sm:inline"> · Giao tận nhà</span>
+                        </a>
+                        <span class="flex items-center"><i class="far fa-clock mr-1.5 text-coffee-light"></i>Mở cửa 07:00 – 22:00</span>
+                    </div>
+                </div>
+
+                <!-- Main Header -->
+                <div id="masthead" class="py-3">
+                    <div class="container mx-auto px-4">
+                        <!-- DEFAULT HEADER -->
+                        <div id="defaultHeader" class="flex items-center justify-between gap-2 sm:gap-4 relative">
+
+                            <!-- Trái: menu mobile + logo -->
+                            <div class="flex items-center gap-1 sm:gap-3 min-w-0">
+                                <button class="menu-toggle md:hidden w-11 h-11 -ml-2 flex items-center justify-center text-white" type="button" aria-label="Mở menu">
+                                    <i class="fas fa-bars text-xl"></i>
+                                </button>
+                                <a id="logo" asp-page="/Index" title="CoffeeShop" rel="home" class="flex items-center gap-2">
+                                    <span class="w-9 h-9 rounded-full bg-coffee-light/20 hidden sm:flex items-center justify-center">
+                                        <i class="fas fa-mug-hot text-coffee-light"></i>
+                                    </span>
+                                    <span class="font-serif text-xl sm:text-2xl font-semibold tracking-wide">CoffeeShop</span>
+                                </a>
+                            </div>
+
+                            <!-- Giữa: điều hướng -->
+                            <nav class="hidden md:flex items-center gap-8 text-sm">
+                                <a asp-page="/Index" class="nav-link">Trang chủ</a>
+                                <a asp-page="/View/Shop" class="nav-link">Cửa hàng</a>
+                                <a href="/#our-story" class="nav-link">Câu chuyện</a>
+                                <a href="#footer" class="nav-link">Liên hệ</a>
+                            </nav>
+
+                            <!-- Phải: tìm kiếm, tài khoản, giỏ hàng -->
+                            <div class="flex items-center justify-end">
+                                <div class="hidden md:flex items-center space-x-2">
+                                    <button id="searchToggle" class="search-toggle tap-44 text-white/90 hover:text-coffee-light transition" type="button" aria-label="Tìm kiếm">
+                                        <i class="fas fa-search text-lg"></i>
+                                    </button>
+
+                                    <!-- KHỐI TÀI KHOẢN DESKTOP -->
+                                    @if (string.IsNullOrEmpty(currentUser))
+                                    {
+                                        <!-- 1. Khách chưa đăng nhập -->
+                                        <div class="relative group">
+                                            <button class="flex items-center space-x-2 hover:bg-white/10 px-3 py-2 rounded-full transition min-h-11" type="button">
+                                                <i class="far fa-user text-lg"></i>
+                                                <span class="text-sm font-medium hidden lg:inline">Tài khoản</span>
+                                                <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
+                                            </button>
+
+                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block group-focus-within:block z-50 w-max">
+                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] text-gray-700">
+                                                    <a asp-page="/View/Login" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm rounded-t-xl">
+                                                        <i class="fas fa-sign-in-alt text-red-600 w-4"></i>
+                                                        <span>Đăng nhập</span>
+                                                    </a>
+                                                    <div class="border-t border-gray-100"></div>
+                                                    <a asp-page="/View/Register" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm rounded-b-xl">
+                                                        <i class="fas fa-user-plus text-red-600 w-4"></i>
+                                                        <span>Đăng ký</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <!-- 2. Đã đăng nhập -->
+                                        <div class="relative group">
+                                            <button class="flex items-center space-x-2 hover:bg-white/10 px-3 py-2 rounded-full transition min-h-11" type="button">
+                                                <i class="fas fa-user-circle text-lg text-coffee-light"></i>
+                                                <span class="text-sm font-semibold hidden lg:inline">@currentUser</span>
+                                                <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
+                                            </button>
+
+                                            <div class="absolute right-0 top-full pt-2 hidden group-hover:block group-focus-within:block z-50 w-max">
+                                                <div class="bg-white rounded-xl shadow-lg border border-gray-100 min-w-[230px] text-gray-700">
+                                                    <!-- Thông tin user -->
+                                                    <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
+                                                        <span class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center"><i class="fas fa-user"></i></span>
+                                                        <div class="min-w-0">
+                                                            <p class="text-sm font-semibold text-gray-800 truncate">@currentUser</p>
+                                                            <p class="text-xs text-gray-500 truncate">@currentEmail</p>
+                                                        </div>
+                                                    </div>
+                                                    <a asp-page="/View/MyAccount" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-user text-red-600 w-4"></i>
+                                                        <span>Tài khoản của tôi</span>
+                                                    </a>
+                                                    <a asp-page="/View/Orders" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-shopping-bag text-red-600 w-4"></i>
+                                                        <span>Đơn hàng</span>
+                                                    </a>
+                                                    <a asp-page="/View/AddressBook" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-sm">
+                                                        <i class="fas fa-map-marker-alt text-red-600 w-4"></i>
+                                                        <span>Sổ địa chỉ</span>
+                                                    </a>
+                                                    <div class="border-t border-gray-100"></div>
+                                                    <a asp-page="/Index" asp-page-handler="Logout" class="flex items-center gap-3 px-4 py-3 text-red-700 hover:bg-red-50 transition text-sm rounded-b-xl font-medium">
+                                                        <i class="fas fa-sign-out-alt w-4"></i>
+                                                        <span>Đăng xuất</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <!-- Cart -->
+                                    <a asp-page="/View/Cart" class="relative tap-44 text-white/90 hover:text-coffee-light transition" aria-label="Giỏ hàng">
+                                        <i class="fas fa-shopping-bag text-lg"></i>
+                                        <span class="absolute top-1 right-0.5 bg-coffee-light text-coffee-espresso text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center"></span>
+                                    </a>
+                                </div>
+
+                                <!-- Mobile Right Elements -->
+                                <div class="md:hidden flex items-center -mr-2">
+                                    <button id="searchToggleMobile" class="search-toggle tap-44" type="button" aria-label="Tìm kiếm">
+                                        <i class="fas fa-search text-lg"></i>
+                                    </button>
+
+                                    @if (string.IsNullOrEmpty(currentUser))
+                                    {
+                                        <a asp-page="/View/Login" class="tap-44" aria-label="Đăng nhập">
+                                            <i class="far fa-user text-lg"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/View/MyAccount" class="tap-44" aria-label="Tài khoản">
+                                            <i class="fas fa-user-circle text-lg text-coffee-light"></i>
+                                        </a>
+                                    }
+
+                                    <a asp-page="/View/Cart" class="relative tap-44" aria-label="Giỏ hàng">
+                                        <i class="fas fa-shopping-bag text-lg"></i>
+                                        <span class="absolute top-1 right-0.5 bg-coffee-light text-coffee-espresso text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEARCH HEADER -->
+                        <div id="searchHeader" class="hidden items-center justify-center py-1">
+                            <div class="w-full max-w-[800px] relative pr-12">
+                                <input type="text" id="searchInput" class="w-full px-5 pr-14 py-3 text-base rounded-full focus:outline-none transition-all text-gray-800" placeholder="Tìm cà phê: Arabica, Robusta, Culi..." autocomplete="off" aria-label="Tìm sản phẩm">
+                                <button type="button" class="absolute right-14 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-red-700 transition-all rounded-full" aria-label="Tìm">
+                                    <i class="fas fa-search text-lg"></i>
+                                </button>
+                                <button id="closeSearchBtn" type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center bg-white/10 justify-center text-white hover:bg-white/20 transition-all rounded-full" aria-label="Đóng tìm kiếm">
+                                    <i class="fas fa-times text-lg"></i>
+                                </button>
+                                <div id="searchSuggestions" class="absolute top-full left-0 right-12 z-50 text-gray-800">
+                                    <div id="suggestionsList" class="max-h-96 overflow-y-auto custom-scrollbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Overlay -->
+        <div id="searchOverlay" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 z-30"></div>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main id="main" class="flex-grow">
+            @RenderBody()
+        </main>
+
+        <!-- ================= FOOTER ================= -->
+        <footer id="footer" class="bg-coffee-espresso text-coffee-latte mt-auto">
+            <div class="container mx-auto px-4 pt-14 pb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <div>
+                        <a asp-page="/Index" class="flex items-center gap-2 text-white mb-3">
+                            <i class="fas fa-mug-hot text-coffee-light text-xl"></i>
+                            <span class="font-serif text-2xl font-semibold">CoffeeShop</span>
+                        </a>
+                        <p class="text-sm text-coffee-latte/70 mb-5">Cà phê ngon · Ngày mới tươi sáng.</p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-btn" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="footer-title">Cửa hàng</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a asp-page="/View/Shop" class="footer-link">Tất cả cà phê</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Arabica" class="footer-link">Arabica</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Robusta" class="footer-link">Robusta</a></li>
+                            <li><a asp-page="/View/Shop" asp-route-Search="Blend" class="footer-link">Cà phê phối trộn</a></li>
+                            <li><a asp-page="/View/Cart" class="footer-link">Giỏ hàng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="footer-title">Chính sách</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="footer-link">Chính sách bảo mật</a></li>
+                            <li><a href="#" class="footer-link">Chính sách thanh toán</a></li>
+                            <li><a href="#" class="footer-link">Đổi trả &amp; bảo quản</a></li>
+                            <li><a href="#" class="footer-link">Chính sách vận chuyển</a></li>
+                            <li><a href="#" class="footer-link">Thoả thuận sử dụng</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="footer-title">Liên hệ</h3>
+                        <ul class="space-y-3 text-sm text-coffee-latte/80">
+                            <li class="flex gap-3"><i class="fas fa-map-marker-alt text-coffee-light mt-1"></i><span>273 An Dương Vương, Q.5, TP. Hồ Chí Minh</span></li>
+                            <li class="flex gap-3"><i class="far fa-clock text-coffee-light mt-1"></i><span>07:00 - 22:00 mỗi ngày</span></li>
+                            <li class="flex gap-3"><i class="fas fa-phone-alt text-coffee-light mt-1"></i><a href="tel:0900000000" class="footer-link">0900 000 000</a></li>
+                            <li class="flex gap-3"><i class="far fa-envelope text-coffee-light mt-1"></i><a href="mailto:hello@coffeeshop.vn" class="footer-link">hello@coffeeshop.vn</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-coffee-latte/60">
+                    <p>© @DateTime.Now.Year CoffeeShop. Đồ án môn C# - SGU.</p>
+                    <p class="flex items-center gap-2"><i class="fas fa-seedling text-coffee-light"></i>Vì một tương lai bền vững hơn mỗi ngày.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================= MOBILE MENU (OFF-CANVAS) ================= -->
+    <div id="main-menu" class="fixed inset-0 bg-coffee-cream z-50 transform -translate-x-full transition duration-300 md:hidden overflow-y-auto">
+        <div class="p-4">
+            <div class="flex justify-between items-center mb-6">
+                <span class="flex items-center gap-2 text-coffee-dark">
+                    <i class="fas fa-mug-hot text-red-600 text-xl"></i>
+                    <span class="font-serif text-2xl font-semibold">CoffeeShop</span>
+                </span>
+                <button class="close-menu tap-44 hover:bg-gray-100 rounded-full transition" type="button" aria-label="Đóng menu"><i class="fas fa-times text-2xl text-gray-600"></i></button>
+            </div>
+
+            <!-- KHỐI TÀI KHOẢN MOBILE -->
+            @if (string.IsNullOrEmpty(currentUser))
+            {
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                    <a asp-page="/View/Login" class="flex items-center text-gray-700">
+                        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3"><i class="far fa-user text-xl text-gray-600"></i></div>
+                        <div>
+                            <div class="font-medium">Tài khoản</div><span class="text-sm text-gray-500">Đăng nhập / Đăng ký</span>
+                        </div>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="mb-6 pb-4 border-b border-gray-200">
+                    <!-- Hiển thị User, Email và nút Đăng xuất -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center text-gray-700 min-w-0">
+                            <div class="w-10 h-10 flex-shrink-0 bg-red-100 text-red-700 rounded-full flex items-center justify-center mr-3"><i class="fas fa-user"></i></div>
+                            <div class="min-w-0">
+                                <div class="font-semibold text-coffee-dark truncate">@currentUser</div>
+                                <span class="text-sm text-gray-500 truncate block">@currentEmail</span>
+                            </div>
+                        </div>
+                        <a asp-page="/Index" asp-page-handler="Logout" class="text-sm text-red-700 font-medium px-3 py-2 bg-red-50 rounded-lg">Đăng xuất</a>
+                    </div>
+
+                    <!-- Điều hướng tài khoản -->
+                    <div class="space-y-1">
+                        <a asp-page="/View/MyAccount" class="mobile-link"><i class="fas fa-user"></i>Thông tin tài khoản</a>
+                        <a asp-page="/View/Orders" class="mobile-link"><i class="fas fa-clipboard-list"></i>Quản lý đơn hàng</a>
+                        <a asp-page="/View/AddressBook" class="mobile-link"><i class="fas fa-map-marker-alt"></i>Sổ địa chỉ</a>
+                    </div>
+                </div>
+            }
+
+            <!-- Mobile Menu Items -->
+            <nav class="space-y-1 text-gray-800">
+                <a asp-page="/Index" class="mobile-link"><i class="fas fa-home"></i>Trang chủ</a>
+                <a asp-page="/View/Shop" class="mobile-link"><i class="fas fa-store"></i>Cửa hàng</a>
+                <a asp-page="/View/Shop" asp-route-Search="Arabica" class="mobile-link"><i class="fas fa-seedling"></i>Arabica</a>
+                <a asp-page="/View/Shop" asp-route-Search="Robusta" class="mobile-link"><i class="fas fa-fire"></i>Robusta</a>
+                <a href="/#our-story" class="mobile-link close-on-click"><i class="fas fa-leaf"></i>Câu chuyện</a>
+                <a asp-page="/View/Cart" class="mobile-link"><i class="fas fa-shopping-bag"></i>Giỏ hàng</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

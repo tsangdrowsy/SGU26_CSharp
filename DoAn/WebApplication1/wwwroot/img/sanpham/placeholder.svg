@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#f6ecdf"/><stop offset="1" stop-color="#e6d5bf"/></radialGradient>
+    <linearGradient id="bag" x1="0" x2="1"><stop offset="0" stop-color="#9a6a40"/><stop offset=".5" stop-color="#b5824f"/><stop offset="1" stop-color="#8a5a32"/></linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="335" rx="110" ry="14" fill="#3b2414" opacity=".18"/>
+  <path d="M130 95 L270 95 L282 330 L118 330 Z" fill="url(#bag)"/>
+  <path d="M130 95 L270 95 L266 120 L134 120 Z" fill="#6f4526"/>
+  <rect x="148" y="190" width="104" height="70" rx="3" fill="#3b2414"/>
+  <text x="200" y="220" font-family="Georgia,serif" font-size="15" fill="#f1e6d6" text-anchor="middle">COFFEE</text>
+  <text x="200" y="242" font-family="Arial,sans-serif" font-size="9" letter-spacing="2" fill="#c69c6d" text-anchor="middle">RANG XAY</text>
+  <path d="M200 140 c-14 8 -14 28 0 36 c14 -8 14 -28 0 -36 z" fill="#3b2414"/>
+  <path d="M200 142 c-5 10 5 22 0 32" stroke="#c69c6d" stroke-width="2" fill="none"/>
+</svg>

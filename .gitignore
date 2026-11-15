@@ -1,6 +1,1 @@
-bin/
-obj/
-Debug/
-*.csproj
 *.vs
-*.slnx

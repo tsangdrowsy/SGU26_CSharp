@@ -1,0 +1,114 @@
+erDiagram
+    Users {
+        int UserId PK
+        varchar Username UK
+        varchar PasswordHash
+        nvarchar FullName
+        varchar Email UK
+        varchar Phone
+        nvarchar Address
+        nvarchar Ward
+        nvarchar District
+        nvarchar City
+        varchar Role "Admin | Customer"
+        bit IsLocked
+        datetime2 CreatedAt
+    }
+    Categories {
+        int CategoryId PK
+        nvarchar Name UK
+        
+        bit IsActive
+    }
+    Suppliers {
+        int SupplierId PK
+        nvarchar Name UK
+       
+    }
+    Products {
+        int ProductId PK
+        varchar Code UK
+        nvarchar Name
+        int CategoryId FK
+        int SupplierId FK "NULL"
+        nvarchar Description
+        nvarchar Unit
+        
+        nvarchar Origin
+        
+        nvarchar ImageUrl
+        decimal CostPrice "giá nhập bình quân"
+        decimal ProfitRate "phần trăm"
+        decimal SalePrice "cột tính toán"
+        int StockQuantity "CHECK >= 0"
+        bit IsVisible
+        datetime2 CreatedAt
+    }
+    ImportReceipts {
+        int ReceiptId PK
+        varchar ReceiptCode UK
+        datetime2 ImportDate
+        varchar Status "Draft | Completed"
+        datetime2 CompletedAt
+        int CreatedBy FK
+        nvarchar Note
+    }
+    ImportReceiptDetails {
+        int ReceiptId PK, FK
+        int ProductId PK, FK
+        int Quantity "CHECK > 0"
+        decimal ImportPrice "CHECK > 0"
+    }
+    Orders {
+        int OrderId PK
+        varchar OrderCode UK
+        int UserId FK
+        datetime2 OrderDate
+        nvarchar ReceiverName
+        varchar ReceiverPhone
+        nvarchar ShippingAddress
+        nvarchar Ward
+        nvarchar District
+        nvarchar City
+        varchar PaymentMethod "Cash | BankTransfer | Online"
+        varchar Status "Pending | Confirmed | Delivered | Cancelled"
+        decimal TotalAmount
+        nvarchar Note
+        datetime2 UpdatedAt
+    }
+    OrderDetails {
+        int OrderId PK, FK
+        int ProductId PK, FK
+        int Quantity "CHECK > 0"
+        decimal UnitPrice "giá bán lúc mua"
+        decimal UnitCost "giá vốn lúc mua"
+        decimal LineTotal "cột tính toán"
+    }
+    CartItems {
+        int UserId PK, FK
+        int ProductId PK, FK
+        int Quantity
+        datetime2 AddedAt
+    }
+    InventoryTransactions {
+        bigint TransactionId PK
+        int ProductId FK
+        datetime2 TransactionDate
+        varchar TransactionType "INITIAL | IMPORT | EXPORT | RETURN"
+        int QuantityChange "+ vào / - ra"
+        int ReferenceId "ReceiptId / OrderId"
+        nvarchar Note
+    }
+
+    Categories ||--o{ Products : "phân loại"
+    Suppliers |o--o{ Products : "cung cấp"
+    Users ||--o{ Orders : "đặt"
+    Users ||--o{ CartItems : "có giỏ hàng"
+    Users ||--o{ ImportReceipts : "lập phiếu"
+    ImportReceipts ||--|{ ImportReceiptDetails : "gồm"
+    Products ||--o{ ImportReceiptDetails : "được nhập"
+    Orders ||--|{ OrderDetails : "gồm"
+    Products ||--o{ OrderDetails : "được bán"
+    Products ||--o{ CartItems : "nằm trong"
+    Products ||--o{ InventoryTransactions : "sổ kho"
+    
