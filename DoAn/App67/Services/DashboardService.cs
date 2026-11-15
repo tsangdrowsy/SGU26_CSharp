@@ -45,7 +45,8 @@ namespace App67.Services
         //
         // LƯU Ý C# 14 / .NET 10: viết RevenueStatuses.Contains(x) thì trình biên dịch chọn
         // MemoryExtensions.Contains(ReadOnlySpan<T>) thay vì Enumerable.Contains. EF Core 8 KHÔNG dịch
-        // được ReadOnlySpan -> exception lúc chạy (biên dịch vẫn qua!). Vì vậy gọi thẳng Enumerable.Contains.
+        // được -> exception lúc chạy (biên dịch vẫn qua!). EF Core 10 (đang dùng) đã dịch được, nhưng vẫn
+        // gọi thẳng Enumerable.Contains cho rõ ràng và không phụ thuộc phiên bản EF.
         public const int LowStockThreshold = 10;
 
         // now: truyền vào thay vì gọi DateTime.Now bên trong -> kiểm thử được với ngày cố định
